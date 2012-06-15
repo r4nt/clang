@@ -68,6 +68,7 @@ add_clang_unittest(Frontend
 
 add_clang_unittest(Tooling
   Tooling/CompilationDatabaseTest.cpp
+  Tooling/FormatTest.cpp
   Tooling/ToolingTest.cpp
   Tooling/RecursiveASTVisitorTest.cpp
   Tooling/RefactoringTest.cpp

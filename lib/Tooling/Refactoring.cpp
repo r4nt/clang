@@ -126,6 +126,7 @@ bool applyAllReplacements(Replacements &Replaces, Rewriter &Rewrite) {
   for (Replacements::const_iterator I = Replaces.begin(),
                                     E = Replaces.end();
        I != E; ++I) {
+    llvm::outs() << I->toString() << "\n";
     if (I->isApplicable()) {
       Result = I->apply(Rewrite) && Result;
     } else {
