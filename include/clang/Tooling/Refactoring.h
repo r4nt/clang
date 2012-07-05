@@ -71,7 +71,7 @@ public:
 
   /// \brief Accessors.
   /// @{
-  StringRef getFilePath() const { return FilePath; }
+  std::string getFilePath() const { return FilePath; }
   unsigned getOffset() const { return Offset; }
   unsigned getLength() const { return Length; }
   /// @}

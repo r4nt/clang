@@ -309,20 +309,6 @@ namespace VirtualMembers {
   static nsMemoryImpl sGlobalMemory;
 }
 
-namespace PR13273 {
-  struct U {
-    int t;
-    U() = default;
-  };
-
-  struct S : U {
-    S() = default;
-  };
-
-  // CHECK: @_ZN7PR13273L1sE = {{.*}} zeroinitializer
-  const S s {};
-}
-
 // Constant initialization tests go before this point,
 // dynamic initialization tests go after.
 

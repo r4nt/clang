@@ -157,7 +157,6 @@ int parse_remapped_files(int argc, const char **argv, int start_arg,
               (feof(to_file) ? "EOF" : "error"), semi + 1);
       fclose(to_file);
       free_remapped_files(*unsaved_files, i);
-      free(contents);
       *unsaved_files = 0;
       *num_unsaved_files = 0;
       return -1;
@@ -2282,10 +2281,8 @@ int perform_token_annotation(int argc, const char **argv) {
                                           &second_line, &second_column)))
     return errorCode;
 
-  if (parse_remapped_files(argc, argv, 2, &unsaved_files, &num_unsaved_files)) {
-    free(filename);
+  if (parse_remapped_files(argc, argv, 2, &unsaved_files, &num_unsaved_files))
     return -1;
-  }
 
   CIdx = clang_createIndex(0, 1);
   TU = clang_parseTranslationUnit(CIdx, argv[argc - 1],
@@ -2303,10 +2300,8 @@ int perform_token_annotation(int argc, const char **argv) {
   }
   errorCode = 0;
 
-  if (checkForErrors(TU) != 0) {
-    errorCode = -1;
-    goto teardown;
-  }
+  if (checkForErrors(TU) != 0)
+    return -1;
 
   if (getenv("CINDEXTEST_EDITING")) {
     for (i = 0; i < 5; ++i) {

@@ -80,7 +80,7 @@ else()
       COMMENT "Running Clang regression tests"
       DEPENDS clang clang-headers
               c-index-test diagtool arcmt-test c-arcmt-test
-              clang-check
+              clang-check remove-cstr-calls
       )
     set_target_properties(check-clang PROPERTIES FOLDER "Clang tests")
   endif()

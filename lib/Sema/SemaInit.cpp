@@ -2708,39 +2708,84 @@ static void MaybeProduceObjCObject(Sema &S,
   }
 }
 
-/// \brief When initializing from init list via constructor, handle
-/// initialization of an object of type std::initializer_list<T>.
+/// \brief When initializing from init list via constructor, deal with the
+/// empty init list and std::initializer_list special cases.
 ///
-/// \return true if we have handled initialization of an object of type
-/// std::initializer_list<T>, false otherwise.
-static bool TryInitializerListConstruction(Sema &S,
-                                           InitListExpr *List,
-                                           QualType DestType,
-                                           InitializationSequence &Sequence) {
-  QualType E;
-  if (!S.isStdInitializerList(DestType, &E))
+/// \return True if this was a special case, false otherwise.
+static bool TryListConstructionSpecialCases(Sema &S,
+                                            InitListExpr *List,
+                                            CXXRecordDecl *DestRecordDecl,
+                                            QualType DestType,
+                                            InitializationSequence &Sequence) {
+  // C++11 [dcl.init.list]p3:
+  //   List-initialization of an object or reference of type T is defined as
+  //   follows:
+  //   - If T is an aggregate, aggregate initialization is performed.
+  if (DestType->isAggregateType())
     return false;
 
-  // Check that each individual element can be copy-constructed. But since we
-  // have no place to store further information, we'll recalculate everything
-  // later.
-  InitializedEntity HiddenArray = InitializedEntity::InitializeTemporary(
-      S.Context.getConstantArrayType(E,
-          llvm::APInt(S.Context.getTypeSize(S.Context.getSizeType()),
-                      List->getNumInits()),
-          ArrayType::Normal, 0));
-  InitializedEntity Element = InitializedEntity::InitializeElement(S.Context,
-      0, HiddenArray);
-  for (unsigned i = 0, n = List->getNumInits(); i < n; ++i) {
-    Element.setElementIndex(i);
-    if (!S.CanPerformCopyInitialization(Element, List->getInit(i))) {
-      Sequence.SetFailed(
-          InitializationSequence::FK_InitListElementCopyFailure);
+  //   - Otherwise, if the initializer list has no elements and T is a class
+  //     type with a default constructor, the object is value-initialized.
+  if (List->getNumInits() == 0) {
+    if (CXXConstructorDecl *DefaultConstructor =
+            S.LookupDefaultConstructor(DestRecordDecl)) {
+      if (DefaultConstructor->isDeleted() ||
+          S.isFunctionConsideredUnavailable(DefaultConstructor)) {
+        // Fake an overload resolution failure.
+        OverloadCandidateSet &CandidateSet = Sequence.getFailedCandidateSet();
+        DeclAccessPair FoundDecl = DeclAccessPair::make(DefaultConstructor,
+                                              DefaultConstructor->getAccess());
+        if (FunctionTemplateDecl *ConstructorTmpl =
+                dyn_cast<FunctionTemplateDecl>(DefaultConstructor))
+          S.AddTemplateOverloadCandidate(ConstructorTmpl, FoundDecl,
+                                         /*ExplicitArgs*/ 0,
+                                         ArrayRef<Expr*>(), CandidateSet,
+                                         /*SuppressUserConversions*/ false);
+        else
+          S.AddOverloadCandidate(DefaultConstructor, FoundDecl,
+                                 ArrayRef<Expr*>(), CandidateSet,
+                                 /*SuppressUserConversions*/ false);
+        Sequence.SetOverloadFailure(
+                       InitializationSequence::FK_ListConstructorOverloadFailed,
+                       OR_Deleted);
+      } else
+        Sequence.AddConstructorInitializationStep(DefaultConstructor,
+                                                DefaultConstructor->getAccess(),
+                                                  DestType,
+                                                  /*MultipleCandidates=*/false,
+                                                  /*FromInitList=*/true,
+                                                  /*AsInitList=*/false);
       return true;
     }
   }
-  Sequence.AddStdInitializerListConstructionStep(DestType);
-  return true;
+
+  //   - Otherwise, if T is a specialization of std::initializer_list, [...]
+  QualType E;
+  if (S.isStdInitializerList(DestType, &E)) {
+    // Check that each individual element can be copy-constructed. But since we
+    // have no place to store further information, we'll recalculate everything
+    // later.
+    InitializedEntity HiddenArray = InitializedEntity::InitializeTemporary(
+        S.Context.getConstantArrayType(E,
+            llvm::APInt(S.Context.getTypeSize(S.Context.getSizeType()),
+                        List->getNumInits()),
+            ArrayType::Normal, 0));
+    InitializedEntity Element = InitializedEntity::InitializeElement(S.Context,
+        0, HiddenArray);
+    for (unsigned i = 0, n = List->getNumInits(); i < n; ++i) {
+      Element.setElementIndex(i);
+      if (!S.CanPerformCopyInitialization(Element, List->getInit(i))) {
+        Sequence.SetFailed(
+            InitializationSequence::FK_InitListElementCopyFailure);
+        return true;
+      }
+    }
+    Sequence.AddStdInitializerListConstructionStep(DestType);
+    return true;
+  }
+
+  // Not a special case.
+  return false;
 }
 
 static OverloadingResult
@@ -2841,6 +2886,11 @@ static void TryConstructorInitialization(Sema &S,
   CXXRecordDecl *DestRecordDecl
     = cast<CXXRecordDecl>(DestRecordType->getDecl());
 
+  if (InitListSyntax &&
+      TryListConstructionSpecialCases(S, cast<InitListExpr>(Args[0]),
+                                      DestRecordDecl, DestType, Sequence))
+    return;
+
   // Build the candidate set directly in the initialization sequence
   // structure, so that it will persist if we fail.
   OverloadCandidateSet &CandidateSet = Sequence.getFailedCandidateSet();
@@ -2867,21 +2917,15 @@ static void TryConstructorInitialization(Sema &S,
   //     constructors of the class T and the argument list consists of the
   //     initializer list as a single argument.
   if (InitListSyntax) {
-    InitListExpr *ILE = cast<InitListExpr>(Args[0]);
     AsInitializerList = true;
-
-    // If the initializer list has no elements and T has a default constructor,
-    // the first phase is omitted.
-    if (ILE->getNumInits() != 0 ||
-        (!DestRecordDecl->hasDeclaredDefaultConstructor() &&
-         !DestRecordDecl->needsImplicitDefaultConstructor()))
-      Result = ResolveConstructorOverload(S, Kind.getLocation(), Args, NumArgs,
-                                          CandidateSet, ConStart, ConEnd, Best,
-                                          CopyInitialization, AllowExplicit,
-                                          /*OnlyListConstructor=*/true,
-                                          InitListSyntax);
+    Result = ResolveConstructorOverload(S, Kind.getLocation(), Args, NumArgs,
+                                        CandidateSet, ConStart, ConEnd, Best,
+                                        CopyInitialization, AllowExplicit,
+                                        /*OnlyListConstructor=*/true,
+                                        InitListSyntax);
 
     // Time to unwrap the init list.
+    InitListExpr *ILE = cast<InitListExpr>(Args[0]);
     Args = ILE->getInits();
     NumArgs = ILE->getNumInits();
   }
@@ -2889,7 +2933,7 @@ static void TryConstructorInitialization(Sema &S,
   // C++11 [over.match.list]p1:
   //   - If no viable initializer-list constructor is found, overload resolution
   //     is performed again, where the candidate functions are all the
-  //     constructors of the class T and the argument list consists of the
+  //     constructors of the class T nad the argument list consists of the
   //     elements of the initializer list.
   if (Result == OR_No_Viable_Function) {
     AsInitializerList = false;
@@ -2907,7 +2951,7 @@ static void TryConstructorInitialization(Sema &S,
     return;
   }
 
-  // C++11 [dcl.init]p6:
+  // C++0x [dcl.init]p6:
   //   If a program calls for the default initialization of an object
   //   of a const-qualified type T, T shall be a class type with a
   //   user-provided default constructor.
@@ -2973,12 +3017,6 @@ static void TryReferenceInitializationCore(Sema &S,
                                            QualType cv2T2, QualType T2,
                                            Qualifiers T2Quals,
                                            InitializationSequence &Sequence);
-
-static void TryValueInitialization(Sema &S,
-                                   const InitializedEntity &Entity,
-                                   const InitializationKind &Kind,
-                                   InitializationSequence &Sequence,
-                                   InitListExpr *InitList = 0);
 
 static void TryListInitialization(Sema &S,
                                   const InitializedEntity &Entity,
@@ -3075,31 +3113,14 @@ static void TryListInitialization(Sema &S,
       return;
     }
 
-    // C++11 [dcl.init.list]p3:
-    //   - If T is an aggregate, aggregate initialization is performed.
     if (!DestType->isAggregateType()) {
       if (S.getLangOpts().CPlusPlus0x) {
-        //   - Otherwise, if the initializer list has no elements and T is a
-        //     class type with a default constructor, the object is
-        //     value-initialized.
-        if (InitList->getNumInits() == 0) {
-          CXXRecordDecl *RD = DestType->getAsCXXRecordDecl();
-          if (RD->hasDeclaredDefaultConstructor() ||
-              RD->needsImplicitDefaultConstructor()) {
-            TryValueInitialization(S, Entity, Kind, Sequence, InitList);
-            return;
-          }
-        }
-
-        //   - Otherwise, if T is a specialization of std::initializer_list<E>,
-        //     an initializer_list object constructed [...]
-        if (TryInitializerListConstruction(S, InitList, DestType, Sequence))
-          return;
-
-        //   - Otherwise, if T is a class type, constructors are considered.
         Expr *Arg = InitList;
-        TryConstructorInitialization(S, Entity, Kind, &Arg, 1, DestType,
-                                     Sequence, /*InitListSyntax*/true);
+        // A direct-initializer is not list-syntax, i.e. there's no special
+        // treatment of "A a({1, 2});".
+        TryConstructorInitialization(S, Entity, Kind, &Arg, 1, DestType, 
+                                     Sequence,
+                               Kind.getKind() != InitializationKind::IK_Direct);
       } else
         Sequence.SetFailed(
             InitializationSequence::FK_InitListBadDestinationType);
@@ -3584,11 +3605,7 @@ static void TryStringLiteralInitialization(Sema &S,
 static void TryValueInitialization(Sema &S,
                                    const InitializedEntity &Entity,
                                    const InitializationKind &Kind,
-                                   InitializationSequence &Sequence,
-                                   InitListExpr *InitList) {
-  assert((!InitList || InitList->getNumInits() == 0) &&
-         "Shouldn't use value-init for non-empty init lists");
-
+                                   InitializationSequence &Sequence) {
   // C++98 [dcl.init]p5, C++11 [dcl.init]p7:
   //
   //   To value-initialize an object of type T means:
@@ -3599,15 +3616,17 @@ static void TryValueInitialization(Sema &S,
 
   if (const RecordType *RT = T->getAs<RecordType>()) {
     if (CXXRecordDecl *ClassDecl = dyn_cast<CXXRecordDecl>(RT->getDecl())) {
-      bool NeedZeroInitialization = true;
+      // C++98:
+      // -- if T is a class type (clause 9) with a user-declared
+      //    constructor (12.1), then the default constructor for T is
+      //    called (and the initialization is ill-formed if T has no
+      //    accessible default constructor);
       if (!S.getLangOpts().CPlusPlus0x) {
-        // C++98:
-        // -- if T is a class type (clause 9) with a user-declared constructor
-        //    (12.1), then the default constructor for T is called (and the
-        //    initialization is ill-formed if T has no accessible default
-        //    constructor);
         if (ClassDecl->hasUserDeclaredConstructor())
-          NeedZeroInitialization = false;
+          // FIXME: we really want to refer to a single subobject of the array,
+          // but Entity doesn't have a way to capture that (yet).
+          return TryConstructorInitialization(S, Entity, Kind, 0, 0,
+                                              T, Sequence);
       } else {
         // C++11:
         // -- if T is a class type (clause 9) with either no default constructor
@@ -3615,7 +3634,8 @@ static void TryValueInitialization(Sema &S,
         //    or deleted, then the object is default-initialized;
         CXXConstructorDecl *CD = S.LookupDefaultConstructor(ClassDecl);
         if (!CD || !CD->getCanonicalDecl()->isDefaulted() || CD->isDeleted())
-          NeedZeroInitialization = false;
+          return TryConstructorInitialization(S, Entity, Kind, 0, 0,
+                                              T, Sequence);
       }
 
       // -- if T is a (possibly cv-qualified) non-union class type without a
@@ -3624,19 +3644,8 @@ static void TryValueInitialization(Sema &S,
       //    default-initialized;
       // FIXME: The 'non-union' here is a defect (not yet assigned an issue
       // number). Update the quotation when the defect is resolved.
-      if (NeedZeroInitialization)
-        Sequence.AddZeroInitializationStep(Entity.getType());
-
-      // If this is list-value-initialization, pass the empty init list on when
-      // building the constructor call. This affects the semantics of a few
-      // things (such as whether an explicit default constructor can be called).
-      Expr *InitListAsExpr = InitList;
-      Expr **Args = InitList ? &InitListAsExpr : 0;
-      unsigned NumArgs = InitList ? 1 : 0;
-      bool InitListSyntax = InitList;
-
-      return TryConstructorInitialization(S, Entity, Kind, Args, NumArgs, T,
-                                          Sequence, InitListSyntax);
+      Sequence.AddZeroInitializationStep(Entity.getType());
+      return TryConstructorInitialization(S, Entity, Kind, 0, 0, T, Sequence);
     }
   }
 
@@ -4091,8 +4100,8 @@ InitializationSequence::InitializationSequence(Sema &S,
         AddArrayInitStep(DestType);
       }
     }
-    // Note: as a GNU C++ extension, we allow list-initialization of a
-    // class member of array type from a parenthesized initializer list.
+    // Note: as a GNU C++ extension, we allow initialization of a
+    // class member from a parenthesized initializer list.
     else if (S.getLangOpts().CPlusPlus &&
              Entity.getKind() == InitializedEntity::EK_Member &&
              Initializer && isa<InitListExpr>(Initializer)) {
@@ -4892,6 +4901,7 @@ InitializationSequence::Perform(Sema &S,
   case SK_QualificationConversionXValue:
   case SK_QualificationConversionRValue:
   case SK_ConversionSequence:
+  case SK_ListConstructorCall:
   case SK_ListInitialization:
   case SK_UnwrapInitList:
   case SK_RewrapInitList:
@@ -4911,7 +4921,6 @@ InitializationSequence::Perform(Sema &S,
   }
 
   case SK_ConstructorInitialization:
-  case SK_ListConstructorCall:
   case SK_ZeroInitialization:
     break;
   }
@@ -5202,8 +5211,7 @@ InitializationSequence::Perform(Sema &S,
       InitializedEntity TempEntity = InitializedEntity::InitializeTemporary(
                                         Entity.getType().getNonReferenceType());
       bool UseTemporary = Entity.getType()->isReferenceType();
-      assert(Args.size() == 1 && "expected a single argument for list init");
-      InitListExpr *InitList = cast<InitListExpr>(Args.get()[0]);
+      InitListExpr *InitList = cast<InitListExpr>(CurInit.get());
       S.Diag(InitList->getExprLoc(), diag::warn_cxx98_compat_ctor_list_init)
         << InitList->getSourceRange();
       MultiExprArg Arg(InitList->getInits(), InitList->getNumInits());
@@ -5251,8 +5259,7 @@ InitializationSequence::Perform(Sema &S,
       step_iterator NextStep = Step;
       ++NextStep;
       if (NextStep != StepEnd &&
-          (NextStep->Kind == SK_ConstructorInitialization ||
-           NextStep->Kind == SK_ListConstructorCall)) {
+          NextStep->Kind == SK_ConstructorInitialization) {
         // The need for zero-initialization is recorded directly into
         // the call to the object's constructor within the next step.
         ConstructorInitRequiresZeroInit = true;
