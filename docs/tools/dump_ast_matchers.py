@@ -58,12 +58,21 @@ def extract_result_types(comment):
     result_types += [m.group(2)]
     comment = m.group(1)
 
+def strip_doxygen(comment):
+  """Returns the given comment without \-escaped words."""
+  # If there is only a doxygen keyword in the line, delete the whole line.
+  comment = re.sub(r'^\\[^\s]+\n', r'', comment, flags=re.M)
+  # If the doxygen keyword starts the line, delete the following whitespace.
+#comment = re.sub(r'^\\[^\s]+\s+', r'', comment)
+  comment = re.sub(r'\\[^\s]+\s+', r'', comment)
+  return comment
+
 def unify_arguments(args):
   """Gets rid of anything the user doesn't care about in the argument list."""
-  args,_ = re.subn(r'internal::', r'', args)
-  args,_ = re.subn(r'const\s+', r'', args)
-  args,_ = re.subn(r'&', r' ', args)
-  args,_ = re.subn(r'(^|\s)M\d?(\s)', r'\1Matcher<*>\2', args)
+  args = re.sub(r'internal::', r'', args)
+  args = re.sub(r'const\s+', r'', args)
+  args = re.sub(r'&', r' ', args)
+  args = re.sub(r'(^|\s)M\d?(\s)', r'\1Matcher<*>\2', args)
   return args
 
 def add_matcher(result_type, name, args, comment, is_dyncast=False):
@@ -78,7 +87,7 @@ def add_matcher(result_type, name, args, comment, is_dyncast=False):
     'result': 'Matcher&lt;%s&gt;' % result_type,
     'name': name,
     'args': esc(args),
-    'comment': esc(comment),
+    'comment': esc(strip_doxygen(comment)),
     'id': matcher_id,
   }
   if is_dyncast:

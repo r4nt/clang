@@ -2226,7 +2226,7 @@ AST_MATCHER_P(UsingShadowDecl, hasTargetDecl,
 ///
 /// But given
 /// \code
-///   template <typename T  class X {}; class A {};
+///   template <typename T>  class X {}; class A {};
 ///   template <> class X<A> {}; X<A> x;
 /// \endcode
 /// record(hasName("::X"), isTemplateInstantiation())
