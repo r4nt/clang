@@ -33,9 +33,10 @@ def extract_result_types(comment):
     comment = m.group(1)
 
 def unify_arguments(args):
-  args,_ = re.subn(r'internal::', '', args)
-  args,_ = re.subn(r'const\s+', '', args)
-  args,_ = re.subn(r'\s+&', '', args)
+  args,_ = re.subn(r'internal::', r'', args)
+  args,_ = re.subn(r'const\s+', r'', args)
+  args,_ = re.subn(r'&', r' ', args)
+  args,_ = re.subn(r'(^|\s)M\d?(\s)', r'\1Matcher<*>\2', args)
   return args
 
 def add_matcher(result_type, name, args, comment):
