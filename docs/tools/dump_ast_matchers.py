@@ -1,0 +1,162 @@
+#!/usr/bin/env python
+
+import re
+
+MATCHERS_FILE = '../../include/clang/ASTMatchers/ASTMatchers.h'
+TD_TEMPLATE="""
+<tr><td>%(result)s</td><td class="name" onclick="toggle(this)">%(name)s</td><td>%(args)s</td></tr>
+<tr><td colspan="4" class="doc" id="%(name)s"><pre>%(comment)s</pre></td></tr>
+"""
+
+node_matchers = {}
+narrowing_matchers = {}
+traversal_matchers = {}
+
+def esc(text):
+  text = re.sub(r'&', '&amp;', text)
+  text = re.sub(r'<', '&lt;', text)
+  return text
+
+def extract_result_types(comment):
+  result_types = []
+  m = re.search(r'Usable as: Any Matcher[\s\n]*$', comment, re.S)
+  if m:
+    return ['Matcher<T>']
+  while True:
+    m = re.match(r'^(.*)Matcher<([^>]+)>\s*,?[\s\n]*$', comment, re.S)
+    if not m:
+      if re.search(r'Usable as:\s*$', comment):
+        return result_types
+      else:
+        return None
+    result_types += [m.group(2)]
+    comment = m.group(1)
+
+def add_matcher(result_type, name, args, comment):
+  if 'Matcher<' not in args:
+    narrowing_matchers[result_type + name] = TD_TEMPLATE % {
+      'result': 'Matcher&lt;%s&gt;' % result_type,
+      'name': name,
+      'args': esc(args),
+      'comment': esc(comment),
+    }
+  else:
+    traversal_matchers[result_type + name] = TD_TEMPLATE % {
+      'result': 'Matcher&lt;%s&gt;' % result_type,
+      'name': name,
+      'args': esc(args),
+      'comment': esc(comment),
+    }
+
+def act_on_decl(declaration, comment, allowed_types):
+  if declaration.strip():
+    m = re.match(r'.*VariadicDynCastAllOfMatcher\s*<\s*([^\s,]+)\s*,\s*([^\s>]+)\s*>\s*([^\s;]+)\s*;\s*$', declaration)
+    if m:
+      result, inner, name = m.groups()
+      node_matchers[result + name] = TD_TEMPLATE % {
+        'result': 'Matcher&lt;%s&gt;' % result,
+        'name': name,
+        'args': 'Matcher&lt;%s&gt;...' % inner,
+        'comment': esc(comment),
+      }
+      return
+    m = re.match(r"""^\s*AST_(POLYMORPHIC_)?MATCHER(_P)?(.?)\(
+                       (?:\s*([^\s,]+)\s*,)?
+                          \s*([^\s,]+)\s*
+                       (?:,\s*([^\s,]+)\s*
+                          ,\s*([^\s,]+)\s*)?
+                       (?:,\s*([^\s,]+)\s*
+                          ,\s*([^\s,]+)\s*)?
+                      \)\s*{\s*$""", declaration, flags=re.X)
+    if m:
+      p, n, result, name = m.groups()[1:5]
+      args = m.groups()[5:]
+      if not result:
+        if not allowed_types:
+          raise Exception('Did not find allowed result types for: %s' % name)
+        result_types = allowed_types
+      else:
+        result_types = [result]
+      if n not in ['', '2']:
+        raise Exception('Cannot parse "%s"' % declaration)
+      args = ', '.join('%s %s' % (args[i], args[i+1]) for i in range(0, len(args), 2) if args[i])
+      for result_type in result_types:
+        add_matcher(result_type, name, args, comment)
+      return
+    m = re.match(r"""^\s*(.*)\s+
+                     ([^\s\(]+)\s*\(
+                     (.*)
+                     \)\s*{""", declaration, re.X)
+    if m:
+      result, name, args = m.groups()
+      args = ', '.join(p.strip() for p in args.split(','))
+      m = re.match(r'.*\s+internal::Matcher<([^>]+)>$', result)
+      if m:
+        result_types = [m.group(1)]
+      else:
+        result_types = extract_result_types(comment)
+      if not result_types:
+        if not comment:
+          print 'Ignoring "%s"' % name
+        else:
+          print 'Cannot determine result type for "%s"' % name
+      else:
+        for result_type in result_types:
+          add_matcher(result_type, name, args, comment)
+    else:
+      print '*** Unparsable: "' + declaration + '" ***'
+
+def sort_table(matcher_type, matcher_map):
+  table = ''
+  for key in sorted(matcher_map.keys()):
+    table += matcher_map[key] + '\n'
+  return '<!-- START_%(type)s_MATCHERS -->\n%(table)s<!--END_%(type)s_MATCHERS -->' % {
+    'type': matcher_type,
+    'table': table,
+  }
+
+comment = ''
+declaration = ''
+allowed_types = []
+body = False
+for line in open(MATCHERS_FILE).read().splitlines():
+  if body:
+    if line.strip() and line[0] == '}':
+      if declaration:
+        act_on_decl(declaration, comment, allowed_types)
+        comment = ''
+        declaration = ''
+        allowed_types = []
+      body = False
+    else:
+      m = re.search(r'is_base_of<([^,]+), NodeType>', line)
+      if m and m.group(1):
+        allowed_types += [m.group(1)]
+    continue
+  if line.strip() and line.lstrip()[0] == '/':
+    comment += re.sub(r'/+\s?', '', line) + '\n'
+  else:
+    declaration += ' ' + line
+    if ((not line.strip()) or 
+        line.rstrip()[-1] == ';' or
+        line.rstrip()[-1] == '{'):
+      if line.strip() and line.rstrip()[-1] == '{':
+        body = True
+      else:
+        act_on_decl(declaration, comment, allowed_types)
+        comment = ''
+        declaration = ''
+        allowed_types = []
+
+node_matcher_table = sort_table('DECL', node_matchers)
+narrowing_matcher_table = sort_table('NARROWING', narrowing_matchers)
+traversal_matcher_table = sort_table('TRAVERSAL', traversal_matchers)
+
+reference = open('../LibASTMatchersReference.html').read()
+reference = re.sub(r'<!-- START_DECL_MATCHERS.*END_DECL_MATCHERS -->', '%s', reference, flags=re.S) % node_matcher_table
+reference = re.sub(r'<!-- START_NARROWING_MATCHERS.*END_NARROWING_MATCHERS -->', '%s', reference, flags=re.S) % narrowing_matcher_table
+reference = re.sub(r'<!-- START_TRAVERSAL_MATCHERS.*END_TRAVERSAL_MATCHERS -->', '%s', reference, flags=re.S) % traversal_matcher_table
+
+with open('../LibASTMatchersReference.html', 'w') as output:
+  output.write(reference)
+

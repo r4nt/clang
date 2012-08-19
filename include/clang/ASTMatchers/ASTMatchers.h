@@ -127,6 +127,8 @@ typedef internal::Matcher<Stmt> StatementMatcher;
 /// "int* p" and "void f()" in
 ///   int* p;
 ///   void f();
+///
+/// Usable as: Any Matcher
 inline internal::PolymorphicMatcherWithParam0<internal::TrueMatcher> anything() {
   return internal::PolymorphicMatcherWithParam0<internal::TrueMatcher>();
 }
@@ -801,6 +803,10 @@ const internal::VariadicDynCastAllOfMatcher<
 
 /// \brief Various overloads for the anyOf matcher.
 /// @{
+
+/// \brief Matches if any of the given matchers matches.
+///
+/// Usable as: Any Matcher
 template<typename C1, typename C2>
 internal::PolymorphicMatcherWithParam2<internal::AnyOfMatcher, C1, C2>
 anyOf(const C1 &P1, const C2 &P2) {
@@ -830,10 +836,15 @@ internal::PolymorphicMatcherWithParam2<internal::AnyOfMatcher, C1,
 anyOf(const C1& P1, const C2& P2, const C3& P3, const C4& P4, const C5& P5) {
   return anyOf(P1, anyOf(P2, anyOf(P3, anyOf(P4, P5))));
 }
+
 /// @}
 
 /// \brief Various overloads for the allOf matcher.
 /// @{
+
+/// \brief Matches if all given matchers match.
+///
+/// Usable as: Any Matcher
 template<typename C1, typename C2>
 internal::PolymorphicMatcherWithParam2<internal::AllOfMatcher, C1, C2>
 allOf(const C1 &P1, const C2 &P2) {
@@ -846,6 +857,7 @@ internal::PolymorphicMatcherWithParam2<internal::AllOfMatcher, C1,
 allOf(const C1& P1, const C2& P2, const C3& P3) {
   return allOf(P1, allOf(P2, P3));
 }
+
 /// @}
 
 /// \brief Matches sizeof (C99), alignof (C++11) and vec_step (OpenCL)
@@ -1070,6 +1082,8 @@ forEachDescendant(
 /// Example matches Y (matcher = record(unless(hasName("X"))))
 ///   class X {};
 ///   class Y {};
+///
+/// Usable as: Any Matcher
 template <typename M>
 internal::PolymorphicMatcherWithParam1<internal::NotMatcher, M> unless(const M &InnerMatcher) {
   return internal::PolymorphicMatcherWithParam1<
@@ -1964,6 +1978,8 @@ isTemplateInstantiation() {
 ///   template<> void A(int N) { }
 /// function(isExplicitSpecialization())
 ///   matches the specialization A<int>().
+///
+/// Usable as: Matcher<FunctionDecl>, Matcher<VarDecl>, Matcher<CXXRecordDecl>
 inline internal::PolymorphicMatcherWithParam0<
   internal::IsExplicitTemplateSpecializationMatcher>
 isExplicitTemplateSpecialization() {
