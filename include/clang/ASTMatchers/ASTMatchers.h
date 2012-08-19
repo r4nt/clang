@@ -743,7 +743,7 @@ const internal::VariadicDynCastAllOfMatcher<
 ///
 /// Example: Matches const_cast<int*>(&r) in
 ///   int n = 42;
-///   const int& r(n);
+///   const int &r(n);
 ///   int* p = const_cast<int*>(&r);
 const internal::VariadicDynCastAllOfMatcher<
   Expr,
@@ -833,7 +833,7 @@ internal::PolymorphicMatcherWithParam2<internal::AnyOfMatcher, M1,
         internal::PolymorphicMatcherWithParam2<internal::AnyOfMatcher, M3,
             internal::PolymorphicMatcherWithParam2<internal::AnyOfMatcher,
                                                    M4, M5> > > >
-anyOf(const M1& P1, const M2& P2, const M3& P3, const M4& P4, const M5& P5) {
+anyOf(const M1 &P1, const M2 &P2, const M3 &P3, const M4 &P4, const M5 &P5) {
   return anyOf(P1, anyOf(P2, anyOf(P3, anyOf(P4, P5))));
 }
 
@@ -854,7 +854,7 @@ allOf(const M1 &P1, const M2 &P2) {
 template<typename M1, typename M2, typename M3>
 internal::PolymorphicMatcherWithParam2<internal::AllOfMatcher, M1,
     internal::PolymorphicMatcherWithParam2<internal::AllOfMatcher, M2, M3> >
-allOf(const M1& P1, const M2& P2, const M3& P3) {
+allOf(const M1 &P1, const M2 &P2, const M3 &P3) {
   return allOf(P1, allOf(P2, P3));
 }
 
@@ -1050,7 +1050,7 @@ hasDescendant(const internal::Matcher<DescendantT> &DescendantMatcher) {
 /// Usable as: Any Matcher
 template <typename ChildT>
 internal::ArgumentAdaptingMatcher<internal::ForEachMatcher, ChildT> forEach(
-    const internal::Matcher<ChildT>& ChildMatcher) {
+    const internal::Matcher<ChildT> &ChildMatcher) {
   return internal::ArgumentAdaptingMatcher<
     internal::ForEachMatcher,
     ChildT>(ChildMatcher);
@@ -1079,7 +1079,7 @@ internal::ArgumentAdaptingMatcher<internal::ForEachMatcher, ChildT> forEach(
 template <typename DescendantT>
 internal::ArgumentAdaptingMatcher<internal::ForEachDescendantMatcher, DescendantT>
 forEachDescendant(
-    const internal::Matcher<DescendantT>& DescendantMatcher) {
+    const internal::Matcher<DescendantT> &DescendantMatcher) {
   return internal::ArgumentAdaptingMatcher<
     internal::ForEachDescendantMatcher,
     DescendantT>(DescendantMatcher);
