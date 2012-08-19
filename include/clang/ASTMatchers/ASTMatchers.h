@@ -1004,6 +1004,8 @@ inline internal::Matcher<CXXRecordDecl> isDerivedFrom(StringRef BaseName) {
 ///   class Z { class Y { class X {}; }; };  // Does not match Z.
 ///
 /// ChildT must be an AST base type.
+///
+/// Usable as: Any Matcher
 template <typename ChildT>
 internal::ArgumentAdaptingMatcher<internal::HasMatcher, ChildT> has(
     const internal::Matcher<ChildT> &ChildMatcher) {
@@ -1021,6 +1023,8 @@ internal::ArgumentAdaptingMatcher<internal::HasMatcher, ChildT> has(
 ///   class Z { class Y { class X {}; }; };
 ///
 /// DescendantT must be an AST base type.
+///
+/// Usable as: Any Matcher
 template <typename DescendantT>
 internal::ArgumentAdaptingMatcher<internal::HasDescendantMatcher, DescendantT>
 hasDescendant(const internal::Matcher<DescendantT> &DescendantMatcher) {
@@ -1042,6 +1046,8 @@ hasDescendant(const internal::Matcher<DescendantT> &DescendantMatcher) {
 ///
 /// As opposed to 'has', 'forEach' will cause a match for each result that
 /// matches instead of only on the first one.
+///
+/// Usable as: Any Matcher
 template <typename ChildT>
 internal::ArgumentAdaptingMatcher<internal::ForEachMatcher, ChildT> forEach(
     const internal::Matcher<ChildT>& ChildMatcher) {
@@ -1068,6 +1074,8 @@ internal::ArgumentAdaptingMatcher<internal::ForEachMatcher, ChildT> forEach(
 ///   record(forEachDescendant(record(forEachDescendant(record()))))
 /// will match 10 times (plus injected class name matches) on:
 ///   class A { class B { class C { class D { class E {}; }; }; }; };
+///
+/// Usable as: Any Matcher
 template <typename DescendantT>
 internal::ArgumentAdaptingMatcher<internal::ForEachDescendantMatcher, DescendantT>
 forEachDescendant(
