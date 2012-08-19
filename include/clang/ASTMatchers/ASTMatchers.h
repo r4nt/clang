@@ -187,7 +187,7 @@ const internal::VariadicDynCastAllOfMatcher<
   ClassTemplateSpecializationDecl> classTemplateSpecialization;
 
 /// \brief Matches classTemplateSpecializations that have at least one
-/// TemplateArgument matching the given Matcher.
+/// TemplateArgument matching the given InnerMatcher.
 ///
 /// Given
 ///   template<typename T> class A {};
@@ -197,10 +197,10 @@ const internal::VariadicDynCastAllOfMatcher<
 ///     refersToType(asString("int"))))
 ///   matches the specialization \c A<int>
 AST_MATCHER_P(ClassTemplateSpecializationDecl, hasAnyTemplateArgument,
-              internal::Matcher<TemplateArgument>, Matcher) {
+              internal::Matcher<TemplateArgument>, InnerMatcher) {
   const TemplateArgumentList &List = Node.getTemplateArgs();
   for (unsigned i = 0; i < List.size(); ++i) {
-    if (Matcher.matches(List.get(i), Finder, Builder))
+    if (InnerMatcher.matches(List.get(i), Finder, Builder))
       return true;
   }
   return false;
@@ -276,7 +276,7 @@ AST_MATCHER_P(Expr, ignoringParenImpCasts,
 }
 
 /// \brief Matches classTemplateSpecializations where the n'th TemplateArgument
-/// matches the given Matcher.
+/// matches the given InnerMatcher.
 ///
 /// Given
 ///   template<typename T, typename U> class A {};
@@ -286,11 +286,11 @@ AST_MATCHER_P(Expr, ignoringParenImpCasts,
 ///     1, refersToType(asString("int"))))
 ///   matches the specialization \c A<bool, int>
 AST_MATCHER_P2(ClassTemplateSpecializationDecl, hasTemplateArgument,
-               unsigned, N, internal::Matcher<TemplateArgument>, Matcher) {
+               unsigned, N, internal::Matcher<TemplateArgument>, InnerMatcher) {
   const TemplateArgumentList &List = Node.getTemplateArgs();
   if (List.size() <= N)
     return false;
-  return Matcher.matches(List.get(N), Finder, Builder);
+  return InnerMatcher.matches(List.get(N), Finder, Builder);
 }
 
 /// \brief Matches a TemplateArgument that refers to a certain type.
@@ -303,10 +303,10 @@ AST_MATCHER_P2(ClassTemplateSpecializationDecl, hasTemplateArgument,
 ///     refersToType(class(hasName("X")))))
 ///   matches the specialization \c A<X>
 AST_MATCHER_P(TemplateArgument, refersToType,
-              internal::Matcher<QualType>, Matcher) {
+              internal::Matcher<QualType>, InnerMatcher) {
   if (Node.getKind() != TemplateArgument::Type)
     return false;
-  return Matcher.matches(Node.getAsType(), Finder, Builder);
+  return InnerMatcher.matches(Node.getAsType(), Finder, Builder);
 }
 
 /// \brief Matches a TemplateArgument that refers to a certain declaration.
@@ -320,9 +320,9 @@ AST_MATCHER_P(TemplateArgument, refersToType,
 ///   matches the specialization \c A<&B::next> with \c field(...) matching
 ///     \c B::next
 AST_MATCHER_P(TemplateArgument, refersToDeclaration,
-              internal::Matcher<Decl>, Matcher) {
+              internal::Matcher<Decl>, InnerMatcher) {
   if (const Decl *Declaration = Node.getAsDecl())
-    return Matcher.matches(*Declaration, Finder, Builder);
+    return InnerMatcher.matches(*Declaration, Finder, Builder);
   return false;
 }
 
@@ -878,9 +878,9 @@ const internal::VariadicDynCastAllOfMatcher<
 /// unaryExprOrTypeTraitExpr(hasArgumentOfType(asString("int"))
 ///   matches \c sizeof(a) and \c alignof(c)
 AST_MATCHER_P(UnaryExprOrTypeTraitExpr, hasArgumentOfType,
-              internal::Matcher<QualType>, Matcher) {
+              internal::Matcher<QualType>, InnerMatcher) {
   const QualType ArgumentType = Node.getTypeOfArgument();
-  return Matcher.matches(ArgumentType, Finder, Builder);
+  return InnerMatcher.matches(ArgumentType, Finder, Builder);
 }
 
 /// \brief Matches unary expressions of a certain kind.
@@ -897,17 +897,17 @@ AST_MATCHER_P(UnaryExprOrTypeTraitExpr, ofKind, UnaryExprOrTypeTrait, Kind) {
 /// \brief Same as unaryExprOrTypeTraitExpr, but only matching
 /// alignof.
 inline internal::Matcher<Stmt> alignOfExpr(
-    const internal::Matcher<UnaryExprOrTypeTraitExpr> &Matcher) {
+    const internal::Matcher<UnaryExprOrTypeTraitExpr> &InnerMatcher) {
   return internal::Matcher<Stmt>(unaryExprOrTypeTraitExpr(allOf(
-      ofKind(UETT_AlignOf), Matcher)));
+      ofKind(UETT_AlignOf), InnerMatcher)));
 }
 
 /// \brief Same as unaryExprOrTypeTraitExpr, but only matching
 /// sizeof.
 inline internal::Matcher<Stmt> sizeOfExpr(
-    const internal::Matcher<UnaryExprOrTypeTraitExpr> &Matcher) {
+    const internal::Matcher<UnaryExprOrTypeTraitExpr> &InnerMatcher) {
   return internal::Matcher<Stmt>(unaryExprOrTypeTraitExpr(allOf(
-      ofKind(UETT_SizeOf), Matcher)));
+      ofKind(UETT_SizeOf), InnerMatcher)));
 }
 
 /// \brief Matches NamedDecl nodes that have the specified name.
@@ -1306,11 +1306,11 @@ AST_MATCHER_P(DeclRefExpr, to, internal::Matcher<Decl>,
 /// declarationReference(throughUsingDeclaration(anything()))
 ///   matches \c f()
 AST_MATCHER_P(DeclRefExpr, throughUsingDecl,
-              internal::Matcher<UsingShadowDecl>, Matcher) {
+              internal::Matcher<UsingShadowDecl>, InnerMatcher) {
   const NamedDecl *FoundDecl = Node.getFoundDecl();
   if (const UsingShadowDecl *UsingDecl =
       llvm::dyn_cast<UsingShadowDecl>(FoundDecl))
-    return Matcher.matches(*UsingDecl, Finder, Builder);
+    return InnerMatcher.matches(*UsingDecl, Finder, Builder);
   return false;
 }
 
@@ -1555,8 +1555,9 @@ AST_MATCHER_P(FunctionDecl, hasAnyParameter,
 ///   class X { int f() { return 1; } };
 /// method(returns(asString("int")))
 ///   matches int f() { return 1; }
-AST_MATCHER_P(FunctionDecl, returns, internal::Matcher<QualType>, Matcher) {
-  return Matcher.matches(Node.getResultType(), Finder, Builder);
+AST_MATCHER_P(FunctionDecl, returns,
+              internal::Matcher<QualType>, InnerMatcher) {
+  return InnerMatcher.matches(Node.getResultType(), Finder, Builder);
 }
 
 /// \brief Matches extern "C" function declarations.
@@ -1612,9 +1613,9 @@ AST_MATCHER_P(IfStmt, hasConditionVariableStatement,
 /// arraySubscriptExpression(hasIndex(integerLiteral()))
 ///   matches \c i[1] with the \c integerLiteral() matching \c 1
 AST_MATCHER_P(ArraySubscriptExpr, hasIndex,
-              internal::Matcher<Expr>, matcher) {
+              internal::Matcher<Expr>, InnerMatcher) {
   if (const Expr* Expression = Node.getIdx())
-    return matcher.matches(*Expression, Finder, Builder);
+    return InnerMatcher.matches(*Expression, Finder, Builder);
   return false;
 }
 
@@ -1627,9 +1628,9 @@ AST_MATCHER_P(ArraySubscriptExpr, hasIndex,
 ///     hasSourceExpression(declarationReference()))))
 ///   matches \c i[1] with the \c declarationReference() matching \c i
 AST_MATCHER_P(ArraySubscriptExpr, hasBase,
-              internal::Matcher<Expr>, matcher) {
+              internal::Matcher<Expr>, InnerMatcher) {
   if (const Expr* Expression = Node.getBase())
-    return matcher.matches(*Expression, Finder, Builder);
+    return InnerMatcher.matches(*Expression, Finder, Builder);
   return false;
 }
 
@@ -1931,10 +1932,10 @@ AST_MATCHER_P(MemberExpr, hasObjectExpression,
 /// usingDecl(hasAnyUsingShadowDecl(hasName("b"))))
 ///   matches \code using X::b \endcode
 AST_MATCHER_P(UsingDecl, hasAnyUsingShadowDecl,
-              internal::Matcher<UsingShadowDecl>, Matcher) {
+              internal::Matcher<UsingShadowDecl>, InnerMatcher) {
   for (UsingDecl::shadow_iterator II = Node.shadow_begin();
        II != Node.shadow_end(); ++II) {
-    if (Matcher.matches(**II, Finder, Builder))
+    if (InnerMatcher.matches(**II, Finder, Builder))
       return true;
   }
   return false;
@@ -1951,8 +1952,8 @@ AST_MATCHER_P(UsingDecl, hasAnyUsingShadowDecl,
 ///   matches \code using X::b \endcode
 ///   but not \code using X::a \endcode
 AST_MATCHER_P(UsingShadowDecl, hasTargetDecl,
-              internal::Matcher<NamedDecl>, Matcher) {
-  return Matcher.matches(*Node.getTargetDecl(), Finder, Builder);
+              internal::Matcher<NamedDecl>, InnerMatcher) {
+  return InnerMatcher.matches(*Node.getTargetDecl(), Finder, Builder);
 }
 
 /// \brief Matches template instantiations of function, class, or static

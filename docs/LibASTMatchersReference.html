@@ -1144,7 +1144,7 @@ Usable as: Any Matcher
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ArraySubscriptExpr&gt;</td><td class="name" onclick="toggle(this)">hasBase</td><td>Matcher&lt;Expr> matcher</td></tr>
+<tr><td>Matcher&lt;ArraySubscriptExpr&gt;</td><td class="name" onclick="toggle(this)">hasBase</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
 <tr><td colspan="4" class="doc" id="hasBase"><pre>\brief Matches the base expression of an array subscript expression.
 
 Given
@@ -1156,7 +1156,7 @@ arraySubscriptExpression(hasBase(implicitCast(
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ArraySubscriptExpr&gt;</td><td class="name" onclick="toggle(this)">hasIndex</td><td>Matcher&lt;Expr> matcher</td></tr>
+<tr><td>Matcher&lt;ArraySubscriptExpr&gt;</td><td class="name" onclick="toggle(this)">hasIndex</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
 <tr><td colspan="4" class="doc" id="hasIndex"><pre>\brief Matches the index expression of an array subscript expression.
 
 Given
@@ -1352,9 +1352,9 @@ URL url = "a string";
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ClassTemplateSpecializationDecl&gt;</td><td class="name" onclick="toggle(this)">hasAnyTemplateArgument</td><td>Matcher&lt;TemplateArgument> Matcher</td></tr>
+<tr><td>Matcher&lt;ClassTemplateSpecializationDecl&gt;</td><td class="name" onclick="toggle(this)">hasAnyTemplateArgument</td><td>Matcher&lt;TemplateArgument> InnerMatcher</td></tr>
 <tr><td colspan="4" class="doc" id="hasAnyTemplateArgument"><pre>\brief Matches classTemplateSpecializations that have at least one
-TemplateArgument matching the given Matcher.
+TemplateArgument matching the given InnerMatcher.
 
 Given
   template&lt;typename T> class A {};
@@ -1366,9 +1366,9 @@ classTemplateSpecialization(hasAnyTemplateArgument(
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ClassTemplateSpecializationDecl&gt;</td><td class="name" onclick="toggle(this)">hasTemplateArgument</td><td>unsigned N, Matcher&lt;TemplateArgument> Matcher</td></tr>
+<tr><td>Matcher&lt;ClassTemplateSpecializationDecl&gt;</td><td class="name" onclick="toggle(this)">hasTemplateArgument</td><td>unsigned N, Matcher&lt;TemplateArgument> InnerMatcher</td></tr>
 <tr><td colspan="4" class="doc" id="hasTemplateArgument"><pre>\brief Matches classTemplateSpecializations where the n'th TemplateArgument
-matches the given Matcher.
+matches the given InnerMatcher.
 
 Given
   template&lt;typename T, typename U> class A {};
@@ -1418,7 +1418,7 @@ Example matches a
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;DeclRefExpr&gt;</td><td class="name" onclick="toggle(this)">throughUsingDecl</td><td>Matcher&lt;UsingShadowDecl> Matcher</td></tr>
+<tr><td>Matcher&lt;DeclRefExpr&gt;</td><td class="name" onclick="toggle(this)">throughUsingDecl</td><td>Matcher&lt;UsingShadowDecl> InnerMatcher</td></tr>
 <tr><td colspan="4" class="doc" id="throughUsingDecl"><pre>\brief Matches a \c DeclRefExpr that refers to a declaration through a
 specific using shadow declaration.
 
@@ -1661,7 +1661,7 @@ with hasParameter(...)
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;FunctionDecl&gt;</td><td class="name" onclick="toggle(this)">returns</td><td>Matcher&lt;QualType> Matcher</td></tr>
+<tr><td>Matcher&lt;FunctionDecl&gt;</td><td class="name" onclick="toggle(this)">returns</td><td>Matcher&lt;QualType> InnerMatcher</td></tr>
 <tr><td colspan="4" class="doc" id="returns"><pre>\brief Matches the return type of a function declaration.
 
 Given:
@@ -1744,19 +1744,19 @@ Usable as: Matcher&lt;QualType>, Matcher&lt;CallExpr>, Matcher&lt;CXXConstructEx
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">alignOfExpr</td><td>Matcher&lt;UnaryExprOrTypeTraitExpr>  Matcher</td></tr>
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">alignOfExpr</td><td>Matcher&lt;UnaryExprOrTypeTraitExpr>  InnerMatcher</td></tr>
 <tr><td colspan="4" class="doc" id="alignOfExpr"><pre>\brief Same as unaryExprOrTypeTraitExpr, but only matching
 alignof.
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">sizeOfExpr</td><td>Matcher&lt;UnaryExprOrTypeTraitExpr>  Matcher</td></tr>
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">sizeOfExpr</td><td>Matcher&lt;UnaryExprOrTypeTraitExpr>  InnerMatcher</td></tr>
 <tr><td colspan="4" class="doc" id="sizeOfExpr"><pre>\brief Same as unaryExprOrTypeTraitExpr, but only matching
 sizeof.
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;TemplateArgument&gt;</td><td class="name" onclick="toggle(this)">refersToDeclaration</td><td>Matcher&lt;Decl> Matcher</td></tr>
+<tr><td>Matcher&lt;TemplateArgument&gt;</td><td class="name" onclick="toggle(this)">refersToDeclaration</td><td>Matcher&lt;Decl> InnerMatcher</td></tr>
 <tr><td colspan="4" class="doc" id="refersToDeclaration"><pre>\brief Matches a TemplateArgument that refers to a certain declaration.
 
 Given
@@ -1770,7 +1770,7 @@ classTemplateSpecialization(hasAnyTemplateArgument(
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;TemplateArgument&gt;</td><td class="name" onclick="toggle(this)">refersToType</td><td>Matcher&lt;QualType> Matcher</td></tr>
+<tr><td>Matcher&lt;TemplateArgument&gt;</td><td class="name" onclick="toggle(this)">refersToType</td><td>Matcher&lt;QualType> InnerMatcher</td></tr>
 <tr><td colspan="4" class="doc" id="refersToType"><pre>\brief Matches a TemplateArgument that refers to a certain type.
 
 Given
@@ -1790,7 +1790,7 @@ FIXME: Add example for accessing it.
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;UnaryExprOrTypeTraitExpr&gt;</td><td class="name" onclick="toggle(this)">hasArgumentOfType</td><td>Matcher&lt;QualType> Matcher</td></tr>
+<tr><td>Matcher&lt;UnaryExprOrTypeTraitExpr&gt;</td><td class="name" onclick="toggle(this)">hasArgumentOfType</td><td>Matcher&lt;QualType> InnerMatcher</td></tr>
 <tr><td colspan="4" class="doc" id="hasArgumentOfType"><pre>\brief Matches unary expressions that have a specific type of argument.
 
 Given
@@ -1808,7 +1808,7 @@ Example matches true (matcher = hasOperand(boolLiteral(equals(true))))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;UsingDecl&gt;</td><td class="name" onclick="toggle(this)">hasAnyUsingShadowDecl</td><td>Matcher&lt;UsingShadowDecl> Matcher</td></tr>
+<tr><td>Matcher&lt;UsingDecl&gt;</td><td class="name" onclick="toggle(this)">hasAnyUsingShadowDecl</td><td>Matcher&lt;UsingShadowDecl> InnerMatcher</td></tr>
 <tr><td colspan="4" class="doc" id="hasAnyUsingShadowDecl"><pre>\brief Matches any using shadow declaration.
 
 Given
@@ -1819,7 +1819,7 @@ usingDecl(hasAnyUsingShadowDecl(hasName("b"))))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;UsingShadowDecl&gt;</td><td class="name" onclick="toggle(this)">hasTargetDecl</td><td>Matcher&lt;NamedDecl> Matcher</td></tr>
+<tr><td>Matcher&lt;UsingShadowDecl&gt;</td><td class="name" onclick="toggle(this)">hasTargetDecl</td><td>Matcher&lt;NamedDecl> InnerMatcher</td></tr>
 <tr><td colspan="4" class="doc" id="hasTargetDecl"><pre>\brief Matches a using shadow declaration where the target declaration is
 matched by the given matcher.
 
