@@ -57,7 +57,7 @@ find all matchers that can be used to match on Stmt nodes.</p>
 are marked with a * and are listed in the beginning of each category.</p>
 
 <!-- ======================================================================= -->
-<h2 id="decl-matchers">Node Matcher</h2>
+<h2 id="decl-matchers">Node Matchers</h2>
 <!-- ======================================================================= -->
 
 <p>Node matchers are at the core of matcher expressions - they specify the type
@@ -1800,13 +1800,6 @@ Given
 classTemplateSpecialization(hasAnyTemplateArgument(
     refersToType(class(hasName("X")))))
   matches the specialization \c A&lt;X>
-</pre></td></tr>
-
-
-<tr><td>Matcher&lt;T&gt;</td><td class="name" onclick="toggle('id0')">id</td><td>std::string  ID, BindableMatcher&lt;T>  InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="id0"><pre>\brief If the provided matcher matches a node, binds the node to 'ID'.
-
-FIXME: Add example for accessing it.
 </pre></td></tr>
 
 

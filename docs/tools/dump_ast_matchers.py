@@ -68,6 +68,9 @@ def unify_arguments(args):
 
 def add_matcher(result_type, name, args, comment, is_dyncast=False):
   """Adds a matcher to one of our categories."""
+  if name == 'id':
+     # FIXME: Figure out whether we want to support the 'id' matcher.
+     return
   matcher_id = '%s%d' % (name, ids[name])
   ids[name] += 1
   args = unify_arguments(args)
