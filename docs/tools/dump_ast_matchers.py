@@ -21,7 +21,7 @@ def extract_result_types(comment):
   result_types = []
   m = re.search(r'Usable as: Any Matcher[\s\n]*$', comment, re.S)
   if m:
-    return ['Matcher<T>']
+    return ['*']
   while True:
     m = re.match(r'^(.*)Matcher<([^>]+)>\s*,?[\s\n]*$', comment, re.S)
     if not m:

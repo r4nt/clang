@@ -618,6 +618,47 @@ whileStmt()
 <tr style="text-align:left"><th>Return type</th><th>Name</th><th>Parameters</th></tr>
 <!-- START_NARROWING_MATCHERS -->
 
+<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle(this)">allOf</td><td>const C1 &amp;P1, const C2 &amp;P2</td></tr>
+<tr><td colspan="4" class="doc" id="allOf"><pre>\brief Matches if all given matchers match.
+
+Usable as: Any Matcher
+</pre></td></tr>
+
+
+<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle(this)">anyOf</td><td>const C1 &amp;P1, const C2 &amp;P2</td></tr>
+<tr><td colspan="4" class="doc" id="anyOf"><pre>\brief Matches if any of the given matchers matches.
+
+Usable as: Any Matcher
+</pre></td></tr>
+
+
+<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle(this)">anything</td><td></td></tr>
+<tr><td colspan="4" class="doc" id="anything"><pre>\brief Matches any node.
+
+Useful when another matcher requires a child matcher, but there's no
+additional constraint. This will often be used with an explicit conversion
+to a internal::Matcher&lt;> type such as TypeMatcher.
+
+Example: DeclarationMatcher(anything()) matches all declarations, e.g.,
+"int* p" and "void f()" in
+  int* p;
+  void f();
+
+Usable as: Any Matcher
+</pre></td></tr>
+
+
+<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle(this)">unless</td><td>const M &amp;InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="unless"><pre>\brief Matches if the provided matcher does not match.
+
+Example matches Y (matcher = record(unless(hasName("X"))))
+  class X {};
+  class Y {};
+
+Usable as: Any Matcher
+</pre></td></tr>
+
+
 <tr><td>Matcher&lt;BinaryOperator&gt;</td><td class="name" onclick="toggle(this)">hasOperatorName</td><td>std::string Name</td></tr>
 <tr><td colspan="4" class="doc" id="hasOperatorName"><pre>\brief Matches the operator Name of operator expressions (binary or
 unary).
@@ -843,47 +884,6 @@ Usable as: Matcher&lt;CharacterLiteral>, Matcher&lt;CXXBoolLiteral>,
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Matcher<T>&gt;</td><td class="name" onclick="toggle(this)">allOf</td><td>const C1 &amp;P1, const C2 &amp;P2</td></tr>
-<tr><td colspan="4" class="doc" id="allOf"><pre>\brief Matches if all given matchers match.
-
-Usable as: Any Matcher
-</pre></td></tr>
-
-
-<tr><td>Matcher&lt;Matcher<T>&gt;</td><td class="name" onclick="toggle(this)">anyOf</td><td>const C1 &amp;P1, const C2 &amp;P2</td></tr>
-<tr><td colspan="4" class="doc" id="anyOf"><pre>\brief Matches if any of the given matchers matches.
-
-Usable as: Any Matcher
-</pre></td></tr>
-
-
-<tr><td>Matcher&lt;Matcher<T>&gt;</td><td class="name" onclick="toggle(this)">anything</td><td></td></tr>
-<tr><td colspan="4" class="doc" id="anything"><pre>\brief Matches any node.
-
-Useful when another matcher requires a child matcher, but there's no
-additional constraint. This will often be used with an explicit conversion
-to a internal::Matcher&lt;> type such as TypeMatcher.
-
-Example: DeclarationMatcher(anything()) matches all declarations, e.g.,
-"int* p" and "void f()" in
-  int* p;
-  void f();
-
-Usable as: Any Matcher
-</pre></td></tr>
-
-
-<tr><td>Matcher&lt;Matcher<T>&gt;</td><td class="name" onclick="toggle(this)">unless</td><td>const M &amp;InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="unless"><pre>\brief Matches if the provided matcher does not match.
-
-Example matches Y (matcher = record(unless(hasName("X"))))
-  class X {};
-  class Y {};
-
-Usable as: Any Matcher
-</pre></td></tr>
-
-
 <tr><td>Matcher&lt;MemberExpr&gt;</td><td class="name" onclick="toggle(this)">isArrow</td><td></td></tr>
 <tr><td colspan="4" class="doc" id="isArrow"><pre>\brief Matches member expressions that are called with '->' as opposed
 to '.'.
@@ -1066,6 +1066,79 @@ Usable as: Matcher&lt;FunctionDecl>, Matcher&lt;VarDecl>, Matcher&lt;CXXRecordDe
 <table>
 <tr style="text-align:left"><th>Return type</th><th>Name</th><th>Parameters</th></tr>
 <!-- START_TRAVERSAL_MATCHERS -->
+
+<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle(this)">forEach</td><td>const internal::Matcher&lt;ChildT>&amp; ChildMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="forEach"><pre>\brief Matches AST nodes that have child AST nodes that match the
+provided matcher.
+
+Example matches X, Y (matcher = record(forEach(record(hasName("X")))
+  class X {};  Matches X, because X::X is a class of name X inside X.
+  class Y { class X {}; };
+  class Z { class Y { class X {}; }; };  Does not match Z.
+
+ChildT must be an AST base type.
+
+As opposed to 'has', 'forEach' will cause a match for each result that
+matches instead of only on the first one.
+
+Usable as: Any Matcher
+</pre></td></tr>
+
+
+<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle(this)">forEachDescendant</td><td>const internal::Matcher&lt;DescendantT>&amp; DescendantMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="forEachDescendant"><pre>\brief Matches AST nodes that have descendant AST nodes that match the
+provided matcher.
+
+Example matches X, A, B, C
+    (matcher = record(forEachDescendant(record(hasName("X")))))
+  class X {};  Matches X, because X::X is a class of name X inside X.
+  class A { class X {}; };
+  class B { class C { class X {}; }; };
+
+DescendantT must be an AST base type.
+
+As opposed to 'hasDescendant', 'forEachDescendant' will cause a match for
+each result that matches instead of only on the first one.
+
+Note: Recursively combined ForEachDescendant can cause many matches:
+  record(forEachDescendant(record(forEachDescendant(record()))))
+will match 10 times (plus injected class name matches) on:
+  class A { class B { class C { class D { class E {}; }; }; }; };
+
+Usable as: Any Matcher
+</pre></td></tr>
+
+
+<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle(this)">has</td><td>const internal::Matcher&lt;ChildT> &amp;ChildMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="has"><pre>\brief Matches AST nodes that have child AST nodes that match the
+provided matcher.
+
+Example matches X, Y (matcher = record(has(record(hasName("X")))
+  class X {};  Matches X, because X::X is a class of name X inside X.
+  class Y { class X {}; };
+  class Z { class Y { class X {}; }; };  Does not match Z.
+
+ChildT must be an AST base type.
+
+Usable as: Any Matcher
+</pre></td></tr>
+
+
+<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle(this)">hasDescendant</td><td>const internal::Matcher&lt;DescendantT> &amp;DescendantMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasDescendant"><pre>\brief Matches AST nodes that have descendant AST nodes that match the
+provided matcher.
+
+Example matches X, Y, Z
+    (matcher = record(hasDescendant(record(hasName("X")))))
+  class X {};  Matches X, because X::X is a class of name X inside X.
+  class Y { class X {}; };
+  class Z { class Y { class X {}; }; };
+
+DescendantT must be an AST base type.
+
+Usable as: Any Matcher
+</pre></td></tr>
+
 
 <tr><td>Matcher&lt;ArraySubscriptExpr&gt;</td><td class="name" onclick="toggle(this)">hasBase</td><td>internal::Matcher&lt;Expr> matcher</td></tr>
 <tr><td colspan="4" class="doc" id="hasBase"><pre>\brief Matches the base expression of an array subscript expression.
@@ -1618,79 +1691,6 @@ hasConditionVariableStatment(...)
 matcher.
 
 FIXME: Unit test this matcher
-</pre></td></tr>
-
-
-<tr><td>Matcher&lt;Matcher<T>&gt;</td><td class="name" onclick="toggle(this)">forEach</td><td>const internal::Matcher&lt;ChildT>&amp; ChildMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="forEach"><pre>\brief Matches AST nodes that have child AST nodes that match the
-provided matcher.
-
-Example matches X, Y (matcher = record(forEach(record(hasName("X")))
-  class X {};  Matches X, because X::X is a class of name X inside X.
-  class Y { class X {}; };
-  class Z { class Y { class X {}; }; };  Does not match Z.
-
-ChildT must be an AST base type.
-
-As opposed to 'has', 'forEach' will cause a match for each result that
-matches instead of only on the first one.
-
-Usable as: Any Matcher
-</pre></td></tr>
-
-
-<tr><td>Matcher&lt;Matcher<T>&gt;</td><td class="name" onclick="toggle(this)">forEachDescendant</td><td>const internal::Matcher&lt;DescendantT>&amp; DescendantMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="forEachDescendant"><pre>\brief Matches AST nodes that have descendant AST nodes that match the
-provided matcher.
-
-Example matches X, A, B, C
-    (matcher = record(forEachDescendant(record(hasName("X")))))
-  class X {};  Matches X, because X::X is a class of name X inside X.
-  class A { class X {}; };
-  class B { class C { class X {}; }; };
-
-DescendantT must be an AST base type.
-
-As opposed to 'hasDescendant', 'forEachDescendant' will cause a match for
-each result that matches instead of only on the first one.
-
-Note: Recursively combined ForEachDescendant can cause many matches:
-  record(forEachDescendant(record(forEachDescendant(record()))))
-will match 10 times (plus injected class name matches) on:
-  class A { class B { class C { class D { class E {}; }; }; }; };
-
-Usable as: Any Matcher
-</pre></td></tr>
-
-
-<tr><td>Matcher&lt;Matcher<T>&gt;</td><td class="name" onclick="toggle(this)">has</td><td>const internal::Matcher&lt;ChildT> &amp;ChildMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="has"><pre>\brief Matches AST nodes that have child AST nodes that match the
-provided matcher.
-
-Example matches X, Y (matcher = record(has(record(hasName("X")))
-  class X {};  Matches X, because X::X is a class of name X inside X.
-  class Y { class X {}; };
-  class Z { class Y { class X {}; }; };  Does not match Z.
-
-ChildT must be an AST base type.
-
-Usable as: Any Matcher
-</pre></td></tr>
-
-
-<tr><td>Matcher&lt;Matcher<T>&gt;</td><td class="name" onclick="toggle(this)">hasDescendant</td><td>const internal::Matcher&lt;DescendantT> &amp;DescendantMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasDescendant"><pre>\brief Matches AST nodes that have descendant AST nodes that match the
-provided matcher.
-
-Example matches X, Y, Z
-    (matcher = record(hasDescendant(record(hasName("X")))))
-  class X {};  Matches X, because X::X is a class of name X inside X.
-  class Y { class X {}; };
-  class Z { class Y { class X {}; }; };
-
-DescendantT must be an AST base type.
-
-Usable as: Any Matcher
 </pre></td></tr>
 
 
