@@ -62,8 +62,7 @@ def strip_doxygen(comment):
   """Returns the given comment without \-escaped words."""
   # If there is only a doxygen keyword in the line, delete the whole line.
   comment = re.sub(r'^\\[^\s]+\n', r'', comment, flags=re.M)
-  # If the doxygen keyword starts the line, delete the following whitespace.
-#comment = re.sub(r'^\\[^\s]+\s+', r'', comment)
+  # Delete the doxygen command and the following whitespace.
   comment = re.sub(r'\\[^\s]+\s+', r'', comment)
   return comment
 
