@@ -100,13 +100,18 @@ def act_on_decl(declaration, comment, allowed_types):
   """
   if declaration.strip():
     # Node matchers are defined by writing:
-    # VariadicDynCastAllOfMatcher<
-    m = re.match(r'.*VariadicDynCastAllOfMatcher\s*<\s*([^\s,]+)\s*,\s*([^\s>]+)\s*>\s*([^\s;]+)\s*;\s*$', declaration)
+    #   VariadicDynCastAllOfMatcher<ResultType, ArgumentType> name;
+    m = re.match(r""".*VariadicDynCastAllOfMatcher\s*<
+                       \s*([^\s,]+)\s*,
+                       \s*([^\s>]+)\s*>
+                       \s*([^\s;]+)\s*;\s*$""", declaration, flags=re.X)
     if m:
       result, inner, name = m.groups()
       add_matcher(result, name, 'Matcher<%s>...' % inner,
                   comment, is_dyncast=True)
       return
+
+    # Parse the various matcher definition macros.
     m = re.match(r"""^\s*AST_(POLYMORPHIC_)?MATCHER(_P)?(.?)\(
                        (?:\s*([^\s,]+)\s*,)?
                           \s*([^\s,]+)\s*
@@ -126,10 +131,14 @@ def act_on_decl(declaration, comment, allowed_types):
         result_types = [result]
       if n not in ['', '2']:
         raise Exception('Cannot parse "%s"' % declaration)
-      args = ', '.join('%s %s' % (args[i], args[i+1]) for i in range(0, len(args), 2) if args[i])
+      args = ', '.join('%s %s' % (args[i], args[i+1])
+                       for i in range(0, len(args), 2) if args[i])
       for result_type in result_types:
         add_matcher(result_type, name, args, comment)
       return
+
+    # Parse free standing matcher functions, like:
+    #   Matcher<ResultType> Name(Matcher<ArgumentType> InnerMatcher) {
     m = re.match(r"""^\s*(.*)\s+
                      ([^\s\(]+)\s*\(
                      (.*)
@@ -144,6 +153,7 @@ def act_on_decl(declaration, comment, allowed_types):
         result_types = extract_result_types(comment)
       if not result_types:
         if not comment:
+          # Only overloads don't have their own doxygen comments; ignore those.
           print 'Ignoring "%s"' % name
         else:
           print 'Cannot determine result type for "%s"' % name
@@ -154,14 +164,24 @@ def act_on_decl(declaration, comment, allowed_types):
       print '*** Unparsable: "' + declaration + '" ***'
 
 def sort_table(matcher_type, matcher_map):
+  """Returns the sorted html table for the given row map."""
   table = ''
   for key in sorted(matcher_map.keys()):
     table += matcher_map[key] + '\n'
-  return '<!-- START_%(type)s_MATCHERS -->\n%(table)s<!--END_%(type)s_MATCHERS -->' % {
+  return ('<!-- START_%(type)s_MATCHERS -->\n' +
+          '%(table)s' + 
+          '<!--END_%(type)s_MATCHERS -->') % {
     'type': matcher_type,
     'table': table,
   }
 
+# Parse the ast matchers.
+# We alternate between two modes:
+# body = True: We parse the definition of a matcher. We need
+#   to parse the full definition before adding a matcher, as the
+#   definition might contain static asserts that specify the result
+#   type.
+# body = False: We parse the comments and declaration of the matcher.
 comment = ''
 declaration = ''
 allowed_types = []
@@ -200,9 +220,12 @@ narrowing_matcher_table = sort_table('NARROWING', narrowing_matchers)
 traversal_matcher_table = sort_table('TRAVERSAL', traversal_matchers)
 
 reference = open('../LibASTMatchersReference.html').read()
-reference = re.sub(r'<!-- START_DECL_MATCHERS.*END_DECL_MATCHERS -->', '%s', reference, flags=re.S) % node_matcher_table
-reference = re.sub(r'<!-- START_NARROWING_MATCHERS.*END_NARROWING_MATCHERS -->', '%s', reference, flags=re.S) % narrowing_matcher_table
-reference = re.sub(r'<!-- START_TRAVERSAL_MATCHERS.*END_TRAVERSAL_MATCHERS -->', '%s', reference, flags=re.S) % traversal_matcher_table
+reference = re.sub(r'<!-- START_DECL_MATCHERS.*END_DECL_MATCHERS -->',
+                   '%s', reference, flags=re.S) % node_matcher_table
+reference = re.sub(r'<!-- START_NARROWING_MATCHERS.*END_NARROWING_MATCHERS -->',
+                   '%s', reference, flags=re.S) % narrowing_matcher_table
+reference = re.sub(r'<!-- START_TRAVERSAL_MATCHERS.*END_TRAVERSAL_MATCHERS -->',
+                   '%s', reference, flags=re.S) % traversal_matcher_table
 
 with open('../LibASTMatchersReference.html', 'w') as output:
   output.write(reference)
