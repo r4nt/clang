@@ -32,8 +32,15 @@ def extract_result_types(comment):
     result_types += [m.group(2)]
     comment = m.group(1)
 
+def unify_arguments(args):
+  args,_ = re.subn(r'internal::', '', args)
+  args,_ = re.subn(r'const\s+', '', args)
+  args,_ = re.subn(r'\s+&', '', args)
+  return args
+
 def add_matcher(result_type, name, args, comment):
-  if 'Matcher<' not in args:
+  args = unify_arguments(args)
+  if 'Matcher<' not in args or name in ['allOf', 'anyOf', 'anything', 'unless']:
     narrowing_matchers[result_type + name] = TD_TEMPLATE % {
       'result': 'Matcher&lt;%s&gt;' % result_type,
       'name': name,
