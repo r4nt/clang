@@ -1,25 +1,49 @@
 #!/usr/bin/env python
+# A tool to parse ASTMatchers.h and update the documentation in
+# ../LibASTMatchersReference.html automatically. Run from the
+# directory in which this file is located to update the docs.
 
 import collections
 import re
 
 MATCHERS_FILE = '../../include/clang/ASTMatchers/ASTMatchers.h'
+
+# Each matcher is documented in one row of the form:
+#   result | name | argA
+# The subsequent row contains the documentation and is hidden by default,
+# becoming visible via javascript when the user clicks the matcher name.
 TD_TEMPLATE="""
 <tr><td>%(result)s</td><td class="name" onclick="toggle('%(id)s')">%(name)s</td><td>%(args)s</td></tr>
 <tr><td colspan="4" class="doc" id="%(id)s"><pre>%(comment)s</pre></td></tr>
 """
 
+# We categorize the matchers into these three categories in the reference:
 node_matchers = {}
 narrowing_matchers = {}
 traversal_matchers = {}
+
+# We output multiple rows per matcher if the matcher can be used on multiple
+# node types. Thus, we need a new id per row to control the documentation
+# pop-up. ids[name] keeps track of those ids.
 ids = collections.defaultdict(int)
 
 def esc(text):
+  """Escape any html in the given text."""
   text = re.sub(r'&', '&amp;', text)
   text = re.sub(r'<', '&lt;', text)
   return text
 
 def extract_result_types(comment):
+  """Extracts a list of result types from the given comment.
+
+     We allow annotations in the comment of the matcher to specify what
+     nodes a matcher can match on. Those comments have the form:
+       Usable as: Any Matcher | (Matcher<T1>[, Matcher<t2>[, ...]])
+
+     Returns ['*'] in case of 'Any Matcher', or ['T1', 'T2', ...].
+     Returns the empty list if no 'Usable as' specification could be
+     parsed.
+  """
   result_types = []
   m = re.search(r'Usable as: Any Matcher[\s\n]*$', comment, re.S)
   if m:
@@ -35,6 +59,7 @@ def extract_result_types(comment):
     comment = m.group(1)
 
 def unify_arguments(args):
+  """Gets rid of anything the user doesn't care about in the argument list."""
   args,_ = re.subn(r'internal::', r'', args)
   args,_ = re.subn(r'const\s+', r'', args)
   args,_ = re.subn(r'&', r' ', args)
@@ -42,6 +67,7 @@ def unify_arguments(args):
   return args
 
 def add_matcher(result_type, name, args, comment, is_dyncast=False):
+  """Adds a matcher to one of our categories."""
   matcher_id = '%s%d' % (name, ids[name])
   ids[name] += 1
   args = unify_arguments(args)
@@ -54,13 +80,27 @@ def add_matcher(result_type, name, args, comment, is_dyncast=False):
   }
   if is_dyncast:
     node_matchers[result_type + name] = matcher_html
-  elif 'Matcher<' not in args or name in ['allOf', 'anyOf', 'anything', 'unless']:
+  # Use a heuristic to figure out whether a matcher is a narrowing or
+  # traversal matcher. By default, matchers that take other matchers as
+  # arguments (and are not node matchers) do traversal. We specifically
+  # exclude known narrowing matchers that also take other matchers as
+  # arguments.
+  elif ('Matcher<' not in args or
+        name in ['allOf', 'anyOf', 'anything', 'unless']):
     narrowing_matchers[result_type + name] = matcher_html
   else:
     traversal_matchers[result_type + name] = matcher_html
 
 def act_on_decl(declaration, comment, allowed_types):
+  """Parse the matcher out of the given declaration and comment.
+
+     If 'allowed_types' is set, it contains a list of node types the matcher
+     can match on, as extracted from the static type asserts in the matcher
+     definition.
+  """
   if declaration.strip():
+    # Node matchers are defined by writing:
+    # VariadicDynCastAllOfMatcher<
     m = re.match(r'.*VariadicDynCastAllOfMatcher\s*<\s*([^\s,]+)\s*,\s*([^\s>]+)\s*>\s*([^\s;]+)\s*;\s*$', declaration)
     if m:
       result, inner, name = m.groups()
