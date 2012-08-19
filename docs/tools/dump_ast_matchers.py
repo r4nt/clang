@@ -1,16 +1,18 @@
 #!/usr/bin/env python
 
+import collections
 import re
 
 MATCHERS_FILE = '../../include/clang/ASTMatchers/ASTMatchers.h'
 TD_TEMPLATE="""
-<tr><td>%(result)s</td><td class="name" onclick="toggle(this)">%(name)s</td><td>%(args)s</td></tr>
-<tr><td colspan="4" class="doc" id="%(name)s"><pre>%(comment)s</pre></td></tr>
+<tr><td>%(result)s</td><td class="name" onclick="toggle('%(id)s')">%(name)s</td><td>%(args)s</td></tr>
+<tr><td colspan="4" class="doc" id="%(id)s"><pre>%(comment)s</pre></td></tr>
 """
 
 node_matchers = {}
 narrowing_matchers = {}
 traversal_matchers = {}
+ids = collections.defaultdict(int)
 
 def esc(text):
   text = re.sub(r'&', '&amp;', text)
@@ -39,34 +41,31 @@ def unify_arguments(args):
   args,_ = re.subn(r'(^|\s)M\d?(\s)', r'\1Matcher<*>\2', args)
   return args
 
-def add_matcher(result_type, name, args, comment):
+def add_matcher(result_type, name, args, comment, is_dyncast=False):
+  matcher_id = '%s%d' % (name, ids[name])
+  ids[name] += 1
   args = unify_arguments(args)
-  if 'Matcher<' not in args or name in ['allOf', 'anyOf', 'anything', 'unless']:
-    narrowing_matchers[result_type + name] = TD_TEMPLATE % {
-      'result': 'Matcher&lt;%s&gt;' % result_type,
-      'name': name,
-      'args': esc(args),
-      'comment': esc(comment),
-    }
+  matcher_html = TD_TEMPLATE % {
+    'result': 'Matcher&lt;%s&gt;' % result_type,
+    'name': name,
+    'args': esc(args),
+    'comment': esc(comment),
+    'id': matcher_id,
+  }
+  if is_dyncast:
+    node_matchers[result_type + name] = matcher_html
+  elif 'Matcher<' not in args or name in ['allOf', 'anyOf', 'anything', 'unless']:
+    narrowing_matchers[result_type + name] = matcher_html
   else:
-    traversal_matchers[result_type + name] = TD_TEMPLATE % {
-      'result': 'Matcher&lt;%s&gt;' % result_type,
-      'name': name,
-      'args': esc(args),
-      'comment': esc(comment),
-    }
+    traversal_matchers[result_type + name] = matcher_html
 
 def act_on_decl(declaration, comment, allowed_types):
   if declaration.strip():
     m = re.match(r'.*VariadicDynCastAllOfMatcher\s*<\s*([^\s,]+)\s*,\s*([^\s>]+)\s*>\s*([^\s;]+)\s*;\s*$', declaration)
     if m:
       result, inner, name = m.groups()
-      node_matchers[result + name] = TD_TEMPLATE % {
-        'result': 'Matcher&lt;%s&gt;' % result,
-        'name': name,
-        'args': 'Matcher&lt;%s&gt;...' % inner,
-        'comment': esc(comment),
-      }
+      add_matcher(result, name, 'Matcher<%s>...' % inner,
+                  comment, is_dyncast=True)
       return
     m = re.match(r"""^\s*AST_(POLYMORPHIC_)?MATCHER(_P)?(.?)\(
                        (?:\s*([^\s,]+)\s*,)?

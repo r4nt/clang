@@ -19,8 +19,8 @@ td.name:hover {
 }
 </style>
 <script type="text/javascript">
-function toggle(td) {
-  row = document.getElementById(td.innerText);
+function toggle(id) {
+  row = document.getElementById(id);
   if (row.style.display != 'table-cell')
     row.style.display = 'table-cell';
   else
@@ -69,16 +69,16 @@ are marked with a * and are listed in the beginning of each category.</p>
 <tr style="text-align:left"><th>Return type</th><th>Name</th><th>Parameters</th></tr>
 <!-- START_DECL_MATCHERS -->
 
-<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle(this)">classTemplate</td><td>Matcher&lt;ClassTemplateDecl&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="classTemplate"><pre>\brief Matches C++ class template declarations.
+<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle('classTemplate0')">classTemplate</td><td>Matcher&lt;ClassTemplateDecl>...</td></tr>
+<tr><td colspan="4" class="doc" id="classTemplate0"><pre>\brief Matches C++ class template declarations.
 
 Example matches Z
   template&lt;class T> class Z {};
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle(this)">classTemplateSpecialization</td><td>Matcher&lt;ClassTemplateSpecializationDecl&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="classTemplateSpecialization"><pre>\brief Matches C++ class template specializations.
+<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle('classTemplateSpecialization0')">classTemplateSpecialization</td><td>Matcher&lt;ClassTemplateSpecializationDecl>...</td></tr>
+<tr><td colspan="4" class="doc" id="classTemplateSpecialization0"><pre>\brief Matches C++ class template specializations.
 
 Given
   template&lt;typename T> class A {};
@@ -89,8 +89,8 @@ classTemplateSpecialization()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle(this)">constructor</td><td>Matcher&lt;CXXConstructorDecl&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="constructor"><pre>\brief Matches C++ constructor declarations.
+<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle('constructor0')">constructor</td><td>Matcher&lt;CXXConstructorDecl>...</td></tr>
+<tr><td colspan="4" class="doc" id="constructor0"><pre>\brief Matches C++ constructor declarations.
 
 Example matches Foo::Foo() and Foo::Foo(int)
   class Foo {
@@ -102,8 +102,8 @@ Example matches Foo::Foo() and Foo::Foo(int)
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle(this)">decl</td><td>Matcher&lt;Decl&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="decl"><pre>\brief Matches declarations.
+<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle('decl0')">decl</td><td>Matcher&lt;Decl>...</td></tr>
+<tr><td colspan="4" class="doc" id="decl0"><pre>\brief Matches declarations.
 
 Examples matches \c X, \c C, and the friend declaration inside \c C;
 \code
@@ -115,8 +115,8 @@ Examples matches \c X, \c C, and the friend declaration inside \c C;
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle(this)">destructor</td><td>Matcher&lt;CXXDestructorDecl&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="destructor"><pre>\brief Matches explicit C++ destructor declarations.
+<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle('destructor0')">destructor</td><td>Matcher&lt;CXXDestructorDecl>...</td></tr>
+<tr><td colspan="4" class="doc" id="destructor0"><pre>\brief Matches explicit C++ destructor declarations.
 
 Example matches Foo::~Foo()
   class Foo {
@@ -126,8 +126,8 @@ Example matches Foo::~Foo()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle(this)">enumConstant</td><td>Matcher&lt;EnumConstantDecl&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="enumConstant"><pre>\brief Matches enum constants.
+<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle('enumConstant0')">enumConstant</td><td>Matcher&lt;EnumConstantDecl>...</td></tr>
+<tr><td colspan="4" class="doc" id="enumConstant0"><pre>\brief Matches enum constants.
 
 Example matches A, B, C
   enum X {
@@ -136,8 +136,8 @@ Example matches A, B, C
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle(this)">enumDecl</td><td>Matcher&lt;EnumDecl&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="enumDecl"><pre>\brief Matches enum declarations.
+<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle('enumDecl0')">enumDecl</td><td>Matcher&lt;EnumDecl>...</td></tr>
+<tr><td colspan="4" class="doc" id="enumDecl0"><pre>\brief Matches enum declarations.
 
 Example matches X
   enum X {
@@ -146,8 +146,8 @@ Example matches X
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle(this)">field</td><td>Matcher&lt;FieldDecl&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="field"><pre>\brief Matches field declarations.
+<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle('field0')">field</td><td>Matcher&lt;FieldDecl>...</td></tr>
+<tr><td colspan="4" class="doc" id="field0"><pre>\brief Matches field declarations.
 
 Given
   class X { int m; };
@@ -156,32 +156,32 @@ field()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle(this)">function</td><td>Matcher&lt;FunctionDecl&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="function"><pre>\brief Matches function declarations.
+<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle('function0')">function</td><td>Matcher&lt;FunctionDecl>...</td></tr>
+<tr><td colspan="4" class="doc" id="function0"><pre>\brief Matches function declarations.
 
 Example matches f
   void f();
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle(this)">functionTemplate</td><td>Matcher&lt;FunctionTemplateDecl&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="functionTemplate"><pre>\brief Matches C++ function template declarations.
+<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle('functionTemplate0')">functionTemplate</td><td>Matcher&lt;FunctionTemplateDecl>...</td></tr>
+<tr><td colspan="4" class="doc" id="functionTemplate0"><pre>\brief Matches C++ function template declarations.
 
 Example matches f
   template&lt;class T> void f(T t) {}
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle(this)">method</td><td>Matcher&lt;CXXMethodDecl&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="method"><pre>\brief Matches method declarations.
+<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle('method0')">method</td><td>Matcher&lt;CXXMethodDecl>...</td></tr>
+<tr><td colspan="4" class="doc" id="method0"><pre>\brief Matches method declarations.
 
 Example matches y
   class X { void y() };
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle(this)">nameableDeclaration</td><td>Matcher&lt;NamedDecl&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="nameableDeclaration"><pre>\brief Matches a declaration of anything that could have a name.
+<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle('nameableDeclaration0')">nameableDeclaration</td><td>Matcher&lt;NamedDecl>...</td></tr>
+<tr><td colspan="4" class="doc" id="nameableDeclaration0"><pre>\brief Matches a declaration of anything that could have a name.
 
 Example matches X, S, the anonymous union type, i, and U;
   typedef int X;
@@ -193,8 +193,8 @@ Example matches X, S, the anonymous union type, i, and U;
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle(this)">record</td><td>Matcher&lt;CXXRecordDecl&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="record"><pre>\brief Matches C++ class declarations.
+<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle('record0')">record</td><td>Matcher&lt;CXXRecordDecl>...</td></tr>
+<tr><td colspan="4" class="doc" id="record0"><pre>\brief Matches C++ class declarations.
 
 Example matches X, Z
   class X;
@@ -202,8 +202,8 @@ Example matches X, Z
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle(this)">usingDecl</td><td>Matcher&lt;UsingDecl&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="usingDecl"><pre>\brief Matches using declarations.
+<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle('usingDecl0')">usingDecl</td><td>Matcher&lt;UsingDecl>...</td></tr>
+<tr><td colspan="4" class="doc" id="usingDecl0"><pre>\brief Matches using declarations.
 
 Given
   namespace X { int x; }
@@ -213,8 +213,8 @@ usingDecl()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle(this)">variable</td><td>Matcher&lt;VarDecl&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="variable"><pre>\brief Matches variable declarations.
+<tr><td>Matcher&lt;Decl&gt;</td><td class="name" onclick="toggle('variable0')">variable</td><td>Matcher&lt;VarDecl>...</td></tr>
+<tr><td colspan="4" class="doc" id="variable0"><pre>\brief Matches variable declarations.
 
 Note: this does not match declarations of member variables, which are
 "field" declarations in Clang parlance.
@@ -224,16 +224,16 @@ Example matches a
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle(this)">boolLiteral</td><td>Matcher&lt;CXXBoolLiteralExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="boolLiteral"><pre>\brief Matches bool literals.
+<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle('boolLiteral0')">boolLiteral</td><td>Matcher&lt;CXXBoolLiteralExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="boolLiteral0"><pre>\brief Matches bool literals.
 
 Example matches true
   true
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle(this)">castExpr</td><td>Matcher&lt;CastExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="castExpr"><pre>\brief Matches any cast nodes of Clang's AST.
+<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle('castExpr0')">castExpr</td><td>Matcher&lt;CastExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="castExpr0"><pre>\brief Matches any cast nodes of Clang's AST.
 
 Example: castExpr() matches each of the following:
   (int) 3;
@@ -245,8 +245,8 @@ but does not match
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle(this)">characterLiteral</td><td>Matcher&lt;CharacterLiteral&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="characterLiteral"><pre>\brief Matches character literals (also matches wchar_t).
+<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle('characterLiteral0')">characterLiteral</td><td>Matcher&lt;CharacterLiteral>...</td></tr>
+<tr><td colspan="4" class="doc" id="characterLiteral0"><pre>\brief Matches character literals (also matches wchar_t).
 
 Not matching Hex-encoded chars (e.g. 0x1234, which is a IntegerLiteral),
 though.
@@ -256,8 +256,8 @@ Example matches 'a', L'a'
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle(this)">constCast</td><td>Matcher&lt;CXXConstCastExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="constCast"><pre>\brief Matches a const_cast expression.
+<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle('constCast0')">constCast</td><td>Matcher&lt;CXXConstCastExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="constCast0"><pre>\brief Matches a const_cast expression.
 
 Example: Matches const_cast&lt;int*>(&amp;r) in
   int n = 42;
@@ -266,8 +266,8 @@ Example: Matches const_cast&lt;int*>(&amp;r) in
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle(this)">dynamicCast</td><td>Matcher&lt;CXXDynamicCastExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="dynamicCast"><pre>\brief Matches a dynamic_cast expression.
+<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle('dynamicCast0')">dynamicCast</td><td>Matcher&lt;CXXDynamicCastExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="dynamicCast0"><pre>\brief Matches a dynamic_cast expression.
 
 Example:
   dynamicCast()
@@ -280,8 +280,8 @@ in
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle(this)">explicitCast</td><td>Matcher&lt;ExplicitCastExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="explicitCast"><pre>\brief Matches explicit cast expressions.
+<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle('explicitCast0')">explicitCast</td><td>Matcher&lt;ExplicitCastExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="explicitCast0"><pre>\brief Matches explicit cast expressions.
 
 Matches any cast expression written in user code, whether it be a
 C-style cast, a functional-style cast, or a keyword cast.
@@ -301,8 +301,8 @@ but does not match the implicit conversion in
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle(this)">functionalCast</td><td>Matcher&lt;CXXFunctionalCastExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="functionalCast"><pre>\brief Matches functional cast expressions
+<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle('functionalCast0')">functionalCast</td><td>Matcher&lt;CXXFunctionalCastExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="functionalCast0"><pre>\brief Matches functional cast expressions
 
 Example: Matches Foo(bar);
   Foo f = bar;
@@ -311,16 +311,16 @@ Example: Matches Foo(bar);
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle(this)">implicitCast</td><td>Matcher&lt;ImplicitCastExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="implicitCast"><pre>\brief Matches the implicit cast nodes of Clang's AST.
+<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle('implicitCast0')">implicitCast</td><td>Matcher&lt;ImplicitCastExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="implicitCast0"><pre>\brief Matches the implicit cast nodes of Clang's AST.
 
 This matches many different places, including function call return value
 eliding, as well as any type conversions.
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle(this)">integerLiteral</td><td>Matcher&lt;IntegerLiteral&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="integerLiteral"><pre>\brief Matches integer literals of all sizes encodings.
+<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle('integerLiteral0')">integerLiteral</td><td>Matcher&lt;IntegerLiteral>...</td></tr>
+<tr><td colspan="4" class="doc" id="integerLiteral0"><pre>\brief Matches integer literals of all sizes encodings.
 
 Not matching character-encoded integers such as L'a'.
 
@@ -328,8 +328,8 @@ Example matches 1, 1L, 0x1, 1U
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle(this)">reinterpretCast</td><td>Matcher&lt;CXXReinterpretCastExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="reinterpretCast"><pre>\brief Matches a reinterpret_cast expression.
+<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle('reinterpretCast0')">reinterpretCast</td><td>Matcher&lt;CXXReinterpretCastExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="reinterpretCast0"><pre>\brief Matches a reinterpret_cast expression.
 
 Either the source expression or the destination type can be matched
 using has(), but hasDestinationType() is more specific and can be
@@ -340,8 +340,8 @@ Example matches reinterpret_cast&lt;char*>(&amp;p) in
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle(this)">staticCast</td><td>Matcher&lt;CXXStaticCastExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="staticCast"><pre>\brief Matches a C++ static_cast expression.
+<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle('staticCast0')">staticCast</td><td>Matcher&lt;CXXStaticCastExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="staticCast0"><pre>\brief Matches a C++ static_cast expression.
 
 \see hasDestinationType
 \see reinterpretCast
@@ -355,16 +355,16 @@ in
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle(this)">stringLiteral</td><td>Matcher&lt;StringLiteral&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="stringLiteral"><pre>\brief Matches string literals (also matches wide string literals).
+<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle('stringLiteral0')">stringLiteral</td><td>Matcher&lt;StringLiteral>...</td></tr>
+<tr><td colspan="4" class="doc" id="stringLiteral0"><pre>\brief Matches string literals (also matches wide string literals).
 
 Example matches "abcd", L"abcd"
   char *s = "abcd"; wchar_t *ws = L"abcd"
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">arraySubscriptExpr</td><td>Matcher&lt;ArraySubscriptExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="arraySubscriptExpr"><pre>\brief Matches array subscript expressions.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('arraySubscriptExpr0')">arraySubscriptExpr</td><td>Matcher&lt;ArraySubscriptExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="arraySubscriptExpr0"><pre>\brief Matches array subscript expressions.
 
 Given
   int i = a[1];
@@ -373,16 +373,16 @@ arraySubscriptExpr()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">binaryOperator</td><td>Matcher&lt;BinaryOperator&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="binaryOperator"><pre>\brief Matches binary operator expressions.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('binaryOperator0')">binaryOperator</td><td>Matcher&lt;BinaryOperator>...</td></tr>
+<tr><td colspan="4" class="doc" id="binaryOperator0"><pre>\brief Matches binary operator expressions.
 
 Example matches a || b
   !(a || b)
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">bindTemporaryExpression</td><td>Matcher&lt;CXXBindTemporaryExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="bindTemporaryExpression"><pre>\brief Matches nodes where temporaries are created.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('bindTemporaryExpression0')">bindTemporaryExpression</td><td>Matcher&lt;CXXBindTemporaryExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="bindTemporaryExpression0"><pre>\brief Matches nodes where temporaries are created.
 
 Example matches FunctionTakesString(GetStringByValue())
     (matcher = bindTemporaryExpression())
@@ -391,8 +391,8 @@ Example matches FunctionTakesString(GetStringByValue())
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">call</td><td>Matcher&lt;CallExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="call"><pre>\brief Matches call expressions.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('call0')">call</td><td>Matcher&lt;CallExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="call0"><pre>\brief Matches call expressions.
 
 Example matches x.y() and y()
   X x;
@@ -401,24 +401,24 @@ Example matches x.y() and y()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">compoundStatement</td><td>Matcher&lt;CompoundStmt&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="compoundStatement"><pre>\brief Matches compound statements.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('compoundStatement0')">compoundStatement</td><td>Matcher&lt;CompoundStmt>...</td></tr>
+<tr><td colspan="4" class="doc" id="compoundStatement0"><pre>\brief Matches compound statements.
 
 Example matches '{}' and '{{}}'in 'for (;;) {{}}'
   for (;;) {{}}
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">conditionalOperator</td><td>Matcher&lt;ConditionalOperator&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="conditionalOperator"><pre>\brief Matches conditional operator expressions.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('conditionalOperator0')">conditionalOperator</td><td>Matcher&lt;ConditionalOperator>...</td></tr>
+<tr><td colspan="4" class="doc" id="conditionalOperator0"><pre>\brief Matches conditional operator expressions.
 
 Example matches a ? b : c
   (a ? b : c) + 42
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">constructorCall</td><td>Matcher&lt;CXXConstructExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="constructorCall"><pre>\brief Matches constructor call expressions (including implicit ones).
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('constructorCall0')">constructorCall</td><td>Matcher&lt;CXXConstructExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="constructorCall0"><pre>\brief Matches constructor call expressions (including implicit ones).
 
 Example matches string(ptr, n) and ptr within arguments of f
     (matcher = constructorCall())
@@ -429,8 +429,8 @@ Example matches string(ptr, n) and ptr within arguments of f
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">declarationReference</td><td>Matcher&lt;DeclRefExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="declarationReference"><pre>\brief Matches expressions that refer to declarations.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('declarationReference0')">declarationReference</td><td>Matcher&lt;DeclRefExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="declarationReference0"><pre>\brief Matches expressions that refer to declarations.
 
 Example matches x in if (x)
   bool x;
@@ -438,8 +438,8 @@ Example matches x in if (x)
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">declarationStatement</td><td>Matcher&lt;DeclStmt&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="declarationStatement"><pre>\brief Matches declaration statements.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('declarationStatement0')">declarationStatement</td><td>Matcher&lt;DeclStmt>...</td></tr>
+<tr><td colspan="4" class="doc" id="declarationStatement0"><pre>\brief Matches declaration statements.
 
 Given
   int a;
@@ -448,8 +448,8 @@ declarationStatement()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">defaultArgument</td><td>Matcher&lt;CXXDefaultArgExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="defaultArgument"><pre>\brief Matches the value of a default argument at the call site.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('defaultArgument0')">defaultArgument</td><td>Matcher&lt;CXXDefaultArgExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="defaultArgument0"><pre>\brief Matches the value of a default argument at the call site.
 
 Example matches the CXXDefaultArgExpr placeholder inserted for the
     default value of the second parameter in the call expression f(42)
@@ -459,8 +459,8 @@ Example matches the CXXDefaultArgExpr placeholder inserted for the
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">deleteExpression</td><td>Matcher&lt;CXXDeleteExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="deleteExpression"><pre>\brief Matches delete expressions.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('deleteExpression0')">deleteExpression</td><td>Matcher&lt;CXXDeleteExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="deleteExpression0"><pre>\brief Matches delete expressions.
 
 Given
   delete X;
@@ -469,8 +469,8 @@ deleteExpression()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">doStmt</td><td>Matcher&lt;DoStmt&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="doStmt"><pre>\brief Matches do statements.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('doStmt0')">doStmt</td><td>Matcher&lt;DoStmt>...</td></tr>
+<tr><td colspan="4" class="doc" id="doStmt0"><pre>\brief Matches do statements.
 
 Given
   do {} while (true);
@@ -479,32 +479,32 @@ doStmt()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">expression</td><td>Matcher&lt;Expr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="expression"><pre>\brief Matches expressions.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('expression0')">expression</td><td>Matcher&lt;Expr>...</td></tr>
+<tr><td colspan="4" class="doc" id="expression0"><pre>\brief Matches expressions.
 
 Example matches x()
   void f() { x(); }
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">forStmt</td><td>Matcher&lt;ForStmt&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="forStmt"><pre>\brief Matches for statements.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('forStmt0')">forStmt</td><td>Matcher&lt;ForStmt>...</td></tr>
+<tr><td colspan="4" class="doc" id="forStmt0"><pre>\brief Matches for statements.
 
 Example matches 'for (;;) {}'
   for (;;) {}
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">ifStmt</td><td>Matcher&lt;IfStmt&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="ifStmt"><pre>\brief Matches if statements.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('ifStmt0')">ifStmt</td><td>Matcher&lt;IfStmt>...</td></tr>
+<tr><td colspan="4" class="doc" id="ifStmt0"><pre>\brief Matches if statements.
 
 Example matches 'if (x) {}'
   if (x) {}
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">initListExpr</td><td>Matcher&lt;InitListExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="initListExpr"><pre>\brief Matches init list expressions.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('initListExpr0')">initListExpr</td><td>Matcher&lt;InitListExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="initListExpr0"><pre>\brief Matches init list expressions.
 
 Given
   int a[] = { 1, 2 };
@@ -515,8 +515,8 @@ initList()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">memberCall</td><td>Matcher&lt;CXXMemberCallExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="memberCall"><pre>\brief Matches member call expressions.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('memberCall0')">memberCall</td><td>Matcher&lt;CXXMemberCallExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="memberCall0"><pre>\brief Matches member call expressions.
 
 Example matches x.y()
   X x;
@@ -524,8 +524,8 @@ Example matches x.y()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">memberExpression</td><td>Matcher&lt;MemberExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="memberExpression"><pre>\brief Matches member expressions.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('memberExpression0')">memberExpression</td><td>Matcher&lt;MemberExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="memberExpression0"><pre>\brief Matches member expressions.
 
 Given
   class Y {
@@ -537,8 +537,8 @@ memberExpression()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">newExpression</td><td>Matcher&lt;CXXNewExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="newExpression"><pre>\brief Matches new expressions.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('newExpression0')">newExpression</td><td>Matcher&lt;CXXNewExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="newExpression0"><pre>\brief Matches new expressions.
 
 Given
   new X;
@@ -547,8 +547,8 @@ newExpression()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">overloadedOperatorCall</td><td>Matcher&lt;CXXOperatorCallExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="overloadedOperatorCall"><pre>\brief Matches overloaded operator calls.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('overloadedOperatorCall0')">overloadedOperatorCall</td><td>Matcher&lt;CXXOperatorCallExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="overloadedOperatorCall0"><pre>\brief Matches overloaded operator calls.
 
 Note that if an operator isn't overloaded, it won't match. Instead, use
 binaryOperator matcher.
@@ -563,8 +563,8 @@ Example matches both operator&lt;&lt;((o &lt;&lt; b), c) and operator&lt;&lt;(o,
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">statement</td><td>Matcher&lt;Stmt&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="statement"><pre>\brief Matches statements.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('statement0')">statement</td><td>Matcher&lt;Stmt>...</td></tr>
+<tr><td colspan="4" class="doc" id="statement0"><pre>\brief Matches statements.
 
 Given
   { ++a; }
@@ -573,8 +573,8 @@ statement()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">switchCase</td><td>Matcher&lt;SwitchCase&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="switchCase"><pre>\brief Matches case and default statements inside switch statements.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('switchCase0')">switchCase</td><td>Matcher&lt;SwitchCase>...</td></tr>
+<tr><td colspan="4" class="doc" id="switchCase0"><pre>\brief Matches case and default statements inside switch statements.
 
 Given
   switch(a) { case 42: break; default: break; }
@@ -583,8 +583,8 @@ switchCase()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">unaryExprOrTypeTraitExpr</td><td>Matcher&lt;UnaryExprOrTypeTraitExpr&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="unaryExprOrTypeTraitExpr"><pre>\brief Matches sizeof (C99), alignof (C++11) and vec_step (OpenCL)
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('unaryExprOrTypeTraitExpr0')">unaryExprOrTypeTraitExpr</td><td>Matcher&lt;UnaryExprOrTypeTraitExpr>...</td></tr>
+<tr><td colspan="4" class="doc" id="unaryExprOrTypeTraitExpr0"><pre>\brief Matches sizeof (C99), alignof (C++11) and vec_step (OpenCL)
 
 Given
   Foo x = bar;
@@ -594,16 +594,16 @@ unaryExprOrTypeTraitExpr()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">unaryOperator</td><td>Matcher&lt;UnaryOperator&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="unaryOperator"><pre>\brief Matches unary operator expressions.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('unaryOperator0')">unaryOperator</td><td>Matcher&lt;UnaryOperator>...</td></tr>
+<tr><td colspan="4" class="doc" id="unaryOperator0"><pre>\brief Matches unary operator expressions.
 
 Example matches !a
   !a || b
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">whileStmt</td><td>Matcher&lt;WhileStmt&gt;...</td></tr>
-<tr><td colspan="4" class="doc" id="whileStmt"><pre>\brief Matches while statements.
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('whileStmt0')">whileStmt</td><td>Matcher&lt;WhileStmt>...</td></tr>
+<tr><td colspan="4" class="doc" id="whileStmt0"><pre>\brief Matches while statements.
 
 Given
   while (true) {}
@@ -622,22 +622,22 @@ whileStmt()
 <tr style="text-align:left"><th>Return type</th><th>Name</th><th>Parameters</th></tr>
 <!-- START_NARROWING_MATCHERS -->
 
-<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle(this)">allOf</td><td>Matcher&lt;*>  P1, Matcher&lt;*>  P2</td></tr>
-<tr><td colspan="4" class="doc" id="allOf"><pre>\brief Matches if all given matchers match.
+<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle('allOf0')">allOf</td><td>Matcher&lt;*>  P1, Matcher&lt;*>  P2</td></tr>
+<tr><td colspan="4" class="doc" id="allOf0"><pre>\brief Matches if all given matchers match.
 
 Usable as: Any Matcher
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle(this)">anyOf</td><td>Matcher&lt;*>  P1, Matcher&lt;*>  P2</td></tr>
-<tr><td colspan="4" class="doc" id="anyOf"><pre>\brief Matches if any of the given matchers matches.
+<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle('anyOf0')">anyOf</td><td>Matcher&lt;*>  P1, Matcher&lt;*>  P2</td></tr>
+<tr><td colspan="4" class="doc" id="anyOf0"><pre>\brief Matches if any of the given matchers matches.
 
 Usable as: Any Matcher
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle(this)">anything</td><td></td></tr>
-<tr><td colspan="4" class="doc" id="anything"><pre>\brief Matches any node.
+<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle('anything0')">anything</td><td></td></tr>
+<tr><td colspan="4" class="doc" id="anything0"><pre>\brief Matches any node.
 
 Useful when another matcher requires a child matcher, but there's no
 additional constraint. This will often be used with an explicit conversion
@@ -652,8 +652,8 @@ Usable as: Any Matcher
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle(this)">unless</td><td>Matcher&lt;*>  InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="unless"><pre>\brief Matches if the provided matcher does not match.
+<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle('unless0')">unless</td><td>Matcher&lt;*>  InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="unless0"><pre>\brief Matches if the provided matcher does not match.
 
 Example matches Y (matcher = record(unless(hasName("X"))))
   class X {};
@@ -663,8 +663,8 @@ Usable as: Any Matcher
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;BinaryOperator&gt;</td><td class="name" onclick="toggle(this)">hasOperatorName</td><td>std::string Name</td></tr>
-<tr><td colspan="4" class="doc" id="hasOperatorName"><pre>\brief Matches the operator Name of operator expressions (binary or
+<tr><td>Matcher&lt;BinaryOperator&gt;</td><td class="name" onclick="toggle('hasOperatorName0')">hasOperatorName</td><td>std::string Name</td></tr>
+<tr><td colspan="4" class="doc" id="hasOperatorName0"><pre>\brief Matches the operator Name of operator expressions (binary or
 unary).
 
 Example matches a || b (matcher = binaryOperator(hasOperatorName("||")))
@@ -672,8 +672,8 @@ Example matches a || b (matcher = binaryOperator(hasOperatorName("||")))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CXXBoolLiteral&gt;</td><td class="name" onclick="toggle(this)">equals</td><td>ValueT  Value</td></tr>
-<tr><td colspan="4" class="doc" id="equals"><pre>\brief Matches literals that are equal to the given value.
+<tr><td>Matcher&lt;CXXBoolLiteral&gt;</td><td class="name" onclick="toggle('equals2')">equals</td><td>ValueT  Value</td></tr>
+<tr><td colspan="4" class="doc" id="equals2"><pre>\brief Matches literals that are equal to the given value.
 
 Example matches true (matcher = boolLiteral(equals(true)))
   true
@@ -683,14 +683,14 @@ Usable as: Matcher&lt;CharacterLiteral>, Matcher&lt;CXXBoolLiteral>,
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CXXConstructorDecl&gt;</td><td class="name" onclick="toggle(this)">isImplicit</td><td></td></tr>
-<tr><td colspan="4" class="doc" id="isImplicit"><pre>\brief Matches a constructor declaration that has been implicitly added
+<tr><td>Matcher&lt;CXXConstructorDecl&gt;</td><td class="name" onclick="toggle('isImplicit0')">isImplicit</td><td></td></tr>
+<tr><td colspan="4" class="doc" id="isImplicit0"><pre>\brief Matches a constructor declaration that has been implicitly added
 by the compiler (eg. implicit defaultcopy constructors).
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CXXCtorInitializer&gt;</td><td class="name" onclick="toggle(this)">isWritten</td><td></td></tr>
-<tr><td colspan="4" class="doc" id="isWritten"><pre>\brief Matches a contructor initializer if it is explicitly written in
+<tr><td>Matcher&lt;CXXCtorInitializer&gt;</td><td class="name" onclick="toggle('isWritten0')">isWritten</td><td></td></tr>
+<tr><td colspan="4" class="doc" id="isWritten0"><pre>\brief Matches a contructor initializer if it is explicitly written in
 code (as opposed to implicitly added by the compiler).
 
 Given
@@ -704,8 +704,8 @@ constructor(hasAnyConstructorInitializer(isWritten()))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CXXOperatorCallExpr&gt;</td><td class="name" onclick="toggle(this)">hasOverloadedOperatorName</td><td>std::string Name</td></tr>
-<tr><td colspan="4" class="doc" id="hasOverloadedOperatorName"><pre>\brief Matches overloaded operator names.
+<tr><td>Matcher&lt;CXXOperatorCallExpr&gt;</td><td class="name" onclick="toggle('hasOverloadedOperatorName0')">hasOverloadedOperatorName</td><td>std::string Name</td></tr>
+<tr><td colspan="4" class="doc" id="hasOverloadedOperatorName0"><pre>\brief Matches overloaded operator names.
 
 Matches overloaded operator names specified in strings without the
 "operator" prefix, such as "&lt;&lt;", for OverloadedOperatorCall's.
@@ -718,13 +718,13 @@ Example matches a &lt;&lt; b
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CXXRecordDecl&gt;</td><td class="name" onclick="toggle(this)">isDerivedFrom</td><td>StringRef BaseName</td></tr>
-<tr><td colspan="4" class="doc" id="isDerivedFrom"><pre>\brief Overloaded method as shortcut for \c isDerivedFrom(hasName(...)).
+<tr><td>Matcher&lt;CXXRecordDecl&gt;</td><td class="name" onclick="toggle('isDerivedFrom1')">isDerivedFrom</td><td>StringRef BaseName</td></tr>
+<tr><td colspan="4" class="doc" id="isDerivedFrom1"><pre>\brief Overloaded method as shortcut for \c isDerivedFrom(hasName(...)).
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CXXRecordDecl&gt;</td><td class="name" onclick="toggle(this)">isExplicitTemplateSpecialization</td><td></td></tr>
-<tr><td colspan="4" class="doc" id="isExplicitTemplateSpecialization"><pre>\brief Matches explicit template specializations of function, class, or
+<tr><td>Matcher&lt;CXXRecordDecl&gt;</td><td class="name" onclick="toggle('isExplicitTemplateSpecialization0')">isExplicitTemplateSpecialization</td><td></td></tr>
+<tr><td colspan="4" class="doc" id="isExplicitTemplateSpecialization0"><pre>\brief Matches explicit template specializations of function, class, or
 static member variable template instantiations.
 
 Given
@@ -737,8 +737,8 @@ Usable as: Matcher&lt;FunctionDecl>, Matcher&lt;VarDecl>, Matcher&lt;CXXRecordDe
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CXXRecordDecl&gt;</td><td class="name" onclick="toggle(this)">isTemplateInstantiation</td><td></td></tr>
-<tr><td colspan="4" class="doc" id="isTemplateInstantiation"><pre>\brief Matches template instantiations of function, class, or static
+<tr><td>Matcher&lt;CXXRecordDecl&gt;</td><td class="name" onclick="toggle('isTemplateInstantiation0')">isTemplateInstantiation</td><td></td></tr>
+<tr><td colspan="4" class="doc" id="isTemplateInstantiation0"><pre>\brief Matches template instantiations of function, class, or static
 member variable template instantiations.
 
 Given
@@ -758,8 +758,8 @@ Usable as: Matcher&lt;FunctionDecl>, Matcher&lt;VarDecl>, Matcher&lt;CXXRecordDe
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CallExpr&gt;</td><td class="name" onclick="toggle(this)">argumentCountIs</td><td>unsigned N</td></tr>
-<tr><td colspan="4" class="doc" id="argumentCountIs"><pre>\brief Checks that a call expression or a constructor call expression has
+<tr><td>Matcher&lt;CallExpr&gt;</td><td class="name" onclick="toggle('argumentCountIs0')">argumentCountIs</td><td>unsigned N</td></tr>
+<tr><td colspan="4" class="doc" id="argumentCountIs0"><pre>\brief Checks that a call expression or a constructor call expression has
 a specific number of arguments (including absent default arguments).
 
 Example matches f(0, 0) (matcher = call(argumentCountIs(2)))
@@ -768,8 +768,8 @@ Example matches f(0, 0) (matcher = call(argumentCountIs(2)))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CharacterLiteral&gt;</td><td class="name" onclick="toggle(this)">equals</td><td>ValueT  Value</td></tr>
-<tr><td colspan="4" class="doc" id="equals"><pre>\brief Matches literals that are equal to the given value.
+<tr><td>Matcher&lt;CharacterLiteral&gt;</td><td class="name" onclick="toggle('equals3')">equals</td><td>ValueT  Value</td></tr>
+<tr><td colspan="4" class="doc" id="equals3"><pre>\brief Matches literals that are equal to the given value.
 
 Example matches true (matcher = boolLiteral(equals(true)))
   true
@@ -779,8 +779,8 @@ Usable as: Matcher&lt;CharacterLiteral>, Matcher&lt;CXXBoolLiteral>,
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CompoundStmt&gt;</td><td class="name" onclick="toggle(this)">statementCountIs</td><td>unsigned N</td></tr>
-<tr><td colspan="4" class="doc" id="statementCountIs"><pre>\brief Checks that a compound statement contains a specific number of
+<tr><td>Matcher&lt;CompoundStmt&gt;</td><td class="name" onclick="toggle('statementCountIs0')">statementCountIs</td><td>unsigned N</td></tr>
+<tr><td colspan="4" class="doc" id="statementCountIs0"><pre>\brief Checks that a compound statement contains a specific number of
 child statements.
 
 Example: Given
@@ -791,8 +791,8 @@ compoundStatement(statementCountIs(0)))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;DeclStmt&gt;</td><td class="name" onclick="toggle(this)">declCountIs</td><td>unsigned N</td></tr>
-<tr><td colspan="4" class="doc" id="declCountIs"><pre>\brief Matches declaration statements that contain a specific number of
+<tr><td>Matcher&lt;DeclStmt&gt;</td><td class="name" onclick="toggle('declCountIs0')">declCountIs</td><td>unsigned N</td></tr>
+<tr><td colspan="4" class="doc" id="declCountIs0"><pre>\brief Matches declaration statements that contain a specific number of
 declarations.
 
 Example: Given
@@ -804,8 +804,8 @@ declCountIs(2)
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;FloatingLiteral&gt;</td><td class="name" onclick="toggle(this)">equals</td><td>ValueT  Value</td></tr>
-<tr><td colspan="4" class="doc" id="equals"><pre>\brief Matches literals that are equal to the given value.
+<tr><td>Matcher&lt;FloatingLiteral&gt;</td><td class="name" onclick="toggle('equals1')">equals</td><td>ValueT  Value</td></tr>
+<tr><td colspan="4" class="doc" id="equals1"><pre>\brief Matches literals that are equal to the given value.
 
 Example matches true (matcher = boolLiteral(equals(true)))
   true
@@ -815,8 +815,8 @@ Usable as: Matcher&lt;CharacterLiteral>, Matcher&lt;CXXBoolLiteral>,
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;FunctionDecl&gt;</td><td class="name" onclick="toggle(this)">isDefinition</td><td></td></tr>
-<tr><td colspan="4" class="doc" id="isDefinition"><pre>\brief Matches if a declaration has a body attached.
+<tr><td>Matcher&lt;FunctionDecl&gt;</td><td class="name" onclick="toggle('isDefinition0')">isDefinition</td><td></td></tr>
+<tr><td colspan="4" class="doc" id="isDefinition0"><pre>\brief Matches if a declaration has a body attached.
 
 Example matches A, va, fa
   class A {};
@@ -830,8 +830,8 @@ Usable as: Matcher&lt;TagDecl>, Matcher&lt;VarDecl>, Matcher&lt;FunctionDecl>
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;FunctionDecl&gt;</td><td class="name" onclick="toggle(this)">isExplicitTemplateSpecialization</td><td></td></tr>
-<tr><td colspan="4" class="doc" id="isExplicitTemplateSpecialization"><pre>\brief Matches explicit template specializations of function, class, or
+<tr><td>Matcher&lt;FunctionDecl&gt;</td><td class="name" onclick="toggle('isExplicitTemplateSpecialization2')">isExplicitTemplateSpecialization</td><td></td></tr>
+<tr><td colspan="4" class="doc" id="isExplicitTemplateSpecialization2"><pre>\brief Matches explicit template specializations of function, class, or
 static member variable template instantiations.
 
 Given
@@ -844,8 +844,8 @@ Usable as: Matcher&lt;FunctionDecl>, Matcher&lt;VarDecl>, Matcher&lt;CXXRecordDe
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;FunctionDecl&gt;</td><td class="name" onclick="toggle(this)">isExternC</td><td></td></tr>
-<tr><td colspan="4" class="doc" id="isExternC"><pre>\brief Matches extern "C" function declarations.
+<tr><td>Matcher&lt;FunctionDecl&gt;</td><td class="name" onclick="toggle('isExternC0')">isExternC</td><td></td></tr>
+<tr><td colspan="4" class="doc" id="isExternC0"><pre>\brief Matches extern "C" function declarations.
 
 Given:
   extern "C" void f() {}
@@ -856,8 +856,8 @@ function(isExternC())
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;FunctionDecl&gt;</td><td class="name" onclick="toggle(this)">isTemplateInstantiation</td><td></td></tr>
-<tr><td colspan="4" class="doc" id="isTemplateInstantiation"><pre>\brief Matches template instantiations of function, class, or static
+<tr><td>Matcher&lt;FunctionDecl&gt;</td><td class="name" onclick="toggle('isTemplateInstantiation2')">isTemplateInstantiation</td><td></td></tr>
+<tr><td colspan="4" class="doc" id="isTemplateInstantiation2"><pre>\brief Matches template instantiations of function, class, or static
 member variable template instantiations.
 
 Given
@@ -877,8 +877,8 @@ Usable as: Matcher&lt;FunctionDecl>, Matcher&lt;VarDecl>, Matcher&lt;CXXRecordDe
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;IntegerLiteral&gt;</td><td class="name" onclick="toggle(this)">equals</td><td>ValueT  Value</td></tr>
-<tr><td colspan="4" class="doc" id="equals"><pre>\brief Matches literals that are equal to the given value.
+<tr><td>Matcher&lt;IntegerLiteral&gt;</td><td class="name" onclick="toggle('equals0')">equals</td><td>ValueT  Value</td></tr>
+<tr><td colspan="4" class="doc" id="equals0"><pre>\brief Matches literals that are equal to the given value.
 
 Example matches true (matcher = boolLiteral(equals(true)))
   true
@@ -888,8 +888,8 @@ Usable as: Matcher&lt;CharacterLiteral>, Matcher&lt;CXXBoolLiteral>,
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;MemberExpr&gt;</td><td class="name" onclick="toggle(this)">isArrow</td><td></td></tr>
-<tr><td colspan="4" class="doc" id="isArrow"><pre>\brief Matches member expressions that are called with '->' as opposed
+<tr><td>Matcher&lt;MemberExpr&gt;</td><td class="name" onclick="toggle('isArrow0')">isArrow</td><td></td></tr>
+<tr><td colspan="4" class="doc" id="isArrow0"><pre>\brief Matches member expressions that are called with '->' as opposed
 to '.'.
 
 Member calls on the implicit this pointer match as called with '->'.
@@ -905,8 +905,8 @@ memberExpression(isArrow())
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;NamedDecl&gt;</td><td class="name" onclick="toggle(this)">hasName</td><td>std::string Name</td></tr>
-<tr><td colspan="4" class="doc" id="hasName"><pre>\brief Matches NamedDecl nodes that have the specified name.
+<tr><td>Matcher&lt;NamedDecl&gt;</td><td class="name" onclick="toggle('hasName0')">hasName</td><td>std::string Name</td></tr>
+<tr><td colspan="4" class="doc" id="hasName0"><pre>\brief Matches NamedDecl nodes that have the specified name.
 
 Supports specifying enclosing namespaces or classes by prefixing the name
 with '&lt;enclosing>::'.
@@ -920,8 +920,8 @@ namespace a { namespace b { class X; } }
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;NamedDecl&gt;</td><td class="name" onclick="toggle(this)">matchesName</td><td>std::string RegExp</td></tr>
-<tr><td colspan="4" class="doc" id="matchesName"><pre>\brief Matches NamedDecl nodes whose full names partially match the
+<tr><td>Matcher&lt;NamedDecl&gt;</td><td class="name" onclick="toggle('matchesName0')">matchesName</td><td>std::string RegExp</td></tr>
+<tr><td colspan="4" class="doc" id="matchesName0"><pre>\brief Matches NamedDecl nodes whose full names partially match the
 given RegExp.
 
 Supports specifying enclosing namespaces or classes by
@@ -936,8 +936,8 @@ namespace foo { namespace bar { class X; } }
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;QualType&gt;</td><td class="name" onclick="toggle(this)">asString</td><td>std::string Name</td></tr>
-<tr><td colspan="4" class="doc" id="asString"><pre>\brief Matches if the matched type is represented by the given string.
+<tr><td>Matcher&lt;QualType&gt;</td><td class="name" onclick="toggle('asString0')">asString</td><td>std::string Name</td></tr>
+<tr><td colspan="4" class="doc" id="asString0"><pre>\brief Matches if the matched type is represented by the given string.
 
 Given
   class Y { public: void x(); };
@@ -947,8 +947,8 @@ call(on(hasType(asString("class Y *"))))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;QualType&gt;</td><td class="name" onclick="toggle(this)">isConstQualified</td><td></td></tr>
-<tr><td colspan="4" class="doc" id="isConstQualified"><pre>\brief Matches QualType nodes that are const-qualified, i.e., that
+<tr><td>Matcher&lt;QualType&gt;</td><td class="name" onclick="toggle('isConstQualified0')">isConstQualified</td><td></td></tr>
+<tr><td colspan="4" class="doc" id="isConstQualified0"><pre>\brief Matches QualType nodes that are const-qualified, i.e., that
 include "top-level" const.
 
 Given
@@ -964,8 +964,8 @@ function(hasAnyParameter(hasType(isConstQualified())))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;QualType&gt;</td><td class="name" onclick="toggle(this)">isInteger</td><td></td></tr>
-<tr><td colspan="4" class="doc" id="isInteger"><pre>\brief Matches QualType nodes that are of integer type.
+<tr><td>Matcher&lt;QualType&gt;</td><td class="name" onclick="toggle('isInteger0')">isInteger</td><td></td></tr>
+<tr><td colspan="4" class="doc" id="isInteger0"><pre>\brief Matches QualType nodes that are of integer type.
 
 Given
   void a(int);
@@ -976,8 +976,8 @@ matches "a(int)", "b(long)", but not "c(double)".
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;TagDecl&gt;</td><td class="name" onclick="toggle(this)">isDefinition</td><td></td></tr>
-<tr><td colspan="4" class="doc" id="isDefinition"><pre>\brief Matches if a declaration has a body attached.
+<tr><td>Matcher&lt;TagDecl&gt;</td><td class="name" onclick="toggle('isDefinition2')">isDefinition</td><td></td></tr>
+<tr><td colspan="4" class="doc" id="isDefinition2"><pre>\brief Matches if a declaration has a body attached.
 
 Example matches A, va, fa
   class A {};
@@ -991,8 +991,8 @@ Usable as: Matcher&lt;TagDecl>, Matcher&lt;VarDecl>, Matcher&lt;FunctionDecl>
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;UnaryExprOrTypeTraitExpr&gt;</td><td class="name" onclick="toggle(this)">ofKind</td><td>UnaryExprOrTypeTrait Kind</td></tr>
-<tr><td colspan="4" class="doc" id="ofKind"><pre>\brief Matches unary expressions of a certain kind.
+<tr><td>Matcher&lt;UnaryExprOrTypeTraitExpr&gt;</td><td class="name" onclick="toggle('ofKind0')">ofKind</td><td>UnaryExprOrTypeTrait Kind</td></tr>
+<tr><td colspan="4" class="doc" id="ofKind0"><pre>\brief Matches unary expressions of a certain kind.
 
 Given
   int x;
@@ -1002,8 +1002,8 @@ unaryExprOrTypeTraitExpr(ofKind(UETT_SizeOf))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;UnaryOperator&gt;</td><td class="name" onclick="toggle(this)">hasOperatorName</td><td>std::string Name</td></tr>
-<tr><td colspan="4" class="doc" id="hasOperatorName"><pre>\brief Matches the operator Name of operator expressions (binary or
+<tr><td>Matcher&lt;UnaryOperator&gt;</td><td class="name" onclick="toggle('hasOperatorName1')">hasOperatorName</td><td>std::string Name</td></tr>
+<tr><td colspan="4" class="doc" id="hasOperatorName1"><pre>\brief Matches the operator Name of operator expressions (binary or
 unary).
 
 Example matches a || b (matcher = binaryOperator(hasOperatorName("||")))
@@ -1011,8 +1011,8 @@ Example matches a || b (matcher = binaryOperator(hasOperatorName("||")))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;VarDecl&gt;</td><td class="name" onclick="toggle(this)">isDefinition</td><td></td></tr>
-<tr><td colspan="4" class="doc" id="isDefinition"><pre>\brief Matches if a declaration has a body attached.
+<tr><td>Matcher&lt;VarDecl&gt;</td><td class="name" onclick="toggle('isDefinition1')">isDefinition</td><td></td></tr>
+<tr><td colspan="4" class="doc" id="isDefinition1"><pre>\brief Matches if a declaration has a body attached.
 
 Example matches A, va, fa
   class A {};
@@ -1026,8 +1026,8 @@ Usable as: Matcher&lt;TagDecl>, Matcher&lt;VarDecl>, Matcher&lt;FunctionDecl>
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;VarDecl&gt;</td><td class="name" onclick="toggle(this)">isExplicitTemplateSpecialization</td><td></td></tr>
-<tr><td colspan="4" class="doc" id="isExplicitTemplateSpecialization"><pre>\brief Matches explicit template specializations of function, class, or
+<tr><td>Matcher&lt;VarDecl&gt;</td><td class="name" onclick="toggle('isExplicitTemplateSpecialization1')">isExplicitTemplateSpecialization</td><td></td></tr>
+<tr><td colspan="4" class="doc" id="isExplicitTemplateSpecialization1"><pre>\brief Matches explicit template specializations of function, class, or
 static member variable template instantiations.
 
 Given
@@ -1040,8 +1040,8 @@ Usable as: Matcher&lt;FunctionDecl>, Matcher&lt;VarDecl>, Matcher&lt;CXXRecordDe
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;VarDecl&gt;</td><td class="name" onclick="toggle(this)">isTemplateInstantiation</td><td></td></tr>
-<tr><td colspan="4" class="doc" id="isTemplateInstantiation"><pre>\brief Matches template instantiations of function, class, or static
+<tr><td>Matcher&lt;VarDecl&gt;</td><td class="name" onclick="toggle('isTemplateInstantiation1')">isTemplateInstantiation</td><td></td></tr>
+<tr><td colspan="4" class="doc" id="isTemplateInstantiation1"><pre>\brief Matches template instantiations of function, class, or static
 member variable template instantiations.
 
 Given
@@ -1071,8 +1071,8 @@ Usable as: Matcher&lt;FunctionDecl>, Matcher&lt;VarDecl>, Matcher&lt;CXXRecordDe
 <tr style="text-align:left"><th>Return type</th><th>Name</th><th>Parameters</th></tr>
 <!-- START_TRAVERSAL_MATCHERS -->
 
-<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle(this)">forEach</td><td>Matcher&lt;ChildT>  ChildMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="forEach"><pre>\brief Matches AST nodes that have child AST nodes that match the
+<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle('forEach0')">forEach</td><td>Matcher&lt;ChildT>  ChildMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="forEach0"><pre>\brief Matches AST nodes that have child AST nodes that match the
 provided matcher.
 
 Example matches X, Y (matcher = record(forEach(record(hasName("X")))
@@ -1089,8 +1089,8 @@ Usable as: Any Matcher
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle(this)">forEachDescendant</td><td>Matcher&lt;DescendantT>  DescendantMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="forEachDescendant"><pre>\brief Matches AST nodes that have descendant AST nodes that match the
+<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle('forEachDescendant0')">forEachDescendant</td><td>Matcher&lt;DescendantT>  DescendantMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="forEachDescendant0"><pre>\brief Matches AST nodes that have descendant AST nodes that match the
 provided matcher.
 
 Example matches X, A, B, C
@@ -1113,8 +1113,8 @@ Usable as: Any Matcher
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle(this)">has</td><td>Matcher&lt;ChildT>  ChildMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="has"><pre>\brief Matches AST nodes that have child AST nodes that match the
+<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle('has0')">has</td><td>Matcher&lt;ChildT>  ChildMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="has0"><pre>\brief Matches AST nodes that have child AST nodes that match the
 provided matcher.
 
 Example matches X, Y (matcher = record(has(record(hasName("X")))
@@ -1128,8 +1128,8 @@ Usable as: Any Matcher
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle(this)">hasDescendant</td><td>Matcher&lt;DescendantT>  DescendantMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasDescendant"><pre>\brief Matches AST nodes that have descendant AST nodes that match the
+<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle('hasDescendant0')">hasDescendant</td><td>Matcher&lt;DescendantT>  DescendantMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasDescendant0"><pre>\brief Matches AST nodes that have descendant AST nodes that match the
 provided matcher.
 
 Example matches X, Y, Z
@@ -1144,8 +1144,8 @@ Usable as: Any Matcher
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ArraySubscriptExpr&gt;</td><td class="name" onclick="toggle(this)">hasBase</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasBase"><pre>\brief Matches the base expression of an array subscript expression.
+<tr><td>Matcher&lt;ArraySubscriptExpr&gt;</td><td class="name" onclick="toggle('hasBase0')">hasBase</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasBase0"><pre>\brief Matches the base expression of an array subscript expression.
 
 Given
   int i[5];
@@ -1156,8 +1156,8 @@ arraySubscriptExpression(hasBase(implicitCast(
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ArraySubscriptExpr&gt;</td><td class="name" onclick="toggle(this)">hasIndex</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasIndex"><pre>\brief Matches the index expression of an array subscript expression.
+<tr><td>Matcher&lt;ArraySubscriptExpr&gt;</td><td class="name" onclick="toggle('hasIndex0')">hasIndex</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasIndex0"><pre>\brief Matches the index expression of an array subscript expression.
 
 Given
   int i[5];
@@ -1167,38 +1167,38 @@ arraySubscriptExpression(hasIndex(integerLiteral()))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;BinaryOperator&gt;</td><td class="name" onclick="toggle(this)">hasEitherOperand</td><td>Matcher&lt;Expr>  InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasEitherOperand"><pre>\brief Matches if either the left hand side or the right hand side of a
+<tr><td>Matcher&lt;BinaryOperator&gt;</td><td class="name" onclick="toggle('hasEitherOperand0')">hasEitherOperand</td><td>Matcher&lt;Expr>  InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasEitherOperand0"><pre>\brief Matches if either the left hand side or the right hand side of a
 binary operator matches.
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;BinaryOperator&gt;</td><td class="name" onclick="toggle(this)">hasLHS</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasLHS"><pre>\brief Matches the left hand side of binary operator expressions.
+<tr><td>Matcher&lt;BinaryOperator&gt;</td><td class="name" onclick="toggle('hasLHS0')">hasLHS</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasLHS0"><pre>\brief Matches the left hand side of binary operator expressions.
 
 Example matches a (matcher = binaryOperator(hasLHS()))
   a || b
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;BinaryOperator&gt;</td><td class="name" onclick="toggle(this)">hasRHS</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasRHS"><pre>\brief Matches the right hand side of binary operator expressions.
+<tr><td>Matcher&lt;BinaryOperator&gt;</td><td class="name" onclick="toggle('hasRHS0')">hasRHS</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasRHS0"><pre>\brief Matches the right hand side of binary operator expressions.
 
 Example matches b (matcher = binaryOperator(hasRHS()))
   a || b
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CXXConstructExpr&gt;</td><td class="name" onclick="toggle(this)">hasDeclaration</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasDeclaration"><pre>\brief Matches a type if the declaration of the type matches the given
+<tr><td>Matcher&lt;CXXConstructExpr&gt;</td><td class="name" onclick="toggle('hasDeclaration0')">hasDeclaration</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasDeclaration0"><pre>\brief Matches a type if the declaration of the type matches the given
 matcher.
 
 Usable as: Matcher&lt;QualType>, Matcher&lt;CallExpr>, Matcher&lt;CXXConstructExpr>
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CXXConstructorDecl&gt;</td><td class="name" onclick="toggle(this)">hasAnyConstructorInitializer</td><td>Matcher&lt;CXXCtorInitializer> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasAnyConstructorInitializer"><pre>\brief Matches a constructor initializer.
+<tr><td>Matcher&lt;CXXConstructorDecl&gt;</td><td class="name" onclick="toggle('hasAnyConstructorInitializer0')">hasAnyConstructorInitializer</td><td>Matcher&lt;CXXCtorInitializer> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasAnyConstructorInitializer0"><pre>\brief Matches a constructor initializer.
 
 Given
   struct Foo {
@@ -1210,8 +1210,8 @@ record(has(constructor(hasAnyConstructorInitializer(anything()))))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CXXCtorInitializer&gt;</td><td class="name" onclick="toggle(this)">forField</td><td>Matcher&lt;FieldDecl> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="forField"><pre>\brief Matches the field declaration of a constructor initializer.
+<tr><td>Matcher&lt;CXXCtorInitializer&gt;</td><td class="name" onclick="toggle('forField0')">forField</td><td>Matcher&lt;FieldDecl> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="forField0"><pre>\brief Matches the field declaration of a constructor initializer.
 
 Given
   struct Foo {
@@ -1225,8 +1225,8 @@ with forField matching foo_
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CXXCtorInitializer&gt;</td><td class="name" onclick="toggle(this)">withInitializer</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="withInitializer"><pre>\brief Matches the initializer expression of a constructor initializer.
+<tr><td>Matcher&lt;CXXCtorInitializer&gt;</td><td class="name" onclick="toggle('withInitializer0')">withInitializer</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="withInitializer0"><pre>\brief Matches the initializer expression of a constructor initializer.
 
 Given
   struct Foo {
@@ -1240,8 +1240,8 @@ with withInitializer matching (1)
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CXXMemberCallExpr&gt;</td><td class="name" onclick="toggle(this)">on</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="on"><pre>\brief Matches on the implicit object argument of a member call expression.
+<tr><td>Matcher&lt;CXXMemberCallExpr&gt;</td><td class="name" onclick="toggle('on0')">on</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="on0"><pre>\brief Matches on the implicit object argument of a member call expression.
 
 Example matches y.x() (matcher = call(on(hasType(record(hasName("Y"))))))
   class Y { public: void x(); };
@@ -1251,17 +1251,17 @@ FIXME: Overload to allow directly matching types?
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CXXMemberCallExpr&gt;</td><td class="name" onclick="toggle(this)">onImplicitObjectArgument</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="onImplicitObjectArgument"><pre></pre></td></tr>
+<tr><td>Matcher&lt;CXXMemberCallExpr&gt;</td><td class="name" onclick="toggle('onImplicitObjectArgument0')">onImplicitObjectArgument</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="onImplicitObjectArgument0"><pre></pre></td></tr>
 
 
-<tr><td>Matcher&lt;CXXMemberCallExpr&gt;</td><td class="name" onclick="toggle(this)">thisPointerType</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="thisPointerType"><pre>\brief Overloaded to match the type's declaration.
+<tr><td>Matcher&lt;CXXMemberCallExpr&gt;</td><td class="name" onclick="toggle('thisPointerType1')">thisPointerType</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="thisPointerType1"><pre>\brief Overloaded to match the type's declaration.
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CXXMethodDecl&gt;</td><td class="name" onclick="toggle(this)">ofClass</td><td>Matcher&lt;CXXRecordDecl> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="ofClass"><pre>\brief Matches the class declaration that the given method declaration
+<tr><td>Matcher&lt;CXXMethodDecl&gt;</td><td class="name" onclick="toggle('ofClass0')">ofClass</td><td>Matcher&lt;CXXRecordDecl> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="ofClass0"><pre>\brief Matches the class declaration that the given method declaration
 belongs to.
 
 FIXME: Generalize this for other kinds of declarations.
@@ -1279,8 +1279,8 @@ Example matches A() in the last line
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CXXRecordDecl&gt;</td><td class="name" onclick="toggle(this)">isDerivedFrom</td><td>Matcher&lt;NamedDecl> Base</td></tr>
-<tr><td colspan="4" class="doc" id="isDerivedFrom"><pre>\brief Matches C++ classes that are directly or indirectly derived from
+<tr><td>Matcher&lt;CXXRecordDecl&gt;</td><td class="name" onclick="toggle('isDerivedFrom0')">isDerivedFrom</td><td>Matcher&lt;NamedDecl> Base</td></tr>
+<tr><td colspan="4" class="doc" id="isDerivedFrom0"><pre>\brief Matches C++ classes that are directly or indirectly derived from
 a class matching \c Base.
 
 Note that a class is considered to be also derived from itself.
@@ -1300,8 +1300,8 @@ In the following example, Bar matches isDerivedFrom(hasName("X")):
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CallExpr&gt;</td><td class="name" onclick="toggle(this)">callee</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="callee"><pre>\brief Matches if the call expression's callee's declaration matches the
+<tr><td>Matcher&lt;CallExpr&gt;</td><td class="name" onclick="toggle('callee1')">callee</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="callee1"><pre>\brief Matches if the call expression's callee's declaration matches the
 given matcher.
 
 Example matches y.x() (matcher = call(callee(method(hasName("x")))))
@@ -1310,8 +1310,8 @@ Example matches y.x() (matcher = call(callee(method(hasName("x")))))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CallExpr&gt;</td><td class="name" onclick="toggle(this)">hasAnyArgument</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasAnyArgument"><pre>\brief Matches any argument of a call expression or a constructor call
+<tr><td>Matcher&lt;CallExpr&gt;</td><td class="name" onclick="toggle('hasAnyArgument0')">hasAnyArgument</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasAnyArgument0"><pre>\brief Matches any argument of a call expression or a constructor call
 expression.
 
 Given
@@ -1323,8 +1323,8 @@ with hasAnyArgument(...)
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CallExpr&gt;</td><td class="name" onclick="toggle(this)">hasArgument</td><td>unsigned N, Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasArgument"><pre>\brief Matches the n'th argument of a call expression or a constructor
+<tr><td>Matcher&lt;CallExpr&gt;</td><td class="name" onclick="toggle('hasArgument0')">hasArgument</td><td>unsigned N, Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasArgument0"><pre>\brief Matches the n'th argument of a call expression or a constructor
 call expression.
 
 Example matches y in x(y)
@@ -1333,16 +1333,16 @@ Example matches y in x(y)
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CallExpr&gt;</td><td class="name" onclick="toggle(this)">hasDeclaration</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasDeclaration"><pre>\brief Matches a type if the declaration of the type matches the given
+<tr><td>Matcher&lt;CallExpr&gt;</td><td class="name" onclick="toggle('hasDeclaration1')">hasDeclaration</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasDeclaration1"><pre>\brief Matches a type if the declaration of the type matches the given
 matcher.
 
 Usable as: Matcher&lt;QualType>, Matcher&lt;CallExpr>, Matcher&lt;CXXConstructExpr>
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CastExpr&gt;</td><td class="name" onclick="toggle(this)">hasSourceExpression</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasSourceExpression"><pre>\brief Matches if the cast's source expression matches the given matcher.
+<tr><td>Matcher&lt;CastExpr&gt;</td><td class="name" onclick="toggle('hasSourceExpression0')">hasSourceExpression</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasSourceExpression0"><pre>\brief Matches if the cast's source expression matches the given matcher.
 
 Example: matches "a string" (matcher =
                                  hasSourceExpression(constructorCall()))
@@ -1352,8 +1352,8 @@ URL url = "a string";
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ClassTemplateSpecializationDecl&gt;</td><td class="name" onclick="toggle(this)">hasAnyTemplateArgument</td><td>Matcher&lt;TemplateArgument> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasAnyTemplateArgument"><pre>\brief Matches classTemplateSpecializations that have at least one
+<tr><td>Matcher&lt;ClassTemplateSpecializationDecl&gt;</td><td class="name" onclick="toggle('hasAnyTemplateArgument0')">hasAnyTemplateArgument</td><td>Matcher&lt;TemplateArgument> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasAnyTemplateArgument0"><pre>\brief Matches classTemplateSpecializations that have at least one
 TemplateArgument matching the given InnerMatcher.
 
 Given
@@ -1366,8 +1366,8 @@ classTemplateSpecialization(hasAnyTemplateArgument(
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ClassTemplateSpecializationDecl&gt;</td><td class="name" onclick="toggle(this)">hasTemplateArgument</td><td>unsigned N, Matcher&lt;TemplateArgument> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasTemplateArgument"><pre>\brief Matches classTemplateSpecializations where the n'th TemplateArgument
+<tr><td>Matcher&lt;ClassTemplateSpecializationDecl&gt;</td><td class="name" onclick="toggle('hasTemplateArgument0')">hasTemplateArgument</td><td>unsigned N, Matcher&lt;TemplateArgument> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasTemplateArgument0"><pre>\brief Matches classTemplateSpecializations where the n'th TemplateArgument
 matches the given InnerMatcher.
 
 Given
@@ -1380,8 +1380,8 @@ classTemplateSpecialization(hasTemplateArgument(
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;CompoundStmt&gt;</td><td class="name" onclick="toggle(this)">hasAnySubstatement</td><td>Matcher&lt;Stmt> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasAnySubstatement"><pre>\brief Matches compound statements where at least one substatement matches
+<tr><td>Matcher&lt;CompoundStmt&gt;</td><td class="name" onclick="toggle('hasAnySubstatement0')">hasAnySubstatement</td><td>Matcher&lt;Stmt> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasAnySubstatement0"><pre>\brief Matches compound statements where at least one substatement matches
 a given matcher.
 
 Given
@@ -1393,8 +1393,8 @@ with compoundStatement()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ConditionalOperator&gt;</td><td class="name" onclick="toggle(this)">hasCondition</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasCondition"><pre>\brief Matches the condition expression of an if statement, for loop,
+<tr><td>Matcher&lt;ConditionalOperator&gt;</td><td class="name" onclick="toggle('hasCondition4')">hasCondition</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasCondition4"><pre>\brief Matches the condition expression of an if statement, for loop,
 or conditional operator.
 
 Example matches true (matcher = hasCondition(boolLiteral(equals(true))))
@@ -1402,24 +1402,24 @@ Example matches true (matcher = hasCondition(boolLiteral(equals(true))))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ConditionalOperator&gt;</td><td class="name" onclick="toggle(this)">hasFalseExpression</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasFalseExpression"><pre>\brief Matches the false branch expression of a conditional operator.
+<tr><td>Matcher&lt;ConditionalOperator&gt;</td><td class="name" onclick="toggle('hasFalseExpression0')">hasFalseExpression</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasFalseExpression0"><pre>\brief Matches the false branch expression of a conditional operator.
 
 Example matches b
   condition ? a : b
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ConditionalOperator&gt;</td><td class="name" onclick="toggle(this)">hasTrueExpression</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasTrueExpression"><pre>\brief Matches the true branch expression of a conditional operator.
+<tr><td>Matcher&lt;ConditionalOperator&gt;</td><td class="name" onclick="toggle('hasTrueExpression0')">hasTrueExpression</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasTrueExpression0"><pre>\brief Matches the true branch expression of a conditional operator.
 
 Example matches a
   condition ? a : b
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;DeclRefExpr&gt;</td><td class="name" onclick="toggle(this)">throughUsingDecl</td><td>Matcher&lt;UsingShadowDecl> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="throughUsingDecl"><pre>\brief Matches a \c DeclRefExpr that refers to a declaration through a
+<tr><td>Matcher&lt;DeclRefExpr&gt;</td><td class="name" onclick="toggle('throughUsingDecl0')">throughUsingDecl</td><td>Matcher&lt;UsingShadowDecl> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="throughUsingDecl0"><pre>\brief Matches a \c DeclRefExpr that refers to a declaration through a
 specific using shadow declaration.
 
 FIXME: This currently only works for functions. Fix.
@@ -1436,8 +1436,8 @@ declarationReference(throughUsingDeclaration(anything()))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;DeclRefExpr&gt;</td><td class="name" onclick="toggle(this)">to</td><td>Matcher&lt;Decl> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="to"><pre>\brief Matches a DeclRefExpr that refers to a declaration that matches the
+<tr><td>Matcher&lt;DeclRefExpr&gt;</td><td class="name" onclick="toggle('to0')">to</td><td>Matcher&lt;Decl> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="to0"><pre>\brief Matches a DeclRefExpr that refers to a declaration that matches the
 specified matcher.
 
 Example matches x in if(x)
@@ -1447,8 +1447,8 @@ Example matches x in if(x)
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;DeclStmt&gt;</td><td class="name" onclick="toggle(this)">containsDeclaration</td><td>unsigned N, Matcher&lt;Decl> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="containsDeclaration"><pre>\brief Matches the n'th declaration of a declaration statement.
+<tr><td>Matcher&lt;DeclStmt&gt;</td><td class="name" onclick="toggle('containsDeclaration0')">containsDeclaration</td><td>unsigned N, Matcher&lt;Decl> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="containsDeclaration0"><pre>\brief Matches the n'th declaration of a declaration statement.
 
 Note that this does not work for global declarations because the AST
 breaks up multiple-declaration DeclStmt's into multiple single-declaration
@@ -1466,8 +1466,8 @@ declarationStatement(containsDeclaration(1, variable()))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;DeclStmt&gt;</td><td class="name" onclick="toggle(this)">hasSingleDecl</td><td>Matcher&lt;Decl> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasSingleDecl"><pre>\brief Matches the Decl of a DeclStmt which has a single declaration.
+<tr><td>Matcher&lt;DeclStmt&gt;</td><td class="name" onclick="toggle('hasSingleDecl0')">hasSingleDecl</td><td>Matcher&lt;Decl> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasSingleDecl0"><pre>\brief Matches the Decl of a DeclStmt which has a single declaration.
 
 Given
   int a, b;
@@ -1477,8 +1477,8 @@ declarationStatement(hasSingleDecl(anything()))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;DoStmt&gt;</td><td class="name" onclick="toggle(this)">hasBody</td><td>Matcher&lt;Stmt> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasBody"><pre>\brief Matches a 'for', 'while', or 'do while' statement that has
+<tr><td>Matcher&lt;DoStmt&gt;</td><td class="name" onclick="toggle('hasBody0')">hasBody</td><td>Matcher&lt;Stmt> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasBody0"><pre>\brief Matches a 'for', 'while', or 'do while' statement that has
 a given body.
 
 Given
@@ -1490,8 +1490,8 @@ with compoundStatement()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;DoStmt&gt;</td><td class="name" onclick="toggle(this)">hasCondition</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasCondition"><pre>\brief Matches the condition expression of an if statement, for loop,
+<tr><td>Matcher&lt;DoStmt&gt;</td><td class="name" onclick="toggle('hasCondition3')">hasCondition</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasCondition3"><pre>\brief Matches the condition expression of an if statement, for loop,
 or conditional operator.
 
 Example matches true (matcher = hasCondition(boolLiteral(equals(true))))
@@ -1499,16 +1499,16 @@ Example matches true (matcher = hasCondition(boolLiteral(equals(true))))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ExplicitCastExpr&gt;</td><td class="name" onclick="toggle(this)">hasDestinationType</td><td>Matcher&lt;QualType> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasDestinationType"><pre>\brief Matches casts whose destination type matches a given matcher.
+<tr><td>Matcher&lt;ExplicitCastExpr&gt;</td><td class="name" onclick="toggle('hasDestinationType0')">hasDestinationType</td><td>Matcher&lt;QualType> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasDestinationType0"><pre>\brief Matches casts whose destination type matches a given matcher.
 
 (Note: Clang's AST refers to other conversions as "casts" too, and calls
 actual casts "explicit" casts.)
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle(this)">hasType</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasType"><pre>\brief Overloaded to match the declaration of the expression's or value
+<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle('hasType3')">hasType</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasType3"><pre>\brief Overloaded to match the declaration of the expression's or value
 declaration's type.
 
 In case of a value declaration (for example a variable declaration),
@@ -1526,8 +1526,8 @@ Usable as: Matcher&lt;Expr>, Matcher&lt;ValueDecl>
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle(this)">ignoringImpCasts</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="ignoringImpCasts"><pre>\brief Matches expressions that match InnerMatcher after any implicit casts
+<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle('ignoringImpCasts0')">ignoringImpCasts</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="ignoringImpCasts0"><pre>\brief Matches expressions that match InnerMatcher after any implicit casts
 are stripped off.
 
 Parentheses and explicit casts are not discarded.
@@ -1549,8 +1549,8 @@ only match the declarations for b, c, and d.
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle(this)">ignoringParenCasts</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="ignoringParenCasts"><pre>\brief Matches expressions that match InnerMatcher after parentheses and
+<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle('ignoringParenCasts0')">ignoringParenCasts</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="ignoringParenCasts0"><pre>\brief Matches expressions that match InnerMatcher after parentheses and
 casts are stripped off.
 
 Implicit and non-C Style casts are also discarded.
@@ -1568,8 +1568,8 @@ only match the declaration for a.
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle(this)">ignoringParenImpCasts</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="ignoringParenImpCasts"><pre>\brief Matches expressions that match InnerMatcher after implicit casts and
+<tr><td>Matcher&lt;Expr&gt;</td><td class="name" onclick="toggle('ignoringParenImpCasts0')">ignoringParenImpCasts</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="ignoringParenImpCasts0"><pre>\brief Matches expressions that match InnerMatcher after implicit casts and
 parentheses are stripped off.
 
 Explicit casts are not discarded.
@@ -1593,8 +1593,8 @@ would only match the declaration for a.
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ForStmt&gt;</td><td class="name" onclick="toggle(this)">hasBody</td><td>Matcher&lt;Stmt> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasBody"><pre>\brief Matches a 'for', 'while', or 'do while' statement that has
+<tr><td>Matcher&lt;ForStmt&gt;</td><td class="name" onclick="toggle('hasBody1')">hasBody</td><td>Matcher&lt;Stmt> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasBody1"><pre>\brief Matches a 'for', 'while', or 'do while' statement that has
 a given body.
 
 Given
@@ -1606,8 +1606,8 @@ with compoundStatement()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ForStmt&gt;</td><td class="name" onclick="toggle(this)">hasCondition</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasCondition"><pre>\brief Matches the condition expression of an if statement, for loop,
+<tr><td>Matcher&lt;ForStmt&gt;</td><td class="name" onclick="toggle('hasCondition1')">hasCondition</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasCondition1"><pre>\brief Matches the condition expression of an if statement, for loop,
 or conditional operator.
 
 Example matches true (matcher = hasCondition(boolLiteral(equals(true))))
@@ -1615,8 +1615,8 @@ Example matches true (matcher = hasCondition(boolLiteral(equals(true))))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ForStmt&gt;</td><td class="name" onclick="toggle(this)">hasIncrement</td><td>Matcher&lt;Stmt> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasIncrement"><pre>\brief Matches the increment statement of a for loop.
+<tr><td>Matcher&lt;ForStmt&gt;</td><td class="name" onclick="toggle('hasIncrement0')">hasIncrement</td><td>Matcher&lt;Stmt> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasIncrement0"><pre>\brief Matches the increment statement of a for loop.
 
 Example:
     forStmt(hasIncrement(unaryOperator(hasOperatorName("++"))))
@@ -1625,8 +1625,8 @@ matches '++x' in
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ForStmt&gt;</td><td class="name" onclick="toggle(this)">hasLoopInit</td><td>Matcher&lt;Stmt> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasLoopInit"><pre>\brief Matches the initialization statement of a for loop.
+<tr><td>Matcher&lt;ForStmt&gt;</td><td class="name" onclick="toggle('hasLoopInit0')">hasLoopInit</td><td>Matcher&lt;Stmt> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasLoopInit0"><pre>\brief Matches the initialization statement of a for loop.
 
 Example:
     forStmt(hasLoopInit(declarationStatement()))
@@ -1635,8 +1635,8 @@ matches 'int x = 0' in
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;FunctionDecl&gt;</td><td class="name" onclick="toggle(this)">hasAnyParameter</td><td>Matcher&lt;ParmVarDecl> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasAnyParameter"><pre>\brief Matches any parameter of a function declaration.
+<tr><td>Matcher&lt;FunctionDecl&gt;</td><td class="name" onclick="toggle('hasAnyParameter0')">hasAnyParameter</td><td>Matcher&lt;ParmVarDecl> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasAnyParameter0"><pre>\brief Matches any parameter of a function declaration.
 
 Does not match the 'this' parameter of a method.
 
@@ -1649,8 +1649,8 @@ with hasAnyParameter(...)
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;FunctionDecl&gt;</td><td class="name" onclick="toggle(this)">hasParameter</td><td>unsigned N, Matcher&lt;ParmVarDecl> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasParameter"><pre>\brief Matches the n'th parameter of a function declaration.
+<tr><td>Matcher&lt;FunctionDecl&gt;</td><td class="name" onclick="toggle('hasParameter0')">hasParameter</td><td>unsigned N, Matcher&lt;ParmVarDecl> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasParameter0"><pre>\brief Matches the n'th parameter of a function declaration.
 
 Given
   class X { void f(int x) {} };
@@ -1661,8 +1661,8 @@ with hasParameter(...)
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;FunctionDecl&gt;</td><td class="name" onclick="toggle(this)">returns</td><td>Matcher&lt;QualType> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="returns"><pre>\brief Matches the return type of a function declaration.
+<tr><td>Matcher&lt;FunctionDecl&gt;</td><td class="name" onclick="toggle('returns0')">returns</td><td>Matcher&lt;QualType> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="returns0"><pre>\brief Matches the return type of a function declaration.
 
 Given:
   class X { int f() { return 1; } };
@@ -1671,8 +1671,8 @@ method(returns(asString("int")))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;IfStmt&gt;</td><td class="name" onclick="toggle(this)">hasCondition</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasCondition"><pre>\brief Matches the condition expression of an if statement, for loop,
+<tr><td>Matcher&lt;IfStmt&gt;</td><td class="name" onclick="toggle('hasCondition0')">hasCondition</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasCondition0"><pre>\brief Matches the condition expression of an if statement, for loop,
 or conditional operator.
 
 Example matches true (matcher = hasCondition(boolLiteral(equals(true))))
@@ -1680,8 +1680,8 @@ Example matches true (matcher = hasCondition(boolLiteral(equals(true))))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;IfStmt&gt;</td><td class="name" onclick="toggle(this)">hasConditionVariableStatement</td><td>Matcher&lt;DeclStmt> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasConditionVariableStatement"><pre>\brief Matches the condition variable statement in an if statement.
+<tr><td>Matcher&lt;IfStmt&gt;</td><td class="name" onclick="toggle('hasConditionVariableStatement0')">hasConditionVariableStatement</td><td>Matcher&lt;DeclStmt> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasConditionVariableStatement0"><pre>\brief Matches the condition variable statement in an if statement.
 
 Given
   if (A* a = GetAPointer()) {}
@@ -1690,16 +1690,16 @@ hasConditionVariableStatment(...)
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ImplicitCastExpr&gt;</td><td class="name" onclick="toggle(this)">hasImplicitDestinationType</td><td>Matcher&lt;QualType> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasImplicitDestinationType"><pre>\brief Matches implicit casts whose destination type matches a given
+<tr><td>Matcher&lt;ImplicitCastExpr&gt;</td><td class="name" onclick="toggle('hasImplicitDestinationType0')">hasImplicitDestinationType</td><td>Matcher&lt;QualType> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasImplicitDestinationType0"><pre>\brief Matches implicit casts whose destination type matches a given
 matcher.
 
 FIXME: Unit test this matcher
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;MemberExpr&gt;</td><td class="name" onclick="toggle(this)">hasObjectExpression</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasObjectExpression"><pre>\brief Matches a member expression where the object expression is
+<tr><td>Matcher&lt;MemberExpr&gt;</td><td class="name" onclick="toggle('hasObjectExpression0')">hasObjectExpression</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasObjectExpression0"><pre>\brief Matches a member expression where the object expression is
 matched by a given matcher.
 
 Given
@@ -1712,8 +1712,8 @@ with hasObjectExpression(...)
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;MemberExpr&gt;</td><td class="name" onclick="toggle(this)">member</td><td>Matcher&lt;ValueDecl> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="member"><pre>\brief Matches a member expression where the member is matched by a
+<tr><td>Matcher&lt;MemberExpr&gt;</td><td class="name" onclick="toggle('member0')">member</td><td>Matcher&lt;ValueDecl> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="member0"><pre>\brief Matches a member expression where the member is matched by a
 given matcher.
 
 Given
@@ -1726,38 +1726,38 @@ memberExpression(member(hasName("first")))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;QualType&gt;</td><td class="name" onclick="toggle(this)">hasDeclaration</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasDeclaration"><pre>\brief Matches a type if the declaration of the type matches the given
+<tr><td>Matcher&lt;QualType&gt;</td><td class="name" onclick="toggle('hasDeclaration2')">hasDeclaration</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasDeclaration2"><pre>\brief Matches a type if the declaration of the type matches the given
 matcher.
 
 Usable as: Matcher&lt;QualType>, Matcher&lt;CallExpr>, Matcher&lt;CXXConstructExpr>
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;QualType&gt;</td><td class="name" onclick="toggle(this)">pointsTo</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="pointsTo"><pre>\brief Overloaded to match the pointee type's declaration.
+<tr><td>Matcher&lt;QualType&gt;</td><td class="name" onclick="toggle('pointsTo1')">pointsTo</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="pointsTo1"><pre>\brief Overloaded to match the pointee type's declaration.
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;QualType&gt;</td><td class="name" onclick="toggle(this)">references</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="references"><pre>\brief Overloaded to match the referenced type's declaration.
+<tr><td>Matcher&lt;QualType&gt;</td><td class="name" onclick="toggle('references1')">references</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="references1"><pre>\brief Overloaded to match the referenced type's declaration.
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">alignOfExpr</td><td>Matcher&lt;UnaryExprOrTypeTraitExpr>  InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="alignOfExpr"><pre>\brief Same as unaryExprOrTypeTraitExpr, but only matching
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('alignOfExpr0')">alignOfExpr</td><td>Matcher&lt;UnaryExprOrTypeTraitExpr>  InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="alignOfExpr0"><pre>\brief Same as unaryExprOrTypeTraitExpr, but only matching
 alignof.
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle(this)">sizeOfExpr</td><td>Matcher&lt;UnaryExprOrTypeTraitExpr>  InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="sizeOfExpr"><pre>\brief Same as unaryExprOrTypeTraitExpr, but only matching
+<tr><td>Matcher&lt;Stmt&gt;</td><td class="name" onclick="toggle('sizeOfExpr0')">sizeOfExpr</td><td>Matcher&lt;UnaryExprOrTypeTraitExpr>  InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="sizeOfExpr0"><pre>\brief Same as unaryExprOrTypeTraitExpr, but only matching
 sizeof.
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;TemplateArgument&gt;</td><td class="name" onclick="toggle(this)">refersToDeclaration</td><td>Matcher&lt;Decl> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="refersToDeclaration"><pre>\brief Matches a TemplateArgument that refers to a certain declaration.
+<tr><td>Matcher&lt;TemplateArgument&gt;</td><td class="name" onclick="toggle('refersToDeclaration0')">refersToDeclaration</td><td>Matcher&lt;Decl> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="refersToDeclaration0"><pre>\brief Matches a TemplateArgument that refers to a certain declaration.
 
 Given
   template&lt;typename T> struct A {};
@@ -1770,8 +1770,8 @@ classTemplateSpecialization(hasAnyTemplateArgument(
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;TemplateArgument&gt;</td><td class="name" onclick="toggle(this)">refersToType</td><td>Matcher&lt;QualType> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="refersToType"><pre>\brief Matches a TemplateArgument that refers to a certain type.
+<tr><td>Matcher&lt;TemplateArgument&gt;</td><td class="name" onclick="toggle('refersToType0')">refersToType</td><td>Matcher&lt;QualType> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="refersToType0"><pre>\brief Matches a TemplateArgument that refers to a certain type.
 
 Given
   struct X {};
@@ -1783,15 +1783,15 @@ classTemplateSpecialization(hasAnyTemplateArgument(
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;T&gt;</td><td class="name" onclick="toggle(this)">id</td><td>std::string  ID, BindableMatcher&lt;T>  InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="id"><pre>\brief If the provided matcher matches a node, binds the node to 'ID'.
+<tr><td>Matcher&lt;T&gt;</td><td class="name" onclick="toggle('id0')">id</td><td>std::string  ID, BindableMatcher&lt;T>  InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="id0"><pre>\brief If the provided matcher matches a node, binds the node to 'ID'.
 
 FIXME: Add example for accessing it.
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;UnaryExprOrTypeTraitExpr&gt;</td><td class="name" onclick="toggle(this)">hasArgumentOfType</td><td>Matcher&lt;QualType> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasArgumentOfType"><pre>\brief Matches unary expressions that have a specific type of argument.
+<tr><td>Matcher&lt;UnaryExprOrTypeTraitExpr&gt;</td><td class="name" onclick="toggle('hasArgumentOfType0')">hasArgumentOfType</td><td>Matcher&lt;QualType> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasArgumentOfType0"><pre>\brief Matches unary expressions that have a specific type of argument.
 
 Given
   int a, c; float b; int s = sizeof(a) + sizeof(b) + alignof(c);
@@ -1800,16 +1800,16 @@ unaryExprOrTypeTraitExpr(hasArgumentOfType(asString("int"))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;UnaryOperator&gt;</td><td class="name" onclick="toggle(this)">hasUnaryOperand</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasUnaryOperand"><pre>\brief Matches if the operand of a unary operator matches.
+<tr><td>Matcher&lt;UnaryOperator&gt;</td><td class="name" onclick="toggle('hasUnaryOperand0')">hasUnaryOperand</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasUnaryOperand0"><pre>\brief Matches if the operand of a unary operator matches.
 
 Example matches true (matcher = hasOperand(boolLiteral(equals(true))))
   !true
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;UsingDecl&gt;</td><td class="name" onclick="toggle(this)">hasAnyUsingShadowDecl</td><td>Matcher&lt;UsingShadowDecl> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasAnyUsingShadowDecl"><pre>\brief Matches any using shadow declaration.
+<tr><td>Matcher&lt;UsingDecl&gt;</td><td class="name" onclick="toggle('hasAnyUsingShadowDecl0')">hasAnyUsingShadowDecl</td><td>Matcher&lt;UsingShadowDecl> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasAnyUsingShadowDecl0"><pre>\brief Matches any using shadow declaration.
 
 Given
   namespace X { void b(); }
@@ -1819,8 +1819,8 @@ usingDecl(hasAnyUsingShadowDecl(hasName("b"))))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;UsingShadowDecl&gt;</td><td class="name" onclick="toggle(this)">hasTargetDecl</td><td>Matcher&lt;NamedDecl> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasTargetDecl"><pre>\brief Matches a using shadow declaration where the target declaration is
+<tr><td>Matcher&lt;UsingShadowDecl&gt;</td><td class="name" onclick="toggle('hasTargetDecl0')">hasTargetDecl</td><td>Matcher&lt;NamedDecl> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasTargetDecl0"><pre>\brief Matches a using shadow declaration where the target declaration is
 matched by the given matcher.
 
 Given
@@ -1833,8 +1833,8 @@ usingDecl(hasAnyUsingShadowDecl(hasTargetDecl(function())))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;ValueDecl&gt;</td><td class="name" onclick="toggle(this)">hasType</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasType"><pre>\brief Overloaded to match the declaration of the expression's or value
+<tr><td>Matcher&lt;ValueDecl&gt;</td><td class="name" onclick="toggle('hasType2')">hasType</td><td>Matcher&lt;Decl>  InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasType2"><pre>\brief Overloaded to match the declaration of the expression's or value
 declaration's type.
 
 In case of a value declaration (for example a variable declaration),
@@ -1852,8 +1852,8 @@ Usable as: Matcher&lt;Expr>, Matcher&lt;ValueDecl>
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;VarDecl&gt;</td><td class="name" onclick="toggle(this)">hasInitializer</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasInitializer"><pre>\brief Matches a variable declaration that has an initializer expression
+<tr><td>Matcher&lt;VarDecl&gt;</td><td class="name" onclick="toggle('hasInitializer0')">hasInitializer</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasInitializer0"><pre>\brief Matches a variable declaration that has an initializer expression
 that matches the given matcher.
 
 Example matches x (matcher = variable(hasInitializer(call())))
@@ -1862,8 +1862,8 @@ Example matches x (matcher = variable(hasInitializer(call())))
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;WhileStmt&gt;</td><td class="name" onclick="toggle(this)">hasBody</td><td>Matcher&lt;Stmt> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasBody"><pre>\brief Matches a 'for', 'while', or 'do while' statement that has
+<tr><td>Matcher&lt;WhileStmt&gt;</td><td class="name" onclick="toggle('hasBody2')">hasBody</td><td>Matcher&lt;Stmt> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasBody2"><pre>\brief Matches a 'for', 'while', or 'do while' statement that has
 a given body.
 
 Given
@@ -1875,8 +1875,8 @@ with compoundStatement()
 </pre></td></tr>
 
 
-<tr><td>Matcher&lt;WhileStmt&gt;</td><td class="name" onclick="toggle(this)">hasCondition</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
-<tr><td colspan="4" class="doc" id="hasCondition"><pre>\brief Matches the condition expression of an if statement, for loop,
+<tr><td>Matcher&lt;WhileStmt&gt;</td><td class="name" onclick="toggle('hasCondition2')">hasCondition</td><td>Matcher&lt;Expr> InnerMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasCondition2"><pre>\brief Matches the condition expression of an if statement, for loop,
 or conditional operator.
 
 Example matches true (matcher = hasCondition(boolLiteral(equals(true))))
