@@ -1092,10 +1092,11 @@ forEachDescendant(
 ///   class Y {};
 ///
 /// Usable as: Any Matcher
-template <typename M>
-internal::PolymorphicMatcherWithParam1<internal::NotMatcher, M> unless(const M &InnerMatcher) {
+template <typename AnyMatcherT>
+internal::PolymorphicMatcherWithParam1<internal::NotMatcher, AnyMatcherT>
+unless(const AnyMatcherT &InnerMatcher) {
   return internal::PolymorphicMatcherWithParam1<
-    internal::NotMatcher, M>(InnerMatcher);
+    internal::NotMatcher, AnyMatcherT>(InnerMatcher);
 }
 
 /// \brief Matches a type if the declaration of the type matches the given
