@@ -41,21 +41,24 @@ function toggle(td) {
 
 <h1>AST Matcher Reference</h1>
 
-<!-- ======================================================================= -->
-<h2 id="logic-matchers">Logic Matchers</h2>
-<!-- ======================================================================= -->
+<p>This document shows all currently implemented matchers. The matchers are grouped
+by category and node type they match.</p>
 
-<table>
-<tr style="text-align:left"><th>Return type</th><th>Name</th><th>Parameters</th></tr>
-</table>
+<p>There are three different basic categories of matchers:
+<ul>
+<li><a href="#decl-matchers">Node Matchers:</a> Matchers that match a specific type of AST node.</li>
+<li><a href="#narrowing-matchers">Narrowing Matchers:</a> Matchers that match attributes on AST nodes.</li>
+<li><a href="#traversal-matchers">Traversal Matchers:</a> Matchers that allow traversal between AST nodes.</li>
+</ul>
+</p>
 
-<!-- ======================================================================= -->
-<h2 id="generic-traversal">Generic AST Traversal Matchers</h2>
-<!-- ======================================================================= -->
+<p>Within each category the matchers are ordered by node type they match on.
+Note that if a matcher can match multiple node types, it will it will appear
+multiple times. This means that by searching for Matcher&lt;Stmt&gt; you can
+find all matchers that can be used to match on Stmt nodes.</p>
 
-<table>
-<tr style="text-align:left"><th>Return type</th><th>Name</th><th>Parameters</th></tr>
-</table>
+<p>The exception to that rule are matchers that can match on any node. Those
+are marked with a * and are listed in the beginning of each category.</p>
 
 <!-- ======================================================================= -->
 <h2 id="decl-matchers">Node Matcher</h2>
