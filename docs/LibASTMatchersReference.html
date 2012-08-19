@@ -34,11 +34,6 @@ function toggle(id) {
 
 <div id="content">
 
-<!-- Copy & adapt those:
-<tr><td>Matcher&lt;><td class="name" onclick="toggle(this)"></td></td><td>Matcher&lt;> Inner1, ...</td></tr>
-<tr><td colspan="3" class="doc" id=""></td></tr>
--->
-
 <h1>AST Matcher Reference</h1>
 
 <p>This document shows all currently implemented matchers. The matchers are grouped
@@ -64,6 +59,18 @@ are marked with a * and are listed in the beginning of each category.</p>
 <!-- ======================================================================= -->
 <h2 id="decl-matchers">Node Matcher</h2>
 <!-- ======================================================================= -->
+
+<p>Node matchers are at the core of matcher expressions - they specify the type
+of node that is expected. Every match expression starts with a node matcher,
+which can then be further refined with a narrowing or traversal matcher. All
+traversal matchers take node matchers as their arguments.</p>
+
+<p>For convenience, all node matchers take an arbitrary number of arguments
+and implicitly act as allOf matchers.</p>
+
+<p>Node matchers are the only matchers that support the bind("id") call to
+bind the matched node to the given string, to be later retrieved from the
+match callback.</p>
 
 <table>
 <tr style="text-align:left"><th>Return type</th><th>Name</th><th>Parameters</th></tr>
@@ -618,6 +625,12 @@ whileStmt()
 <h2 id="narrowing-matchers">Narrowing Matchers</h2>
 <!-- ======================================================================= -->
 
+<p>Narrowing matchers match certain attributes on the current node, thus
+narrowing down the set of nodes of the current type to match on.</p>
+
+<p>There are special logical narrowing matchers (allOf, anyOf, anything and unless)
+which allow users to create more powerful match expressions.</p>
+
 <table>
 <tr style="text-align:left"><th>Return type</th><th>Name</th><th>Parameters</th></tr>
 <!-- START_NARROWING_MATCHERS -->
@@ -1066,6 +1079,13 @@ Usable as: Matcher&lt;FunctionDecl>, Matcher&lt;VarDecl>, Matcher&lt;CXXRecordDe
 <!-- ======================================================================= -->
 <h2 id="traversal-matchers">AST Traversal Matchers</h2>
 <!-- ======================================================================= -->
+
+<p>Traversal matchers specify the relationship to other nodes that are
+reachable from the current node.</p>
+
+<p>Note that there are special traversal matchers (has, hasDescendant, forEach and
+forEachDescendant) which work on all nodes and allow users to write more generic
+match expressions.</p>
 
 <table>
 <tr style="text-align:left"><th>Return type</th><th>Name</th><th>Parameters</th></tr>
