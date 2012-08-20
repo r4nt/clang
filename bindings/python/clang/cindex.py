@@ -133,6 +133,31 @@ class TranslationUnitSaveError(Exception):
 
 ### Structures and Utility Classes ###
 
+class CachedProperty(object):
+    """Decorator that lazy-loads the value of a property.
+
+    The first time the property is accessed, the original property function is
+    executed. The value it returns is set as the new value of that instance's
+    property, replacing the original method.
+    """
+
+    def __init__(self, wrapped):
+        self.wrapped = wrapped
+        try:
+            self.__doc__ = wrapped.__doc__
+        except:
+            pass
+
+    def __get__(self, instance, instance_type=None):
+        if instance is None:
+            return self
+
+        value = self.wrapped(instance)
+        setattr(instance, self.wrapped.__name__, value)
+
+        return value
+
+
 class _CXString(Structure):
     """Helper for transforming CXString results."""
 
@@ -1632,16 +1657,16 @@ class CompletionChunk:
     def __repr__(self):
         return "{'" + self.spelling + "', " + str(self.kind) + "}"
 
-    @property
+    @CachedProperty
     def spelling(self):
         return lib.clang_getCompletionChunkText(self.cs, self.key).spelling
 
-    @property
+    @CachedProperty
     def kind(self):
         res = lib.clang_getCompletionChunkKind(self.cs, self.key)
         return completionChunkKindMap[res]
 
-    @property
+    @CachedProperty
     def string(self):
         res = lib.clang_getCompletionChunkCompletionString(self.cs, self.key)
 
