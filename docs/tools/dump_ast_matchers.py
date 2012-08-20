@@ -5,6 +5,7 @@
 
 import collections
 import re
+import urllib2
 
 MATCHERS_FILE = '../../include/clang/ASTMatchers/ASTMatchers.h'
 
@@ -27,10 +28,30 @@ traversal_matchers = {}
 # pop-up. ids[name] keeps track of those ids.
 ids = collections.defaultdict(int)
 
+# Cache for doxygen urls we have already verified.
+doxygen_probes = {}
+
 def esc(text):
   """Escape any html in the given text."""
   text = re.sub(r'&', '&amp;', text)
   text = re.sub(r'<', '&lt;', text)
+  text = re.sub(r'>', '&gt;', text)
+  def link_if_exists(m):
+    name = m.group(1)
+    url = 'http://clang.llvm.org/doxygen/classclang_1_1%s.html' % name
+    if url not in doxygen_probes:
+      try:
+        print 'Probing %s...' % url
+        urllib2.urlopen(url)
+        doxygen_probes[url] = True
+      except:
+        doxygen_probes[url] = False
+    if doxygen_probes[url]:
+      return r'Matcher&lt<a href="%s">%s</a>&gt;' % (url, name)
+    else:
+      return m.group(0)
+  text = re.sub(
+    r'Matcher&lt;([^\*&]+)&gt;', link_if_exists, text)
   return text
 
 def extract_result_types(comment):
@@ -83,7 +104,7 @@ def add_matcher(result_type, name, args, comment, is_dyncast=False):
   ids[name] += 1
   args = unify_arguments(args)
   matcher_html = TD_TEMPLATE % {
-    'result': 'Matcher&lt;%s&gt;' % result_type,
+    'result': esc('Matcher<%s>' % result_type),
     'name': name,
     'args': esc(args),
     'comment': esc(strip_doxygen(comment)),
