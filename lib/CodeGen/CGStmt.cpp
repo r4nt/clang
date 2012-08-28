@@ -1397,7 +1397,7 @@ static llvm::MDNode *getAsmSrcLocInfo(const StringLiteral *Str,
 
 void CodeGenFunction::EmitGCCAsmStmt(const GCCAsmStmt &S) {
   // Assemble the final asm string.
-  std::string AsmString = S.GenerateAsmString(getContext());
+  std::string AsmString = S.generateAsmString(getContext());
 
   // Get all the output and input constraints together.
   SmallVector<TargetInfo::ConstraintInfo, 4> OutputConstraintInfos;
@@ -1581,7 +1581,7 @@ void CodeGenFunction::EmitGCCAsmStmt(const GCCAsmStmt &S) {
 
   // Clobbers
   for (unsigned i = 0, e = S.getNumClobbers(); i != e; i++) {
-    StringRef Clobber = S.getClobber(i)->getString();
+    StringRef Clobber = S.getClobber(i);
 
     if (Clobber != "memory" && Clobber != "cc")
     Clobber = Target.getNormalizedGCCRegisterName(Clobber);
