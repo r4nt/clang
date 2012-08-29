@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+          "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>AST Matcher Tutorial</title>
+<link type="text/css" rel="stylesheet" href="../menu.css" />
+<link type="text/css" rel="stylesheet" href="../content.css" />
+</head>
+<body>
+
+<!--#include virtual="../menu.html.incl"-->
+
+<div id="content">
+
+<h1>AST Matcher Tutorial</h1>
+
+...
+
+<!-- ======================================================================= -->
+<h2 id="writing">Finding what to match</h2>
+<!-- ======================================================================= -->
+
+<p>For example, given follwing code:</p>
+<pre>
+struct Base {
+  virtual void callWith(const Base&amp; Other) const = 0;
+};
+struct Derived : public Base {
+  virtual void callWith(const Base&amp; Other) const {
+    Other.callWith(*this);
+    Other.callWith(Other);
+  }
+};
+</pre>
+<p>If we want to find out how to create a matcher that matches all calls
+to <i>callWith</i> where called with a <i>Derived</i>, we first take a look at the
+structure of the AST of such a call:</p>
+<pre>
+(CompoundStmt 0x380e748 <t2.cc:5:50, line:8:3>
+  (CXXMemberCallExpr 0x380e620 <line:6:5, col:25> 'void'
+    (MemberExpr 0x380e588 <col:5, col:11> '<bound member function type>' .callWith 0x37e9a90
+      (DeclRefExpr 0x380e560 <col:5> 'const struct Base' lvalue ParmVar 0x380e110 'Other' 'const struct Base &'))
+    (ImplicitCastExpr 0x380e678 <col:20, col:21> 'const struct Base' lvalue <DerivedToBase (Base)>
+      (UnaryOperator 0x380e600 <col:20, col:21> 'const struct Derived' lvalue prefix '*'
+        (CXXThisExpr 0x380e5e8 <col:21> 'const struct Derived *' this))))
+  (CXXMemberCallExpr 0x380e718 <line:7:5, col:25> 'void'
+    (MemberExpr 0x380e6c0 <col:5, col:11> '<bound member function type>' .callWith 0x37e9a90
+      (DeclRefExpr 0x380e698 <col:5> 'const struct Base' lvalue ParmVar 0x380e110 'Other' 'const struct Base &'))
+    (DeclRefExpr 0x380e6f0 <col:20> 'const struct Base' lvalue ParmVar 0x380e110 'Other' 'const struct Base &')))
+</pre>
+<p>We can see that the call nodes are called <i>CXXMemberCallExpr</i>. Entering "clang CXXMemberCallExpr"
+into your favorite search engine leads to the <a href="http://clang.llvm.org/doxygen/classclang_1_1CXXMemberCallExpr.html">Doxygen page for CXXMemberCallExpr</a>.
+The doxygen shows the class hierarchy: CXXMemberCallExpr inherits from CallExpr, which
+itself inherits from Expr, which inherits from Stmt.</p>
+<p>We are interested in matching the parameter to the call, which is common to
+all CallExpr, so we follow the link in the inheritance diagram to the <a href="http://clang.llvm.org/doxygen/classclang_1_1CallExpr.html">Doxygen page for CallExpr</a>.
+Looking at the methods on CallExpr, we find that it has methods to retrieve the
+arguments of the call. Armed with that knowledge we can now look at the available
+matchers in <a href="http://clang.llvm.org/doxygen/ASTMatchers_8h_source.html">ASTMatchers.h</a>,
+the main header file for AST matchers.</p>
+<p>When looking for a matcher in ASTMatchers.h, the best way is to search for
+the class name of an AST node. In our example, we look for <i>CallExpr</i>, which
+turns up the following matchers:</p>
+<pre>
+const internal::VariadicDynCastAllOfMatcher&lt;Stmt, CallExpr> call
+inline internal::Matcher &lt;CallExpr> callee(const internal::Matcher&lt;Decl> &amp;InnerMatcher)
+AST_MATCHER_P(CallExpr, callee, internal::Matcher&lt;Stmt>, InnerMatcher)
+AST_POLYMORPHIC_MATCHER_P(argumentCountIs, unsigned, N)
+AST_POLYMORPHIC_MATCHER_P2(hasArgument, unsigned, N, internal::Matcher&lt;Expr>, InnerMatcher)
+AST_POLYMORPHIC_MATCHER_P(hasAnyArgument, internal::Matcher&lt;Expr>, InnerMatcher)
+</pre>
+</p>To understand those matchers in detail, see the section on <a href="#reading">How to read AST matcher definitions</a>.
+To find out how to match what interests us, the important part is to see that:</p>
+<ul>
+<li>The basic matcher to match all calls is called <i>call()</i>.</li>
+<li>We can use the matchers <i>callee()</i>, <i>argumentCountIs()</i>, <i>hasArgument</i> and <i>hasAnyArgument</i>
+to further restrict the calls we're interested in.</li>
+</ul>
+<p>Now we can already describe the outermost part of our matcher: since we want
+to match calls where an argument is of a specific type, the outermost part of
+our matcher is <i>call(hasArgument(0, expression()))</i>. This would match the
+method call we are interested in, but also all other calls that have at least
+one argument.</p>
+<p>To further 
+
+
+
+<!--<a href="http://clang.llvm.org/doxygen/classclang_1_1tooling_1_1Matcher.html">AST matchers</a>
+are predicates on nodes in the AST. 
+, like
+<a href="http://clang.llvm.org/doxygen/classclang_1_1Decl.html">Decl</a>. -->
+
+
+</div>
+</body>
+</html>
+
