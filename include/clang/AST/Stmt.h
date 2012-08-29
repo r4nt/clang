@@ -1393,8 +1393,6 @@ public:
   explicit AsmStmt(StmtClass SC, EmptyShell Empty) :
     Stmt(SC, Empty), Names(0), Exprs(0) { }
 
-  virtual ~AsmStmt() { }
-
   SourceLocation getAsmLoc() const { return AsmLoc; }
   void setAsmLoc(SourceLocation L) { AsmLoc = L; }
 
@@ -1409,7 +1407,7 @@ public:
   //===--- Asm String Analysis ---===//
 
   /// Assemble final IR asm string.
-  virtual std::string generateAsmString(ASTContext &C) const = 0;
+  std::string generateAsmString(ASTContext &C) const;
 
   //===--- Output operands ---===//
 
@@ -1429,7 +1427,7 @@ public:
   /// getOutputConstraint - Return the constraint string for the specified
   /// output operand.  All output constraints are known to be non-empty (either
   /// '=' or '+').
-  virtual StringRef getOutputConstraint(unsigned i) const = 0;
+  StringRef getOutputConstraint(unsigned i) const;
 
   /// isOutputPlusConstraint - Return true if the specified output constraint
   /// is a "+" constraint (which is both an input and an output) or false if it
@@ -1438,7 +1436,7 @@ public:
     return getOutputConstraint(i)[0] == '+';
   }
 
-  virtual const Expr *getOutputExpr(unsigned i) const = 0;
+  const Expr *getOutputExpr(unsigned i) const;
 
   /// getNumPlusOperands - Return the number of output operands that have a "+"
   /// constraint.
@@ -1461,14 +1459,14 @@ public:
 
   /// getInputConstraint - Return the specified input constraint.  Unlike output
   /// constraints, these can be empty.
-  virtual StringRef getInputConstraint(unsigned i) const = 0;
-
-  virtual const Expr *getInputExpr(unsigned i) const = 0;
+  StringRef getInputConstraint(unsigned i) const;
+  
+  const Expr *getInputExpr(unsigned i) const;
 
   //===--- Other ---===//
 
   unsigned getNumClobbers() const { return NumClobbers; }
-  virtual StringRef getClobber(unsigned i) const = 0;
+  StringRef getClobber(unsigned i) const;
 
   static bool classof(const Stmt *T) {
     return T->getStmtClass() == GCCAsmStmtClass ||
@@ -1679,6 +1677,7 @@ class MSAsmStmt : public AsmStmt {
   unsigned NumAsmToks;
 
   Token *AsmToks;
+  StringRef *Constraints;
   StringRef *Clobbers;
 
 public:
@@ -1686,12 +1685,12 @@ public:
             bool issimple, bool isvolatile, ArrayRef<Token> asmtoks,
             ArrayRef<IdentifierInfo*> inputs, ArrayRef<IdentifierInfo*> outputs,
             ArrayRef<Expr*> inputexprs, ArrayRef<Expr*> outputexprs,
-            StringRef asmstr, ArrayRef<StringRef> clobbers,
-            SourceLocation endloc);
+            StringRef asmstr, ArrayRef<StringRef> constraints, 
+            ArrayRef<StringRef> clobbers, SourceLocation endloc);
 
   /// \brief Build an empty MS-style inline-assembly statement.
   explicit MSAsmStmt(EmptyShell Empty) : AsmStmt(MSAsmStmtClass, Empty),
-    NumAsmToks(0), AsmToks(0), Clobbers(0) { }
+    NumAsmToks(0), AsmToks(0), Constraints(0), Clobbers(0) { }
 
   SourceLocation getLBraceLoc() const { return LBraceLoc; }
   void setLBraceLoc(SourceLocation L) { LBraceLoc = L; }
@@ -1714,7 +1713,9 @@ public:
 
   //===--- Output operands ---===//
 
-  StringRef getOutputConstraint(unsigned i) const;
+  StringRef getOutputConstraint(unsigned i) const {
+    return Constraints[i];
+  }
 
   Expr *getOutputExpr(unsigned i);
 
@@ -1724,7 +1725,9 @@ public:
 
   //===--- Input operands ---===//
 
-  StringRef getInputConstraint(unsigned i) const;
+  StringRef getInputConstraint(unsigned i) const {
+    return Constraints[i + NumOutputs];
+  }
 
   Expr *getInputExpr(unsigned i);
   void setInputExpr(unsigned i, Expr *E);

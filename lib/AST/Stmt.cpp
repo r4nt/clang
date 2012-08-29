@@ -321,6 +321,54 @@ bool Stmt::hasImplicitControlFlow() const {
   }
 }
 
+std::string AsmStmt::generateAsmString(ASTContext &C) const {
+  if (const GCCAsmStmt *gccAsmStmt = dyn_cast<GCCAsmStmt>(this))
+    return gccAsmStmt->generateAsmString(C);
+  if (const MSAsmStmt *msAsmStmt = dyn_cast<MSAsmStmt>(this))
+    return msAsmStmt->generateAsmString(C);
+  llvm_unreachable("unknown asm statement kind!");
+}
+
+StringRef AsmStmt::getOutputConstraint(unsigned i) const {
+  if (const GCCAsmStmt *gccAsmStmt = dyn_cast<GCCAsmStmt>(this))
+    return gccAsmStmt->getOutputConstraint(i);
+  if (const MSAsmStmt *msAsmStmt = dyn_cast<MSAsmStmt>(this))
+    return msAsmStmt->getOutputConstraint(i);
+  llvm_unreachable("unknown asm statement kind!");
+}
+
+const Expr *AsmStmt::getOutputExpr(unsigned i) const {
+  if (const GCCAsmStmt *gccAsmStmt = dyn_cast<GCCAsmStmt>(this))
+    return gccAsmStmt->getOutputExpr(i);
+  if (const MSAsmStmt *msAsmStmt = dyn_cast<MSAsmStmt>(this))
+    return msAsmStmt->getOutputExpr(i);
+  llvm_unreachable("unknown asm statement kind!");
+}
+
+StringRef AsmStmt::getInputConstraint(unsigned i) const {
+  if (const GCCAsmStmt *gccAsmStmt = dyn_cast<GCCAsmStmt>(this))
+    return gccAsmStmt->getInputConstraint(i);
+  if (const MSAsmStmt *msAsmStmt = dyn_cast<MSAsmStmt>(this))
+    return msAsmStmt->getInputConstraint(i);
+  llvm_unreachable("unknown asm statement kind!");
+}
+
+const Expr *AsmStmt::getInputExpr(unsigned i) const {
+  if (const GCCAsmStmt *gccAsmStmt = dyn_cast<GCCAsmStmt>(this))
+    return gccAsmStmt->getInputExpr(i);
+  if (const MSAsmStmt *msAsmStmt = dyn_cast<MSAsmStmt>(this))
+    return msAsmStmt->getInputExpr(i);
+  llvm_unreachable("unknown asm statement kind!");
+}
+
+StringRef AsmStmt::getClobber(unsigned i) const {
+  if (const GCCAsmStmt *gccAsmStmt = dyn_cast<GCCAsmStmt>(this))
+    return gccAsmStmt->getClobber(i);
+  if (const MSAsmStmt *msAsmStmt = dyn_cast<MSAsmStmt>(this))
+    return msAsmStmt->getClobber(i);
+  llvm_unreachable("unknown asm statement kind!");
+}
+
 /// getNumPlusOperands - Return the number of output operands that have a "+"
 /// constraint.
 unsigned AsmStmt::getNumPlusOperands() const {
@@ -575,19 +623,11 @@ std::string GCCAsmStmt::generateAsmString(ASTContext &C) const {
 /// Assemble final IR asm string (MS-style).
 std::string MSAsmStmt::generateAsmString(ASTContext &C) const {
   // FIXME: This needs to be translated into the IR string representation.
-  return std::string();
+  return AsmStr;
 }
 
 Expr *MSAsmStmt::getOutputExpr(unsigned i) {
   return cast<Expr>(Exprs[i]);
-}
-
-/// getOutputConstraint - Return the constraint string for the specified
-/// output operand.  All output constraints are known to be non-empty (either
-/// '=' or '+').
-StringRef MSAsmStmt::getOutputConstraint(unsigned i) const {
-  // FIXME: Compute constraints.
-  return StringRef();
 }
 
 Expr *MSAsmStmt::getInputExpr(unsigned i) {
@@ -595,13 +635,6 @@ Expr *MSAsmStmt::getInputExpr(unsigned i) {
 }
 void MSAsmStmt::setInputExpr(unsigned i, Expr *E) {
   Exprs[i + NumOutputs] = E;
-}
-
-/// getInputConstraint - Return the specified input constraint.  Unlike output
-/// constraints, these can be empty.
-StringRef MSAsmStmt::getInputConstraint(unsigned i) const {
-  // FIXME: Compute constraints.
-  return StringRef();
 }
 
 QualType CXXCatchStmt::getCaughtType() const {
@@ -643,8 +676,8 @@ MSAsmStmt::MSAsmStmt(ASTContext &C, SourceLocation asmloc,
                      ArrayRef<Token> asmtoks, ArrayRef<IdentifierInfo*> inputs,
                      ArrayRef<IdentifierInfo*> outputs,
                      ArrayRef<Expr*> inputexprs, ArrayRef<Expr*> outputexprs,
-                     StringRef asmstr, ArrayRef<StringRef> clobbers,
-                     SourceLocation endloc)
+                     StringRef asmstr, ArrayRef<StringRef> constraints,
+                     ArrayRef<StringRef> clobbers, SourceLocation endloc)
   : AsmStmt(MSAsmStmtClass, asmloc, issimple, isvolatile, outputs.size(), inputs.size(),
             clobbers.size()), LBraceLoc(lbraceloc), EndLoc(endloc),
     AsmStr(asmstr.str()), NumAsmToks(asmtoks.size()) {
@@ -668,6 +701,14 @@ MSAsmStmt::MSAsmStmt(ASTContext &C, SourceLocation asmloc,
   AsmToks = new (C) Token[NumAsmToks];
   for (unsigned i = 0, e = NumAsmToks; i != e; ++i)
     AsmToks[i] = asmtoks[i];
+
+  Constraints = new (C) StringRef[NumExprs];
+  for (unsigned i = 0, e = NumExprs; i != e; ++i) {
+    size_t size = constraints[i].size();
+    char *dest = new (C) char[size];
+    std::strncpy(dest, constraints[i].data(), size); 
+    Constraints[i] = StringRef(dest, size);
+  }
 
   Clobbers = new (C) StringRef[NumClobbers];
   for (unsigned i = 0, e = NumClobbers; i != e; ++i) {
