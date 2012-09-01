@@ -558,6 +558,7 @@ ASTContext::ASTContext(LangOptions& LOpts, SourceManager &SM,
     Int128Decl(0), UInt128Decl(0),
     BuiltinVaListDecl(0),
     ObjCIdDecl(0), ObjCSelDecl(0), ObjCClassDecl(0), ObjCProtocolClassDecl(0),
+    BOOLDecl(0),
     CFConstantStringTypeDecl(0), ObjCInstanceTypeDecl(0),
     FILEDecl(0), 
     jmp_bufDecl(0), sigjmp_bufDecl(0), ucontext_tDecl(0),
@@ -801,6 +802,9 @@ void ASTContext::InitBuiltinTypes(const TargetInfo &Target) {
 
   // Placeholder type for unbridged ARC casts.
   InitBuiltinType(ARCUnbridgedCastTy,  BuiltinType::ARCUnbridgedCast);
+
+  // Placeholder type for builtin functions.
+  InitBuiltinType(BuiltinFnTy,  BuiltinType::BuiltinFn);
 
   // C99 6.2.5p11.
   FloatComplexTy      = getComplexType(FloatTy);
@@ -6413,10 +6417,13 @@ QualType ASTContext::mergeFunctionTypes(QualType lhs, QualType rhs,
     for (unsigned i = 0; i < proto_nargs; ++i) {
       QualType argTy = proto->getArgType(i);
       
-      // Look at the promotion type of enum types, since that is the type used
+      // Look at the converted type of enum types, since that is the type used
       // to pass enum values.
-      if (const EnumType *Enum = argTy->getAs<EnumType>())
-        argTy = Enum->getDecl()->getPromotionType();
+      if (const EnumType *Enum = argTy->getAs<EnumType>()) {
+        argTy = Enum->getDecl()->getIntegerType();
+        if (argTy.isNull())
+          return QualType();
+      }
       
       if (argTy->isPromotableIntegerType() ||
           getCanonicalType(argTy).getUnqualifiedType() == FloatTy)
