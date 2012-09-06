@@ -40,14 +40,14 @@ inner matchers are used to make the match more specific.</p>
 
 </p>For example, to create a matcher that matches all class or union declarations
 in the AST of a translation unit, you can call
-<a href="http://clang.llvm.org/doxygen/namespaceclang_1_1ast__matchers.html#ae236b0b2d4d1d7950479c3a5ac2521c6">record()</a>.
+<a href="http://clang.llvm.org/doxygen/namespaceclang_1_1ast__matchers.html#ae236b0b2d4d1d7950479c3a5ac2521c6">recordDecl()</a>.
 To narrow the match down, for example to find all class or union declarations with the name "Foo",
 insert a <a href="http://clang.llvm.org/doxygen/namespaceclang_1_1ast__matchers.html#adba21506d02172d730b0c8a5bf2341d2">hasName</a>
-matcher: the call record(hasName("Foo")) returns a matcher that matches classes
+matcher: the call recordDecl(hasName("Foo")) returns a matcher that matches classes
 or unions that are named "Foo", in any namespace. By default, matchers that accept
 multiple inner matchers use an implicit <a href="http://clang.llvm.org/doxygen/namespaceclang_1_1ast__matchers.html#a3da4e29fc5dbf7222f08804f90d72337">allOf()</a>.
 This allows further narrowing down the match, for example to match all classes
-that are derived from "Bar": record(hasName("Foo"), isDerivedFrom("Bar")).</p>
+that are derived from "Bar": recordDecl(hasName("Foo"), isDerivedFrom("Bar")).</p>
 
 <!-- ======================================================================= -->
 <h2 id="writing">How to create a matcher</h2>
@@ -86,8 +86,8 @@ for a certain task. Often you will want to then do something with the nodes
 that were matched, like building source code transformations.</p>
 
 <p>To that end, matchers that match specific AST nodes (so called node matchers)
-are bindable; for example, record(hasName("MyClass")).bind("id") will bind
-the matched record node to the string "id", to be later retrieved in the
+are bindable; for example, recordDecl(hasName("MyClass")).bind("id") will bind
+the matched recordDecl node to the string "id", to be later retrieved in the
 match callback.</p>
 
 
