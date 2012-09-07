@@ -40,12 +40,12 @@ inner matchers are used to make the match more specific.</p>
 
 </p>For example, to create a matcher that matches all class or union declarations
 in the AST of a translation unit, you can call
-<a href="http://clang.llvm.org/doxygen/namespaceclang_1_1ast__matchers.html#ae236b0b2d4d1d7950479c3a5ac2521c6">recordDecl()</a>.
+<a href="LibASTMatchersReference.html#recordDecl0Anchor">recordDecl()</a>.
 To narrow the match down, for example to find all class or union declarations with the name "Foo",
-insert a <a href="http://clang.llvm.org/doxygen/namespaceclang_1_1ast__matchers.html#adba21506d02172d730b0c8a5bf2341d2">hasName</a>
+insert a <a href="LibASTMatchersReference.html#hasName0Anchor">hasName</a>
 matcher: the call recordDecl(hasName("Foo")) returns a matcher that matches classes
 or unions that are named "Foo", in any namespace. By default, matchers that accept
-multiple inner matchers use an implicit <a href="http://clang.llvm.org/doxygen/namespaceclang_1_1ast__matchers.html#a3da4e29fc5dbf7222f08804f90d72337">allOf()</a>.
+multiple inner matchers use an implicit <a href="LibASTMatchersReference.html#allOf0Anchor">allOf()</a>.
 This allows further narrowing down the match, for example to match all classes
 that are derived from "Bar": recordDecl(hasName("Foo"), isDerivedFrom("Bar")).</p>
 
@@ -103,7 +103,7 @@ type and flexibility.</p>
 of type <i>Base</i> if they can be dynamically casted to <i>Derived</i>. The
 names of those matchers are nouns, which closely resemble <i>Derived</i>.
 VariadicDynCastAllOfMatchers are the backbone of the matcher hierarchy. Most
-often, your match expression will start with one of them, and you can
+bioften, your match expression will start with one of them, and you can
 <a href="#binding">bind</a> the node they represent to ids for later processing.</p>
 <p>VariadicDynCastAllOfMatchers are callable classes that model variadic
 template functions in C++03. They take an aribtrary number of Matcher&lt;Derived>
