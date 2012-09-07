@@ -745,6 +745,11 @@ Example matches a &lt;&lt; b
 </pre></td></tr>
 
 
+<tr><td>Matcher&lt<a href="http://clang.llvm.org/doxygen/classclang_1_1CXXRecordDecl.html">CXXRecordDecl</a>&gt;</td><td class="name" onclick="toggle('isA1')"><a name="isA1Anchor">isA</a></td><td>StringRef BaseName</td></tr>
+<tr><td colspan="4" class="doc" id="isA1"><pre>Overloaded method as shortcut for isA(hasName(...)).
+</pre></td></tr>
+
+
 <tr><td>Matcher&lt<a href="http://clang.llvm.org/doxygen/classclang_1_1CXXRecordDecl.html">CXXRecordDecl</a>&gt;</td><td class="name" onclick="toggle('isDerivedFrom1')"><a name="isDerivedFrom1Anchor">isDerivedFrom</a></td><td>StringRef BaseName</td></tr>
 <tr><td colspan="4" class="doc" id="isDerivedFrom1"><pre>Overloaded method as shortcut for isDerivedFrom(hasName(...)).
 </pre></td></tr>
@@ -1162,6 +1167,19 @@ Usable as: Any Matcher
 </pre></td></tr>
 
 
+<tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle('hasAncestor0')"><a name="hasAncestor0Anchor">hasAncestor</a></td><td>Matcher&lt;AncestorT&gt;  AncestorMatcher</td></tr>
+<tr><td colspan="4" class="doc" id="hasAncestor0"><pre>Matches AST nodes that have an ancestor that matches the provided
+matcher.
+
+Given
+void f() { if (true) { int x = 42; } }
+void g() { for (;;) { int x = 43; } }
+expr(integerLiteral(hasAncsestor(ifStmt()))) matches 42, but not 43.
+
+Usable as: Any Matcher
+</pre></td></tr>
+
+
 <tr><td>Matcher&lt;*&gt;</td><td class="name" onclick="toggle('hasDescendant0')"><a name="hasDescendant0Anchor">hasDescendant</a></td><td>Matcher&lt;DescendantT&gt;  DescendantMatcher</td></tr>
 <tr><td colspan="4" class="doc" id="hasDescendant0"><pre>Matches AST nodes that have descendant AST nodes that match the
 provided matcher.
@@ -1313,14 +1331,20 @@ Example matches A() in the last line
 </pre></td></tr>
 
 
+<tr><td>Matcher&lt<a href="http://clang.llvm.org/doxygen/classclang_1_1CXXRecordDecl.html">CXXRecordDecl</a>&gt;</td><td class="name" onclick="toggle('isA0')"><a name="isA0Anchor">isA</a></td><td>Matcher&lt<a href="http://clang.llvm.org/doxygen/classclang_1_1NamedDecl.html">NamedDecl</a>&gt; Base</td></tr>
+<tr><td colspan="4" class="doc" id="isA0"><pre>Similar to isDerivedFrom(), but also matches classes that directly
+match Base.
+</pre></td></tr>
+
+
 <tr><td>Matcher&lt<a href="http://clang.llvm.org/doxygen/classclang_1_1CXXRecordDecl.html">CXXRecordDecl</a>&gt;</td><td class="name" onclick="toggle('isDerivedFrom0')"><a name="isDerivedFrom0Anchor">isDerivedFrom</a></td><td>Matcher&lt<a href="http://clang.llvm.org/doxygen/classclang_1_1NamedDecl.html">NamedDecl</a>&gt; Base</td></tr>
 <tr><td colspan="4" class="doc" id="isDerivedFrom0"><pre>Matches C++ classes that are directly or indirectly derived from
 a class matching Base.
 
-Note that a class is considered to be also derived from itself.
+Note that a class is not considered to be derived from itself.
 
-Example matches X, Y, Z, C (Base == hasName("X"))
-  class X;                A class is considered to be derived from itself
+Example matches Y, Z, C (Base == hasName("X"))
+  class X;
   class Y : public X {};  directly derived
   class Z : public Y {};  indirectly derived
   typedef X A;
