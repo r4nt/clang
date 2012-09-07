@@ -88,9 +88,10 @@ that were matched, like building source code transformations.</p>
 <p>To that end, matchers that match specific AST nodes (so called node matchers)
 are bindable; for example, recordDecl(hasName("MyClass")).bind("id") will bind
 the matched recordDecl node to the string "id", to be later retrieved in the
-match callback.</p>
+<a href="http://clang.llvm.org/doxygen/classclang_1_1ast__matchers_1_1MatchFinder_1_1MatchCallback.html">match callback</a>.</p>
 
-
+<!-- FIXME: Introduce link to ASTMatchersTutorial.html -->
+<!-- FIXME: Introduce link to ASTMatchersCookbook.html -->
 
 <!-- ======================================================================= -->
 <h2 id="writing">Writing your own matchers</h2>
@@ -103,7 +104,7 @@ type and flexibility.</p>
 of type <i>Base</i> if they can be dynamically casted to <i>Derived</i>. The
 names of those matchers are nouns, which closely resemble <i>Derived</i>.
 VariadicDynCastAllOfMatchers are the backbone of the matcher hierarchy. Most
-bioften, your match expression will start with one of them, and you can
+often, your match expression will start with one of them, and you can
 <a href="#binding">bind</a> the node they represent to ids for later processing.</p>
 <p>VariadicDynCastAllOfMatchers are callable classes that model variadic
 template functions in C++03. They take an aribtrary number of Matcher&lt;Derived>
@@ -120,15 +121,8 @@ calls to matcher creation functions. Most of the time those functions are either
 created by using VariadicDynCastAllOfMatcher or the matcher creation macros
 (see below). The free-standing functions are an indication that this matcher
 is just a combination of other matchers, as is for example the case with
-<i>callee</i>.</p></li>
+<a href="LibASTMatchersReference.html#callee1Anchor">callee</a>.</p></li>
 </ul>
-
-
-<!--<a href="http://clang.llvm.org/doxygen/classclang_1_1tooling_1_1Matcher.html">AST matchers</a>
-are predicates on nodes in the AST. 
-, like
-<a href="http://clang.llvm.org/doxygen/classclang_1_1Decl.html">Decl</a>. -->
-
 
 </div>
 </body>
