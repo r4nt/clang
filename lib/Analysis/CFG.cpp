@@ -2112,8 +2112,8 @@ CFGBlock *CFGBuilder::VisitIfStmt(IfStmt *I) {
   if (VarDecl *VD = I->getConditionVariable()) {
     if (Expr *Init = VD->getInit()) {
       autoCreateBlock();
-      appendStmt(Block, I->getConditionVariableDeclStmt());
-      LastBlock = addStmt(Init);
+      LastBlock =
+          addStmt(const_cast<DeclStmt *>(I->getConditionVariableDeclStmt()));
     }
   }
 
