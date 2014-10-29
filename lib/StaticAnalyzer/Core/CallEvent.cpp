@@ -300,17 +300,8 @@ static void addParameterValuesToBindings(const StackFrameContext *CalleeCtx,
 
     SVal ArgVal = Call.getArgSVal(Idx);
     if (!ArgVal.isUnknown()) {
-      llvm::errs() << "ArgVal: ";
-      ArgVal.dump(); llvm::errs() << "\n";
-      if (ArgVal.getAsRegion() && ArgVal.getAsRegion()->getAs<CXXTempObjectRegion>()) {
-        llvm::errs() << "addParam\n";
-        //Loc ParamLoc = SVB.makeLoc(ArgVal.getAsRegion());
-        Loc ParamLoc = SVB.makeLoc(MRMgr.getVarRegion(ParamDecl, CalleeCtx));
-        Bindings.push_back(std::make_pair(ParamLoc, ArgVal));
-      } else {
-        Loc ParamLoc = SVB.makeLoc(MRMgr.getVarRegion(ParamDecl, CalleeCtx));
-        Bindings.push_back(std::make_pair(ParamLoc, ArgVal));
-      }
+      Loc ParamLoc = SVB.makeLoc(MRMgr.getVarRegion(ParamDecl, CalleeCtx));
+      Bindings.push_back(std::make_pair(ParamLoc, ArgVal));
     }
   }
 
