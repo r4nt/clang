@@ -310,11 +310,14 @@ public:
 
   typedef std::pair<Loc, SVal> FrameBindingTy;
   typedef SmallVectorImpl<FrameBindingTy> BindingsTy;
+  typedef std::pair<const ParmVarDecl *, const MemRegion *> ParamRegionRemapTy;
+  typedef SmallVectorImpl<ParamRegionRemapTy> ParamRemapsTy;
 
   /// Populates the given SmallVector with the bindings in the callee's stack
   /// frame at the start of this call.
   virtual void getInitialStackFrameContents(const StackFrameContext *CalleeCtx,
-                                            BindingsTy &Bindings) const = 0;
+                                            BindingsTy &Bindings,
+                                            ParamRemapsTy &Remaps) const = 0;
 
   /// Returns a copy of this CallEvent, but using the given state.
   template <typename T>
@@ -412,7 +415,8 @@ public:
   bool argumentsMayEscape() const override;
 
   void getInitialStackFrameContents(const StackFrameContext *CalleeCtx,
-                                    BindingsTy &Bindings) const override;
+                                    BindingsTy &Bindings,
+                                    ParamRemapsTy &Remaps) const override;
 
   ArrayRef<ParmVarDecl *> parameters() const override;
 
@@ -506,7 +510,8 @@ public:
   }
 
   void getInitialStackFrameContents(const StackFrameContext *CalleeCtx,
-                                    BindingsTy &Bindings) const override;
+                                    BindingsTy &Bindings,
+                                    ParamRemapsTy &Remaps) const override;
 
   ArrayRef<ParmVarDecl*> parameters() const override;
 
@@ -545,7 +550,8 @@ public:
   RuntimeDefinition getRuntimeDefinition() const override;
 
   void getInitialStackFrameContents(const StackFrameContext *CalleeCtx,
-                                    BindingsTy &Bindings) const override;
+                                    BindingsTy &Bindings,
+                                    ParamRemapsTy &Remaps) const override;
 
   static bool classof(const CallEvent *CA) {
     return CA->getKind() >= CE_BEG_CXX_INSTANCE_CALLS &&
@@ -725,7 +731,8 @@ public:
   SVal getCXXThisVal() const;
 
   void getInitialStackFrameContents(const StackFrameContext *CalleeCtx,
-                                    BindingsTy &Bindings) const override;
+                                    BindingsTy &Bindings,
+                                    ParamRemapsTy &Remaps) const override;
 
   Kind getKind() const override { return CE_CXXConstructor; }
 
@@ -875,7 +882,8 @@ public:
   bool argumentsMayEscape() const override;
 
   void getInitialStackFrameContents(const StackFrameContext *CalleeCtx,
-                                    BindingsTy &Bindings) const override;
+                                    BindingsTy &Bindings,
+                                    ParamRemapsTy &Remaps) const override;
 
   ArrayRef<ParmVarDecl*> parameters() const override;
 

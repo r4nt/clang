@@ -284,6 +284,7 @@ bool CallEvent::isVariadic(const Decl *D) {
 
 static void addParameterValuesToBindings(const StackFrameContext *CalleeCtx,
                                          CallEvent::BindingsTy &Bindings,
+                                         CallEvent::ParamRemapsTy &Remaps,
                                          SValBuilder &SVB,
                                          const CallEvent &Call,
                                          ArrayRef<ParmVarDecl*> parameters) {
@@ -299,10 +300,19 @@ static void addParameterValuesToBindings(const StackFrameContext *CalleeCtx,
     assert(ParamDecl && "Formal parameter has no decl?");
 
     SVal ArgVal = Call.getArgSVal(Idx);
-    if (!ArgVal.isUnknown()) {
-      Loc ParamLoc = SVB.makeLoc(MRMgr.getVarRegion(ParamDecl, CalleeCtx));
-      Bindings.push_back(std::make_pair(ParamLoc, ArgVal));
+    if (ArgVal.isUnknown())
+      continue;
+
+    // Some struct prvaluse are passed as if by reference.
+    if (ParamDecl->getType()->isRecordType()) {
+      if (auto Region = ArgVal.getAsRegion()) {
+        Remaps.push_back(std::make_pair(ParamDecl, Region));
+        continue;
+      }
     }
+
+    Loc ParamLoc = SVB.makeLoc(MRMgr.getVarRegion(ParamDecl, CalleeCtx));
+    Bindings.push_back(std::make_pair(ParamLoc, ArgVal));
   }
 
   // FIXME: Variadic arguments are not handled at all right now.
@@ -316,11 +326,12 @@ ArrayRef<ParmVarDecl*> AnyFunctionCall::parameters() const {
 }
 
 void AnyFunctionCall::getInitialStackFrameContents(
-                                        const StackFrameContext *CalleeCtx,
-                                        BindingsTy &Bindings) const {
+    const StackFrameContext *CalleeCtx,
+    BindingsTy &Bindings,
+    ParamRemapsTy &Remaps) const {
   const FunctionDecl *D = cast<FunctionDecl>(CalleeCtx->getDecl());
   SValBuilder &SVB = getState()->getStateManager().getSValBuilder();
-  addParameterValuesToBindings(CalleeCtx, Bindings, SVB, *this,
+  addParameterValuesToBindings(CalleeCtx, Bindings, Remaps, SVB, *this,
                                D->parameters());
 }
 
@@ -480,9 +491,10 @@ RuntimeDefinition CXXInstanceCall::getRuntimeDefinition() const {
 }
 
 void CXXInstanceCall::getInitialStackFrameContents(
-                                            const StackFrameContext *CalleeCtx,
-                                            BindingsTy &Bindings) const {
-  AnyFunctionCall::getInitialStackFrameContents(CalleeCtx, Bindings);
+    const StackFrameContext *CalleeCtx,
+    BindingsTy &Bindings,
+    ParamRemapsTy &Remaps) const {
+  AnyFunctionCall::getInitialStackFrameContents(CalleeCtx, Bindings, Remaps);
 
   // Handle the binding of 'this' in the new stack frame.
   SVal ThisVal = getCXXThisVal();
@@ -556,10 +568,11 @@ void BlockCall::getExtraInvalidatedValues(ValueList &Values) const {
 }
 
 void BlockCall::getInitialStackFrameContents(const StackFrameContext *CalleeCtx,
-                                             BindingsTy &Bindings) const {
+                                             BindingsTy &Bindings,
+                                             ParamRemapsTy &Remaps) const {
   const BlockDecl *D = cast<BlockDecl>(CalleeCtx->getDecl());
   SValBuilder &SVB = getState()->getStateManager().getSValBuilder();
-  addParameterValuesToBindings(CalleeCtx, Bindings, SVB, *this,
+  addParameterValuesToBindings(CalleeCtx, Bindings, Remaps, SVB, *this,
                                D->parameters());
 }
 
@@ -576,9 +589,10 @@ void CXXConstructorCall::getExtraInvalidatedValues(ValueList &Values) const {
 }
 
 void CXXConstructorCall::getInitialStackFrameContents(
-                                             const StackFrameContext *CalleeCtx,
-                                             BindingsTy &Bindings) const {
-  AnyFunctionCall::getInitialStackFrameContents(CalleeCtx, Bindings);
+    const StackFrameContext *CalleeCtx,
+    BindingsTy &Bindings,
+    ParamRemapsTy &Remaps) const {
+  AnyFunctionCall::getInitialStackFrameContents(CalleeCtx, Bindings, Remaps);
 
   SVal ThisVal = getCXXThisVal();
   if (!ThisVal.isUnknown()) {
@@ -881,11 +895,12 @@ bool ObjCMethodCall::argumentsMayEscape() const {
 }
 
 void ObjCMethodCall::getInitialStackFrameContents(
-                                             const StackFrameContext *CalleeCtx,
-                                             BindingsTy &Bindings) const {
+    const StackFrameContext *CalleeCtx,
+    BindingsTy &Bindings,
+    ParamRemapsTy &Remaps) const {
   const ObjCMethodDecl *D = cast<ObjCMethodDecl>(CalleeCtx->getDecl());
   SValBuilder &SVB = getState()->getStateManager().getSValBuilder();
-  addParameterValuesToBindings(CalleeCtx, Bindings, SVB, *this,
+  addParameterValuesToBindings(CalleeCtx, Bindings, Remaps, SVB, *this,
                                D->parameters());
 
   SVal SelfVal = getReceiverSVal();

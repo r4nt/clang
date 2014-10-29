@@ -656,11 +656,6 @@ inline ProgramStateRef ProgramState::bindLoc(SVal LV, SVal V) const {
   return this;
 }
 
-inline Loc ProgramState::getLValue(const VarDecl *VD,
-                               const LocationContext *LC) const {
-  return getStateManager().StoreMgr->getLValueVar(VD, LC);
-}
-
 inline Loc ProgramState::getLValue(const CompoundLiteralExpr *literal,
                                const LocationContext *LC) const {
   return getStateManager().StoreMgr->getLValueCompoundLiteral(literal, LC);

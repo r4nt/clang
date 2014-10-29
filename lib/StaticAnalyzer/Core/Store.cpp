@@ -30,14 +30,14 @@ StoreRef StoreManager::enterStackFrame(Store OldStore,
                                        const StackFrameContext *LCtx) {
   StoreRef Store = StoreRef(OldStore, *this);
 
-  SmallVector<CallEvent::FrameBindingTy, 16> InitialBindings;
-  Call.getInitialStackFrameContents(LCtx, InitialBindings);
-
-  for (CallEvent::BindingsTy::iterator I = InitialBindings.begin(),
-                                       E = InitialBindings.end();
-       I != E; ++I) {
-    Store = Bind(Store.getStore(), I->first, I->second);
-  }
+//  SmallVector<CallEvent::FrameBindingTy, 16> InitialBindings;
+//  Call.getInitialStackFrameContents(LCtx, InitialBindings);
+//
+//  for (CallEvent::BindingsTy::iterator I = InitialBindings.begin(),
+//                                       E = InitialBindings.end();
+//       I != E; ++I) {
+//    Store = Bind(Store.getStore(), I->first, I->second);
+//  }
 
   return Store;
 }

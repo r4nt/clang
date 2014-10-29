@@ -183,22 +183,17 @@ ExprEngine::createTemporaryRegionIfNeeded(ProgramStateRef State,
                                           const LocationContext *LC,
                                           const Expr *Ex,
                                           const Expr *Result) {
-  //llvm::errs() << "here...\n";
   SVal V = State->getSVal(Ex, LC);
   if (!Result) {
-    //llvm::errs() << "1\n";
     // If we don't have an explicit result expression, we're in "if needed"
     // mode. Only create a region if the current value is a NonLoc.
     if (!V.getAs<NonLoc>()) {
-      //llvm::errs() << "out...\n";
       return State;
     }
     Result = Ex;
   } else {
-    //llvm::errs() << "2\n";
     if (!V.getAs<NonLoc>()) {
-      //llvm::errs() << "out...\n";
-  State = State->BindExpr(Result, LC, V);
+      State = State->BindExpr(Result, LC, V);
       return State;
     }
     // We need to create a region no matter what. For sanity, make sure we don't
@@ -206,7 +201,6 @@ ExprEngine::createTemporaryRegionIfNeeded(ProgramStateRef State,
     assert(!V.getAs<Loc>() || Loc::isLocType(Result->getType()) ||
            Result->getType()->isMemberPointerType());
   }
-  //llvm::errs() << "TEMPTEMPTEMPTEMPTEMP\n";
 
   ProgramStateManager &StateMgr = State->getStateManager();
   MemRegionManager &MRMgr = StateMgr.getRegionManager();

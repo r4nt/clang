@@ -224,13 +224,57 @@ ProgramStateRef ProgramState::killBinding(Loc LV) const {
   return makeWithStore(newStore);
 }
 
+REGISTER_TRAIT_WITH_PROGRAMSTATE(RemappedParamRegionsMap,
+    CLANG_ENTO_PROGRAMSTATE_MAP(const ParmVarDecl *, const MemRegion *))
+REGISTER_TRAIT_WITH_PROGRAMSTATE(RemappedParamRegionsByFrame,
+    CLANG_ENTO_PROGRAMSTATE_MAP(const StackFrameContext *,
+        RemappedParamRegionsMapTy))
+
 ProgramStateRef 
 ProgramState::enterStackFrame(const CallEvent &Call,
                               const StackFrameContext *CalleeCtx) const {
-  const StoreRef &NewStore =
-    getStateManager().StoreMgr->enterStackFrame(getStore(), Call, CalleeCtx);
-  return makeWithStore(NewStore);
+  SmallVector<CallEvent::FrameBindingTy, 16> InitialBindings;
+  SmallVector<CallEvent::ParamRegionRemapTy, 8> ParamRemaps;
+  Call.getInitialStackFrameContents(CalleeCtx, InitialBindings, ParamRemaps);
+
+  StoreManager &StoreMgr = getStateManager().getStoreManager();
+  StoreRef NewStore(getStore(), StoreMgr);
+  for (const auto &Binding : InitialBindings) {
+    NewStore =
+        StoreMgr.Bind(NewStore.getStore(), Binding.first, Binding.second);
+  }
+
+  auto &Factory = getStateManager().get_context<RemappedParamRegionsMap>();
+  using MapBuilderTy =
+    llvm::ImmutableMapRef<const ParmVarDecl *, const MemRegion *>;
+  MapBuilderTy RegionMap = MapBuilderTy::getEmptyMap(Factory.getTreeFactory());
+  for (const auto &Remap : ParamRemaps) {
+    assert(Remap.first && "missing param");
+    assert(Remap.second && "missing mapped region");
+    RegionMap = RegionMap.add(Remap.first, Remap.second);
+  }
+
+  // FIXME: Don't do this in two steps.
+  auto NewState = makeWithStore(NewStore);
+  if (!RegionMap.isEmpty()) {
+    NewState->set<RemappedParamRegionsByFrame>(CalleeCtx,
+                                               RegionMap.asImmutableMap());
+  }
+  return NewState;
 }
+
+Loc ProgramState::getLValue(const VarDecl *VD,
+                            const LocationContext *LC) const {
+  if (auto Param = dyn_cast<ParmVarDecl>(VD)) {
+    const StackFrameContext *Frame = LC->getCurrentStackFrame();
+    if (const auto *RegionMap = get<RemappedParamRegionsByFrame>(Frame))
+      if (const auto *MaybeRegion = RegionMap->lookup(Param))
+        return loc::MemRegionVal(*MaybeRegion);
+  }
+
+  return getStateManager().StoreMgr->getLValueVar(VD, LC);
+}
+
 
 SVal ProgramState::getSValAsScalarOrLoc(const MemRegion *R) const {
   // We only want to do fetches from regions that we can actually bind
