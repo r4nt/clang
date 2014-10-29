@@ -454,14 +454,14 @@ bool ExprEngine::inlineCall(const CallEvent &Call, const Decl *D,
     
   CallEnter Loc(CallE, CalleeSFC, CurLC);
 
-  llvm::errs() << "--------------\n";
-  CallE->dump(); llvm::errs() << "\n";
-  State->dump(); llvm::errs() << "\n";
+  //llvm::errs() << "--------------\n";
+  //CallE->dump(); llvm::errs() << "\n";
+  //State->dump(); llvm::errs() << "\n";
   // Construct a new state which contains the mapping from actual to
   // formal arguments.
   State = State->enterStackFrame(Call, CalleeSFC);
-  State->dump(); llvm::errs() << "\n";
-  llvm::errs() << "+++++++\n";
+  //State->dump(); llvm::errs() << "\n";
+  //llvm::errs() << "+++++++\n";
 
   bool isNew;
   if (ExplodedNode *N = G.getNode(Loc, State, false, &isNew)) {
