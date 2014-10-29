@@ -1967,22 +1967,22 @@ void ExprEngine::VisitMemberExpr(const MemberExpr *M, ExplodedNode *Pred,
 
       // Handle regular struct fields / member variables.
       state = createTemporaryRegionIfNeeded(state, LCtx, BaseExpr);
-      llvm::errs() << "there\n";
-      M->dump();
-      llvm::errs() << "\n";
-      (*I)->getState()->dump();
-      llvm::errs() << "\n";
+     // llvm::errs() << "there\n";
+     // M->dump();
+     // llvm::errs() << "\n";
+     // (*I)->getState()->dump();
+     // llvm::errs() << "\n";
       SVal baseExprVal = state->getSVal(BaseExpr, LCtx);
-      baseExprVal.dump();
-      llvm::errs() << "\n";
+     // baseExprVal.dump();
+     // llvm::errs() << "\n";
 
       FieldDecl *field = cast<FieldDecl>(Member);
       SVal L = state->getLValue(field, baseExprVal);
-      L.dump();
-      llvm::errs() << "\n";
+     // L.dump();
+     // llvm::errs() << "\n";
 
       if (M->isGLValue() || M->getType()->isArrayType()) {
-        llvm::errs() << "Hugh...\n";
+      //  llvm::errs() << "Hugh...\n";
         // We special-case rvalues of array type because the analyzer cannot
         // reason about them, since we expect all regions to be wrapped in Locs.
         // We instead treat these as lvalues and assume that they will decay to
@@ -2006,11 +2006,11 @@ void ExprEngine::VisitMemberExpr(const MemberExpr *M, ExplodedNode *Pred,
         Bldr.generateNode(M, *I, state->BindExpr(M, LCtx, L), nullptr,
                           ProgramPoint::PostLValueKind);
       } else {
-        llvm::errs() << "Um...\n";
+        //llvm::errs() << "Um...\n";
         Bldr.takeNodes(*I);
         evalLoad(Tmp, M, M, *I, state, L);
         Bldr.addNodes(Tmp);
-        llvm::errs() << "Umend...\n";
+        //llvm::errs() << "Umend...\n";
       }
     }
   }
@@ -2132,7 +2132,7 @@ void ExprEngine::evalBind(ExplodedNodeSet &Dst, const Stmt *StoreE,
                           ExplodedNode *Pred,
                           SVal location, SVal Val,
                           bool atDeclInit, const ProgramPoint *PP) {
-  llvm::errs() << "Bind\n";
+  //llvm::errs() << "Bind\n";
   const LocationContext *LC = Pred->getLocationContext();
   PostStmt PS(StoreE, LC);
   if (!PP)
@@ -2157,15 +2157,15 @@ void ExprEngine::evalBind(ExplodedNodeSet &Dst, const Stmt *StoreE,
     return;
   }
   
-    llvm::errs() << "LOOOOOOOOOOOC\n";
+    //llvm::errs() << "LOOOOOOOOOOOC\n";
 
   for (ExplodedNodeSet::iterator I = CheckedSet.begin(), E = CheckedSet.end();
        I!=E; ++I) {
     ExplodedNode *PredI = *I;
     ProgramStateRef state = PredI->getState();
     
-    state->dump();
-    llvm::errs() << "\n";
+    //state->dump();
+    //llvm::errs() << "\n";
     state = processPointerEscapedOnBind(state, location, Val);
 
     // When binding the value, pass on the hint that this is a initialization.
@@ -2174,8 +2174,8 @@ void ExprEngine::evalBind(ExplodedNodeSet &Dst, const Stmt *StoreE,
     state = state->bindLoc(location.castAs<Loc>(),
                            Val, /* notifyChanges = */ !atDeclInit);
 
-    state->dump();
-    llvm::errs() << "\n";
+    //state->dump();
+    //llvm::errs() << "\n";
 
     const MemRegion *LocReg = nullptr;
     if (Optional<loc::MemRegionVal> LocRegVal =
