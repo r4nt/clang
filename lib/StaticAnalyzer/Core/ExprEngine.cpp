@@ -187,9 +187,8 @@ ExprEngine::createTemporaryRegionIfNeeded(ProgramStateRef State,
   if (!Result) {
     // If we don't have an explicit result expression, we're in "if needed"
     // mode. Only create a region if the current value is a NonLoc.
-    if (!V.getAs<NonLoc>()) {
+    if (!V.getAs<NonLoc>())
       return State;
-    }
     Result = Ex;
   } else {
     if (!V.getAs<NonLoc>()) {
@@ -2115,6 +2114,7 @@ void ExprEngine::evalBind(ExplodedNodeSet &Dst, const Stmt *StoreE,
                           ExplodedNode *Pred,
                           SVal location, SVal Val,
                           bool atDeclInit, const ProgramPoint *PP) {
+
   const LocationContext *LC = Pred->getLocationContext();
   PostStmt PS(StoreE, LC);
   if (!PP)
