@@ -38,12 +38,7 @@ void ExprEngine::VisitBinaryOperator(const BinaryOperator* B,
     ProgramStateRef state = (*it)->getState();
     const LocationContext *LCtx = (*it)->getLocationContext();
     SVal LeftV = state->getSVal(LHS, LCtx);
- //   llvm::errs() << "ASSIGNMENT\n";
- //   LeftV.dump();
- //   llvm::errs() << "\n";
     SVal RightV = state->getSVal(RHS, LCtx);
- //   RightV.dump();
- //   llvm::errs() << "\n";
       
     BinaryOperator::Opcode Op = B->getOpcode();
       
@@ -58,7 +53,6 @@ void ExprEngine::VisitBinaryOperator(const BinaryOperator* B,
       // Simulate the effects of a "store":  bind the value of the RHS
       // to the L-Value represented by the LHS.
       SVal ExprVal = B->isGLValue() ? LeftV : RightV;
-//      llvm::errs() << "B->isGLValue: " << B->isGLValue() << "\n";
       evalStore(Tmp2, B, LHS, *it, state->BindExpr(B, LCtx, ExprVal),
                 LeftV, RightV);
       continue;
