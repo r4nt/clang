@@ -257,7 +257,7 @@ ProgramState::enterStackFrame(const CallEvent &Call,
   // FIXME: Don't do this in two steps.
   auto NewState = makeWithStore(NewStore);
   if (!RegionMap.isEmpty()) {
-    NewState->set<RemappedParamRegionsByFrame>(CalleeCtx,
+    NewState = NewState->set<RemappedParamRegionsByFrame>(CalleeCtx,
                                                RegionMap.asImmutableMap());
   }
   return NewState;
