@@ -2101,10 +2101,6 @@ RegionBindingsRef RegionStoreManager::bindStruct(RegionBindingsConstRef B,
   if (!Features.supportsFields())
     return B;
 
-  //llvm::errs() << "bind...\n";
-  //R->dump(); llvm::errs() << "\n";
-  //V.dump(); llvm::errs() << "\n";
-
   QualType T = R->getValueType();
   assert(T->isStructureOrClassType());
 
@@ -2113,7 +2109,6 @@ RegionBindingsRef RegionStoreManager::bindStruct(RegionBindingsConstRef B,
 
   if (!RD->isCompleteDefinition())
     return B;
-  //llvm::errs() << "1\n";
   // Handle lazy compound values and symbolic values.
   if (Optional<nonloc::LazyCompoundVal> LCV =
         V.getAs<nonloc::LazyCompoundVal>()) {
@@ -2121,7 +2116,6 @@ RegionBindingsRef RegionStoreManager::bindStruct(RegionBindingsConstRef B,
       return *NewB;
     return bindAggregate(B, R, V);
   }
-  //llvm::errs() << "2\n";
   if (V.getAs<nonloc::SymbolVal>())
     return bindAggregate(B, R, V);
 
@@ -2131,11 +2125,9 @@ RegionBindingsRef RegionStoreManager::bindStruct(RegionBindingsConstRef B,
   if (V.isUnknown()) // || !V.getAs<nonloc::CompoundVal>())
     return bindAggregate(B, R, UnknownVal());
   if (!V.getAs<nonloc::CompoundVal>()) {
-    //llvm::errs() << "42\n";
     return bindAggregate(B, R, V);
   }
 
-  //llvm::errs() << "3\n";
   const nonloc::CompoundVal& CV = V.castAs<nonloc::CompoundVal>();
   nonloc::CompoundVal::iterator VI = CV.begin(), VE = CV.end();
 
@@ -2168,7 +2160,6 @@ RegionBindingsRef RegionStoreManager::bindStruct(RegionBindingsConstRef B,
     NewB = NewB.addBinding(R, BindingKey::Default,
                            svalBuilder.makeIntVal(0, false));
   }
-  //llvm::errs() << "4\n";
 
   return NewB;
 }
