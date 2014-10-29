@@ -197,6 +197,7 @@ static bool wasDifferentDeclUsedForInlining(CallEventRef<> Call,
 /// CXXConstructExprs embedded in DeclStmts and initializers are considered
 /// rvalues by the AST, and the analyzer would like to treat them as lvalues.
 static bool isTemporaryPRValue(const CXXConstructExpr *E, SVal V) {
+ return false;
   if (E->isGLValue())
     return false;
 
@@ -267,11 +268,21 @@ void ExprEngine::processCallExit(ExplodedNode *CEBNode) {
         svalBuilder.getCXXThis(CCE->getConstructor()->getParent(), calleeCtx);
       SVal ThisV = state->getSVal(This);
 
+      llvm::errs() << "----------------------------------------------\n";
       // If the constructed object is a temporary prvalue, get its bindings.
       if (isTemporaryPRValue(CCE, ThisV))
         ThisV = state->getSVal(ThisV.castAs<Loc>());
 
+CE->dump(); llvm::errs() << "\n";
+      ThisV.dump();
+      llvm::errs() << "\n";
+      //SVal x = state->getSVal(ThisV.castAs<Loc>());
+      //x.dump();
+      //llvm::errs() << "\n";
+
       state = state->BindExpr(CCE, callerCtx, ThisV);
+      llvm::errs() << "Directly after return:\n";
+      state->dump(); llvm::errs() << "\n";
     }
   }
 
@@ -300,13 +311,13 @@ void ExprEngine::processCallExit(ExplodedNode *CEBNode) {
                calleeCtx->getAnalysisDeclContext()->getBody(),
                ProgramPoint::PostStmtPurgeDeadSymbolsKind);
     currBldrCtx = nullptr;
+    llvm::errs() << "CLEANUP ******* **** *** \n";
   } else {
     CleanedNodes.Add(CEBNode);
   }
 
   for (ExplodedNodeSet::iterator I = CleanedNodes.begin(),
                                  E = CleanedNodes.end(); I != E; ++I) {
-
     // Step 4: Generate the CallExit and leave the callee's context.
     // CleanedNodes -> CEENode
     CallExitEnd Loc(calleeCtx, callerCtx);
@@ -553,6 +564,7 @@ ProgramStateRef ExprEngine::bindReturnValue(const CallEvent &Call,
     }
   } else if (const CXXConstructorCall *C = dyn_cast<CXXConstructorCall>(&Call)){
     SVal ThisV = C->getCXXThisVal();
+      llvm::errs() << "----------------------------------------------2222\n";
 
     // If the constructed object is a temporary prvalue, get its bindings.
     if (isTemporaryPRValue(cast<CXXConstructExpr>(E), ThisV))

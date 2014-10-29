@@ -30,7 +30,10 @@ void ExprEngine::CreateCXXTemporaryObject(const MaterializeTemporaryExpr *ME,
   ProgramStateRef state = Pred->getState();
   const LocationContext *LCtx = Pred->getLocationContext();
 
+  //llvm::errs() << "CreateCXXTemporary -*-*-*-*-*-\n";
+  //state->dump(); llvm::errs() << "\n";
   state = createTemporaryRegionIfNeeded(state, LCtx, tempExpr, ME);
+  //state->dump(); llvm::errs() << "\n";
   Bldr.generateNode(ME, Pred, state);
 }
 

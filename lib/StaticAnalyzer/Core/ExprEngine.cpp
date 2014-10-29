@@ -183,14 +183,24 @@ ExprEngine::createTemporaryRegionIfNeeded(ProgramStateRef State,
                                           const LocationContext *LC,
                                           const Expr *Ex,
                                           const Expr *Result) {
+  //llvm::errs() << "here...\n";
   SVal V = State->getSVal(Ex, LC);
   if (!Result) {
+    //llvm::errs() << "1\n";
     // If we don't have an explicit result expression, we're in "if needed"
     // mode. Only create a region if the current value is a NonLoc.
-    if (!V.getAs<NonLoc>())
+    if (!V.getAs<NonLoc>()) {
+      //llvm::errs() << "out...\n";
       return State;
+    }
     Result = Ex;
   } else {
+    //llvm::errs() << "2\n";
+    if (!V.getAs<NonLoc>()) {
+      //llvm::errs() << "out...\n";
+  State = State->BindExpr(Result, LC, V);
+      return State;
+    }
     // We need to create a region no matter what. For sanity, make sure we don't
     // try to stuff a Loc into a non-pointer temporary region.
     assert(!V.getAs<Loc>() || Loc::isLocType(Result->getType()) ||
@@ -1957,12 +1967,22 @@ void ExprEngine::VisitMemberExpr(const MemberExpr *M, ExplodedNode *Pred,
 
       // Handle regular struct fields / member variables.
       state = createTemporaryRegionIfNeeded(state, LCtx, BaseExpr);
+      llvm::errs() << "there\n";
+      M->dump();
+      llvm::errs() << "\n";
+      (*I)->getState()->dump();
+      llvm::errs() << "\n";
       SVal baseExprVal = state->getSVal(BaseExpr, LCtx);
+      baseExprVal.dump();
+      llvm::errs() << "\n";
 
       FieldDecl *field = cast<FieldDecl>(Member);
       SVal L = state->getLValue(field, baseExprVal);
+      L.dump();
+      llvm::errs() << "\n";
 
       if (M->isGLValue() || M->getType()->isArrayType()) {
+        llvm::errs() << "Hugh...\n";
         // We special-case rvalues of array type because the analyzer cannot
         // reason about them, since we expect all regions to be wrapped in Locs.
         // We instead treat these as lvalues and assume that they will decay to
@@ -1986,9 +2006,11 @@ void ExprEngine::VisitMemberExpr(const MemberExpr *M, ExplodedNode *Pred,
         Bldr.generateNode(M, *I, state->BindExpr(M, LCtx, L), nullptr,
                           ProgramPoint::PostLValueKind);
       } else {
+        llvm::errs() << "Um...\n";
         Bldr.takeNodes(*I);
         evalLoad(Tmp, M, M, *I, state, L);
         Bldr.addNodes(Tmp);
+        llvm::errs() << "Umend...\n";
       }
     }
   }
@@ -2110,7 +2132,7 @@ void ExprEngine::evalBind(ExplodedNodeSet &Dst, const Stmt *StoreE,
                           ExplodedNode *Pred,
                           SVal location, SVal Val,
                           bool atDeclInit, const ProgramPoint *PP) {
-
+  llvm::errs() << "Bind\n";
   const LocationContext *LC = Pred->getLocationContext();
   PostStmt PS(StoreE, LC);
   if (!PP)
@@ -2135,12 +2157,15 @@ void ExprEngine::evalBind(ExplodedNodeSet &Dst, const Stmt *StoreE,
     return;
   }
   
+    llvm::errs() << "LOOOOOOOOOOOC\n";
 
   for (ExplodedNodeSet::iterator I = CheckedSet.begin(), E = CheckedSet.end();
        I!=E; ++I) {
     ExplodedNode *PredI = *I;
     ProgramStateRef state = PredI->getState();
     
+    state->dump();
+    llvm::errs() << "\n";
     state = processPointerEscapedOnBind(state, location, Val);
 
     // When binding the value, pass on the hint that this is a initialization.
@@ -2148,6 +2173,9 @@ void ExprEngine::evalBind(ExplodedNodeSet &Dst, const Stmt *StoreE,
     // changes.
     state = state->bindLoc(location.castAs<Loc>(),
                            Val, /* notifyChanges = */ !atDeclInit);
+
+    state->dump();
+    llvm::errs() << "\n";
 
     const MemRegion *LocReg = nullptr;
     if (Optional<loc::MemRegionVal> LocRegVal =
