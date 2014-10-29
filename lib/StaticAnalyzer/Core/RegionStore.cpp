@@ -2122,12 +2122,12 @@ RegionBindingsRef RegionStoreManager::bindStruct(RegionBindingsConstRef B,
   // We may get non-CompoundVal accidentally due to imprecise cast logic or
   // that we are binding symbolic struct value. Kill the field values, and if
   // the value is symbolic go and bind it as a "default" binding.
-  if (V.isUnknown())
+  if (V.isUnknown() || !V.getAs<nonloc::CompoundVal>())
     return bindAggregate(B, R, UnknownVal());
 
-  if (!V.getAs<nonloc::CompoundVal>()) {
-    return bindAggregate(B, R, V);
-  }
+  //if (!V.getAs<nonloc::CompoundVal>()) {
+  //  return bindAggregate(B, R, V);
+  //}
 
   const nonloc::CompoundVal& CV = V.castAs<nonloc::CompoundVal>();
   nonloc::CompoundVal::iterator VI = CV.begin(), VE = CV.end();
