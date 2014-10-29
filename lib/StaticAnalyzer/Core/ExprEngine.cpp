@@ -206,7 +206,7 @@ ExprEngine::createTemporaryRegionIfNeeded(ProgramStateRef State,
     assert(!V.getAs<Loc>() || Loc::isLocType(Result->getType()) ||
            Result->getType()->isMemberPointerType());
   }
-  llvm::errs() << "TEMPTEMPTEMPTEMPTEMP\n";
+  //llvm::errs() << "TEMPTEMPTEMPTEMPTEMP\n";
 
   ProgramStateManager &StateMgr = State->getStateManager();
   MemRegionManager &MRMgr = StateMgr.getRegionManager();
