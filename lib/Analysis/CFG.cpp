@@ -484,7 +484,8 @@ private:
   CFGBlock *VisitBinaryOperatorForTemporaryDtors(BinaryOperator *E,
                                                  TempDtorContext &Context);
   CFGBlock *VisitCXXBindTemporaryExprForTemporaryDtors(
-      CXXBindTemporaryExpr *E, bool BindToTemporary, TempDtorContext &Context);
+      CXXBindTemporaryExpr *E, bool BindToTemporary, TempDtorContext &Context,
+      bool BindsParameter = false);
   CFGBlock *VisitConditionalOperatorForTemporaryDtors(
       AbstractConditionalOperator *E, bool BindToTemporary,
       TempDtorContext &Context);
@@ -505,6 +506,9 @@ private:
     return Visit(S, AddStmtChoice::AlwaysAdd);
   }
   CFGBlock *addInitializer(CXXCtorInitializer *I);
+  void addAutomaticObjDtorsForLifetimeExtendedTemporaries(
+      Stmt *E, bool LifetimeExtended = false);
+  void addAutomaticObjDtorsForVarDecl(VarDecl *VD, Stmt* S);
   void addAutomaticObjDtors(LocalScope::const_iterator B,
                             LocalScope::const_iterator E, Stmt *S);
   void addImplicitDtorsForDestructor(const CXXDestructorDecl *DD);
@@ -515,6 +519,9 @@ private:
   void addLocalScopeForStmt(Stmt *S);
   LocalScope* addLocalScopeForDeclStmt(DeclStmt *DS,
                                        LocalScope* Scope = nullptr);
+  bool needsLocalScopeForLifetimeExtendedTemporary(const Stmt* E);
+  bool needsLocalScopeForVarDecl(const VarDecl* VD);
+  bool needsLocalScopeForType(QualType QT);
   LocalScope* addLocalScopeForVarDecl(VarDecl *VD, LocalScope* Scope = nullptr);
 
   void addLocalScopeAndDtors(Stmt *S);
@@ -540,8 +547,9 @@ private:
   void appendMemberDtor(CFGBlock *B, FieldDecl *FD) {
     B->appendMemberDtor(FD, cfg->getBumpVectorContext());
   }
-  void appendTemporaryDtor(CFGBlock *B, CXXBindTemporaryExpr *E) {
-    B->appendTemporaryDtor(E, cfg->getBumpVectorContext());
+  void appendTemporaryDtor(CFGBlock *B, CXXBindTemporaryExpr *E,
+                           bool BindsParameter) {
+    B->appendTemporaryDtor(E, cfg->getBumpVectorContext(), BindsParameter);
   }
   void appendAutomaticObjDtor(CFGBlock *B, VarDecl *VD, Stmt *S) {
     B->appendAutomaticObjDtor(VD, S, cfg->getBumpVectorContext());
@@ -1101,52 +1109,87 @@ CFGBlock *CFGBuilder::addInitializer(CXXCtorInitializer *I) {
   return Block;
 }
 
-/// \brief Retrieve the type of the temporary object whose lifetime was 
-/// extended by a local reference with the given initializer.
-static QualType getReferenceInitTemporaryType(ASTContext &Context,
-                                              const Expr *Init) {
-  while (true) {
-    // Skip parentheses.
-    Init = Init->IgnoreParens();
-    
-    // Skip through cleanups.
-    if (const ExprWithCleanups *EWC = dyn_cast<ExprWithCleanups>(Init)) {
-      Init = EWC->getSubExpr();
-      continue;
+void CFGBuilder::addAutomaticObjDtorsForLifetimeExtendedTemporaries(
+    Stmt *E, bool LifetimeExtended) {
+  switch (E->getStmtClass()) {
+    // FIXME: What do we want to do for conditional operators and binary
+    // conditional operators?
+  case Stmt::MaterializeTemporaryExprClass: {
+    const MaterializeTemporaryExpr * MTE = cast<MaterializeTemporaryExpr>(E);
+    if (MTE->getStorageDuration() != SD_FullExpression) {
+      SmallVector<const Expr *, 2> CommaLHSs;
+      SmallVector<SubobjectAdjustment, 2> Adjustments;
+      assert(MTE->GetTemporaryExpr());
+      const Expr *ExtendedE =
+          MTE->GetTemporaryExpr()->skipRValueSubobjectAdjustments(CommaLHSs,
+                                                                  Adjustments);
+      addAutomaticObjDtorsForLifetimeExtendedTemporaries(
+          const_cast<Expr*>(ExtendedE), /*LifetimeExtended=*/true);
     }
-    
-    // Skip through the temporary-materialization expression.
-    if (const MaterializeTemporaryExpr *MTE
-          = dyn_cast<MaterializeTemporaryExpr>(Init)) {
-      Init = MTE->GetTemporaryExpr();
-      continue;
-    }
-    
-    // Skip derived-to-base and no-op casts.
-    if (const CastExpr *CE = dyn_cast<CastExpr>(Init)) {
-      if ((CE->getCastKind() == CK_DerivedToBase ||
-           CE->getCastKind() == CK_UncheckedDerivedToBase ||
-           CE->getCastKind() == CK_NoOp) &&
-          Init->getType()->isRecordType()) {
-        Init = CE->getSubExpr();
-        continue;
+  } break;
+  case Stmt::CXXBindTemporaryExprClass:
+    // If the temporary is not lifetime extended, we'll handle it in
+    // VisitForTemporaryDtors instead.
+    if (LifetimeExtended) {
+      const CXXDestructorDecl *Dtor =
+          cast<CXXBindTemporaryExpr>(E)->getTemporary()->getDestructor();
+      if (Dtor->isNoReturn()) {
+        Block = createNoReturnBlock();
+      } else {
+        autoCreateBlock();
       }
+
+      appendTemporaryDtor(Block, cast<CXXBindTemporaryExpr>(E), false);
     }
-    
-    // Skip member accesses into rvalues.
-    if (const MemberExpr *ME = dyn_cast<MemberExpr>(Init)) {
-      if (!ME->isArrow() && ME->getBase()->isRValue()) {
-        Init = ME->getBase();
-        continue;
-      }
+    break;
+  case Stmt::ConditionalOperatorClass:
+  case Stmt::BinaryConditionalOperatorClass:
+    // FIXME: Implement. If both the true and false branch yield lifetime
+    // extended temporaries, we need to add a branch that triggers on which
+    // temporary constructor was executed.
+    break;
+  default:
+    LifetimeExtended = false;
+    // Fallthrough.
+  case Stmt::ParenExprClass:
+  case Stmt::CXXFunctionalCastExprClass:
+  case Stmt::ImplicitCastExprClass:
+  case Stmt::ExprWithCleanupsClass:
+  case Stmt::CXXDefaultArgExprClass:
+  case Stmt::CXXDefaultInitExprClass:
+    for (Stmt *Child : E->children()) {
+      if (Child)
+        addAutomaticObjDtorsForLifetimeExtendedTemporaries(Child,
+                                                           LifetimeExtended);
     }
-    
+    break;
+  case Stmt::BlockExprClass:
+  case Stmt::LambdaExprClass:
     break;
   }
-
-  return Init->getType();
 }
-  
+
+void CFGBuilder::addAutomaticObjDtorsForVarDecl(VarDecl *VD,
+                                                Stmt *S) {
+  if (!VD->getType()->isReferenceType() &&
+      needsLocalScopeForType(VD->getType())) {
+    QualType QT = VD->getType();
+    QT = Context->getBaseElementType(QT);
+
+    const CXXDestructorDecl *Dtor = QT->getAsCXXRecordDecl()->getDestructor();
+    if (Dtor->isNoReturn())
+      Block = createNoReturnBlock();
+    else
+      autoCreateBlock();
+
+    appendAutomaticObjDtor(Block, VD, S);
+  }
+  if (const Expr *Init = VD->getInit()) {
+    addAutomaticObjDtorsForLifetimeExtendedTemporaries(
+        const_cast<Expr *>(Init));
+  }
+}
+
 /// addAutomaticObjDtors - Add to current block automatic objects destructors
 /// for objects in range of local scope positions. Use S as trigger statement
 /// for destructors.
@@ -1170,22 +1213,7 @@ void CFGBuilder::addAutomaticObjDtors(LocalScope::const_iterator B,
   for (SmallVectorImpl<VarDecl*>::reverse_iterator I = Decls.rbegin(),
                                                    E = Decls.rend();
        I != E; ++I) {
-    // If this destructor is marked as a no-return destructor, we need to
-    // create a new block for the destructor which does not have as a successor
-    // anything built thus far: control won't flow out of this block.
-    QualType Ty = (*I)->getType();
-    if (Ty->isReferenceType()) {
-      Ty = getReferenceInitTemporaryType(*Context, (*I)->getInit());
-    }
-    Ty = Context->getBaseElementType(Ty);
-
-    const CXXDestructorDecl *Dtor = Ty->getAsCXXRecordDecl()->getDestructor();
-    if (Dtor->isNoReturn())
-      Block = createNoReturnBlock();
-    else
-      autoCreateBlock();
-
-    appendAutomaticObjDtor(Block, *I, S);
+    addAutomaticObjDtorsForVarDecl(*I, S);
   }
 }
 
@@ -1283,6 +1311,58 @@ LocalScope* CFGBuilder::addLocalScopeForDeclStmt(DeclStmt *DS,
   return Scope;
 }
 
+bool CFGBuilder::needsLocalScopeForType(QualType QT) {
+  // Check for constant size array. Set type to array element type.
+  while (const ConstantArrayType *AT = Context->getAsConstantArrayType(QT)) {
+    if (AT->getSize() == 0)
+      return false;
+    QT = AT->getElementType();
+  }
+
+  // Check if type is a C++ class with non-trivial destructor.
+  if (const CXXRecordDecl *CD = QT->getAsCXXRecordDecl())
+    return !CD->hasTrivialDestructor();
+  return false;
+}
+
+bool CFGBuilder::needsLocalScopeForLifetimeExtendedTemporary(const Stmt* E) {
+  // FIXME: Handle cases where the scope would be introduced by a nested
+  // lambda or block.
+  switch (E->getStmtClass()) {
+  case Stmt::MaterializeTemporaryExprClass: {
+    const MaterializeTemporaryExpr * MTE = cast<MaterializeTemporaryExpr>(E);
+    if (MTE->getStorageDuration() != SD_FullExpression) {
+      SmallVector<const Expr *, 2> CommaLHSs;
+      SmallVector<SubobjectAdjustment, 2> Adjustments;
+      assert(MTE->GetTemporaryExpr());
+      const Expr *ExtendedE =
+          MTE->GetTemporaryExpr()->skipRValueSubobjectAdjustments(CommaLHSs,
+                                                                  Adjustments);
+      return needsLocalScopeForType(ExtendedE->getType()) ||
+             needsLocalScopeForLifetimeExtendedTemporary(ExtendedE);
+    }
+  } break;
+  default:
+    for (const Stmt *Child : E->children()) {
+      if (Child && needsLocalScopeForLifetimeExtendedTemporary(Child))
+        return true;
+    }
+    break;
+  }
+  return false;
+}
+
+bool CFGBuilder::needsLocalScopeForVarDecl(const VarDecl* VD) {
+  if (!VD->getType()->isReferenceType() &&
+      needsLocalScopeForType(VD->getType())) {
+    return true;
+  }
+  if (const Expr *Init = VD->getInit()) {
+    return needsLocalScopeForLifetimeExtendedTemporary(Init);
+  }
+  return false;
+}
+
 /// addLocalScopeForVarDecl - Add LocalScope for variable declaration. It will
 /// create add scope for automatic objects and temporary objects bound to
 /// const reference. Will reuse Scope if not NULL.
@@ -1300,43 +1380,11 @@ LocalScope* CFGBuilder::addLocalScopeForVarDecl(VarDecl *VD,
   default: return Scope;
   }
 
-  // Check for const references bound to temporary. Set type to pointee.
-  QualType QT = VD->getType();
-  if (QT.getTypePtr()->isReferenceType()) {
-    // Attempt to determine whether this declaration lifetime-extends a
-    // temporary.
-    //
-    // FIXME: This is incorrect. Non-reference declarations can lifetime-extend
-    // temporaries, and a single declaration can extend multiple temporaries.
-    // We should look at the storage duration on each nested
-    // MaterializeTemporaryExpr instead.
-    const Expr *Init = VD->getInit();
-    if (!Init)
-      return Scope;
-    if (const ExprWithCleanups *EWC = dyn_cast<ExprWithCleanups>(Init))
-      Init = EWC->getSubExpr();
-    if (!isa<MaterializeTemporaryExpr>(Init))
-      return Scope;
-
-    // Lifetime-extending a temporary.
-    QT = getReferenceInitTemporaryType(*Context, Init);
-  }
-
-  // Check for constant size array. Set type to array element type.
-  while (const ConstantArrayType *AT = Context->getAsConstantArrayType(QT)) {
-    if (AT->getSize() == 0)
-      return Scope;
-    QT = AT->getElementType();
-  }
-
-  // Check if type is a C++ class with non-trivial destructor.
-  if (const CXXRecordDecl *CD = QT->getAsCXXRecordDecl())
-    if (!CD->hasTrivialDestructor()) {
-      // Add the variable to scope
-      Scope = createOrReuseLocalScope(Scope);
-      Scope->addVar(VD);
-      ScopePos = Scope->begin();
-    }
+  if (!needsLocalScopeForVarDecl(VD))
+    return Scope;
+  Scope = createOrReuseLocalScope(Scope);
+  Scope->addVar(VD);
+  ScopePos = Scope->begin();
   return Scope;
 }
 
@@ -3614,6 +3662,22 @@ tryAgain:
     case Stmt::CXXDefaultInitExprClass:
       E = cast<CXXDefaultInitExpr>(E)->getExpr();
       goto tryAgain;
+
+    case Stmt::CallExprClass: {
+      CFGBlock *B = Block;
+      for (Expr *Arg : cast<CallExpr>(E)->arguments()) {
+        if (!Arg) continue;
+        if (CXXBindTemporaryExpr *BTE = dyn_cast<CXXBindTemporaryExpr>(Arg)) {
+          if (CFGBlock *R = VisitCXXBindTemporaryExprForTemporaryDtors(
+                  BTE, false, Context, /*BindsParameter=*/true)) {
+            B = R;
+          }
+        } else if (CFGBlock *R = VisitForTemporaryDtors(Arg, false, Context)) {
+          B = R;
+        }
+      }
+      return B;
+    }
   }
 }
 
@@ -3673,7 +3737,8 @@ CFGBlock *CFGBuilder::VisitBinaryOperatorForTemporaryDtors(
 }
 
 CFGBlock *CFGBuilder::VisitCXXBindTemporaryExprForTemporaryDtors(
-    CXXBindTemporaryExpr *E, bool BindToTemporary, TempDtorContext &Context) {
+    CXXBindTemporaryExpr *E, bool BindToTemporary, TempDtorContext &Context,
+    bool BindsParameter) {
   // First add destructors for temporaries in subexpression.
   CFGBlock *B = VisitForTemporaryDtors(E->getSubExpr(), false, Context);
   if (!BindToTemporary) {
@@ -3700,7 +3765,7 @@ CFGBlock *CFGBuilder::VisitCXXBindTemporaryExprForTemporaryDtors(
     if (Context.needsTempDtorBranch()) {
       Context.setDecisionPoint(Succ, E);
     }
-    appendTemporaryDtor(Block, E);
+    appendTemporaryDtor(Block, E, BindsParameter);
 
     B = Block;
   }

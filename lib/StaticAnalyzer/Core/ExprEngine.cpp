@@ -191,6 +191,9 @@ ExprEngine::createTemporaryRegionIfNeeded(ProgramStateRef State,
       return State;
     Result = Ex;
   } else {
+   // if (const MemRegion *MR = V.getAsRegion())
+   //   if (isa<CXXTempObjectRegion>(MR->getBaseRegion()))
+   //     return State;
     // We need to create a region no matter what. For sanity, make sure we don't
     // try to stuff a Loc into a non-pointer temporary region.
     assert(!V.getAs<Loc>() || Loc::isLocType(Result->getType()) ||
@@ -422,6 +425,8 @@ void ExprEngine::removeDead(ExplodedNode *Pred, ExplodedNodeSet &Out,
 
 void ExprEngine::ProcessStmt(const CFGStmt S,
                              ExplodedNode *Pred) {
+  //S.getStmt()->dump();
+  //llvm::errs() << "\n";
   // Reclaim any unnecessary nodes in the ExplodedGraph.
   G.reclaimRecentlyAllocatedNodes();
 
@@ -686,9 +691,25 @@ void ExprEngine::ProcessTemporaryDtor(const CFGTemporaryDtor D,
   assert(CleanDtorState.size() <= 1);
   ExplodedNode *CleanPred =
       CleanDtorState.empty() ? Pred : *CleanDtorState.begin();
+
+  const LocationContext *LCtx = CleanPred->getLocationContext();
+  SVal Val = CleanPred->getState()->getSVal(
+      D.getBindTemporaryExpr()->getSubExpr(), LCtx->getCurrentStackFrame());
+  const MemRegion *Region = Val.getAsRegion();
+  //llvm::errs() << "huh?\n";
+  //if (Region != nullptr) {
+  //  llvm::errs() << "HEEEEEEEEEEEEEEEY!!!!!\n";
+ // }
+  // If the class does not have any members, there will not be a region
+  // for it bound in the environment.
+  //if (Optional<loc::MemRegionVal> MRV =
+  //        Val.getAs<loc::MemRegionVal>()) {
+  //  Region = LCV->getRegion();
+  //}
+
   // FIXME: Inlining of temporary destructors is not supported yet anyway, so
   // we just put a NULL region for now. This will need to be changed later.
-  VisitCXXDestructor(varType, nullptr, D.getBindTemporaryExpr(),
+  VisitCXXDestructor(varType, Region, D.getBindTemporaryExpr(),
                      /*IsBase=*/false, CleanPred, Dst);
 }
 

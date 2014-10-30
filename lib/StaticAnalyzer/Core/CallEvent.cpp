@@ -959,7 +959,6 @@ CallEventManager::getCaller(const StackFrameContext *CalleeCtx,
   CFGElement E = (*B)[CalleeCtx->getIndex()];
   assert(E.getAs<CFGImplicitDtor>() &&
          "All other CFG elements should have exprs");
-  assert(!E.getAs<CFGTemporaryDtor>() && "We don't handle temporaries yet");
 
   SValBuilder &SVB = State->getStateManager().getSValBuilder();
   const CXXDestructorDecl *Dtor = cast<CXXDestructorDecl>(CalleeCtx->getDecl());

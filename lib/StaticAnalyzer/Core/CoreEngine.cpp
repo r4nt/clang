@@ -228,6 +228,8 @@ bool CoreEngine::ExecuteWorkList(const LocationContext *L, unsigned Steps,
 
 void CoreEngine::dispatchWorkItem(ExplodedNode* Pred, ProgramPoint Loc,
                                   const WorkListUnit& WU) {
+  //Pred->getState()->dump();
+  //llvm::errs() << "\n";
   // Dispatch on the location type.
   switch (Loc.getKind()) {
     case ProgramPoint::BlockEdgeKind:

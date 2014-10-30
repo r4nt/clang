@@ -290,7 +290,8 @@ public:
 
   static inline bool isLocType(QualType T) {
     return T->isAnyPointerType() || T->isBlockPointerType() || 
-           T->isReferenceType() || T->isNullPtrType();
+           T->isReferenceType() || T->isNullPtrType() ||
+           T->isRecordType();
   }
 
 private:

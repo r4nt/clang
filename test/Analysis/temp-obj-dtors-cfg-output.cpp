@@ -982,7 +982,7 @@ int testConsistencyNestedNormalReturn(bool value) {
 // CHECK:    12: [B1.7]([B1.11])
 // CHECK:    13: ~A() (Temporary object destructor)
 // CHECK:    14: int b;
-// CHECK:    15: [B1.5].~A() (Implicit destructor)
+// CHECK:    15: ~A() (Temporary object destructor)
 // CHECK:     Preds (1): B2
 // CHECK:     Succs (1): B0
 // CHECK:   [B0 (EXIT)]
@@ -1026,7 +1026,7 @@ int testConsistencyNestedNormalReturn(bool value) {
 // CHECK:    16: [B1.9]([B1.15])
 // CHECK:    17: ~A() (Temporary object destructor)
 // CHECK:    18: int b;
-// CHECK:    19: [B1.7].~A() (Implicit destructor)
+// CHECK:    19: ~A() (Temporary object destructor)
 // CHECK:     Preds (1): B2
 // CHECK:     Succs (1): B0
 // CHECK:   [B0 (EXIT)]

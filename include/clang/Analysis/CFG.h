@@ -280,12 +280,14 @@ private:
 /// at the end of full expression for temporary object.
 class CFGTemporaryDtor : public CFGImplicitDtor {
 public:
-  CFGTemporaryDtor(CXXBindTemporaryExpr *expr)
-      : CFGImplicitDtor(TemporaryDtor, expr, nullptr) {}
+  CFGTemporaryDtor(CXXBindTemporaryExpr *expr, bool BindsParameter)
+      : CFGImplicitDtor(TemporaryDtor, expr, BindsParameter ? this : nullptr) {}
 
   const CXXBindTemporaryExpr *getBindTemporaryExpr() const {
     return static_cast<const CXXBindTemporaryExpr *>(Data1.getPointer());
   }
+
+  bool bindsParameter() const { return Data2.getPointer(); }
 
 private:
   friend class CFGElement;
@@ -676,8 +678,9 @@ public:
     Elements.push_back(CFGMemberDtor(FD), C);
   }
 
-  void appendTemporaryDtor(CXXBindTemporaryExpr *E, BumpVectorContext &C) {
-    Elements.push_back(CFGTemporaryDtor(E), C);
+  void appendTemporaryDtor(CXXBindTemporaryExpr *E, BumpVectorContext &C,
+                           bool BindsParameter) {
+    Elements.push_back(CFGTemporaryDtor(E, BindsParameter), C);
   }
 
   void appendAutomaticObjDtor(VarDecl *VD, Stmt *S, BumpVectorContext &C) {
