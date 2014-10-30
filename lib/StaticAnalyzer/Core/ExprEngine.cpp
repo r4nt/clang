@@ -191,7 +191,7 @@ ExprEngine::createTemporaryRegionIfNeeded(ProgramStateRef State,
       return State;
     Result = Ex;
   } else {
-    if (!V.getAs<NonLoc>()) {
+    if (!V.getAs<NonLoc>() && Result->getType()->isRecordType()) {
       State = State->BindExpr(Result, LC, V);
       return State;
     }
