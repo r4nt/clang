@@ -1902,8 +1902,9 @@ RegionStoreManager::bind(RegionBindingsConstRef B, Loc L, SVal V) {
     QualType Ty = TR->getValueType();
     if (Ty->isArrayType())
       return bindArray(B, TR, V);
-    if (Ty->isStructureOrClassType())
+    if (Ty->isStructureOrClassType()) {
       return bindStruct(B, TR, V);
+    }
     if (Ty->isVectorType())
       return bindVector(B, TR, V);
     if (Ty->isUnionType())
@@ -2115,8 +2116,9 @@ RegionBindingsRef RegionStoreManager::bindStruct(RegionBindingsConstRef B,
   // Handle lazy compound values and symbolic values.
   if (Optional<nonloc::LazyCompoundVal> LCV =
         V.getAs<nonloc::LazyCompoundVal>()) {
-    if (Optional<RegionBindingsRef> NewB = tryBindSmallStruct(B, R, RD, *LCV))
+    if (Optional<RegionBindingsRef> NewB = tryBindSmallStruct(B, R, RD, *LCV)) {
       return *NewB;
+    }
     return bindAggregate(B, R, V);
   }
   if (V.getAs<nonloc::SymbolVal>())

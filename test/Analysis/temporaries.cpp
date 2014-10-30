@@ -104,9 +104,7 @@ namespace compound_literals {
 #if __cplusplus >= 201103L
     clang_analyzer_eval(((HasCtor){1, 42}).y == 42); // expected-warning{{TRUE}}
 
-    // FIXME: should be TRUE, but we don't inline the constructors of
-    // temporaries because we can't model their destructors yet.
-    clang_analyzer_eval(((HasCtorDtor){1, 42}).y == 42); // expected-warning{{UNKNOWN}}
+    clang_analyzer_eval(((HasCtorDtor){1, 42}).y == 42); // expected-warning{{TRUE}}
 #endif
   }
 }
@@ -345,6 +343,49 @@ namespace destructors {
         clang_analyzer_eval(true);
       }
     }
+  }
+
+  struct NoWarnDerefDtor {
+    NoWarnDerefDtor(int *p) : p(p) {}
+    ~NoWarnDerefDtor() { *p = 23; } // no warning
+    int *p;
+  };
+  void testDtorInlining() {
+    int x;
+    (NoWarnDerefDtor(&x));
+    clang_analyzer_eval(x == 23); // expected-warning{{TRUE}}
+  }
+  void use(NoWarnDerefDtor);
+  void testArgumentDtorInliningPreventedByValue() {
+    int x;
+    NoWarnDerefDtor p(nullptr);
+    use(p);
+    p.p = &x;
+  }
+
+  struct WarnDerefDtor {
+    WarnDerefDtor(int *p) : p(p) {}
+    ~WarnDerefDtor() {
+      *p = 23; // expected-warning{{Dereference of null pointer}}
+    }
+    int *p;
+  };
+  void useRef(WarnDerefDtor& p) {
+    p.p = nullptr;
+  }
+  void testArgumentDtorInliningWorksByReference() {
+    int x;
+    WarnDerefDtor p(&x);
+    useRef(p);
+  }
+  void useConstRef(const NoWarnDerefDtor& p) {
+    const_cast<NoWarnDerefDtor&>(p).p = nullptr;
+  }
+  void testArgumentDtorInliningWorksByConstReference() {
+    int x;
+    // FIXME: This should warn. We need to implement correct handling of
+    // temporaries bound to parameters first.
+    useConstRef(NoWarnDerefDtor(&x));
   }
 
   void testIfAtEndOfLoop() {

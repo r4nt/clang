@@ -1,6 +1,8 @@
 // RUN: %clang_cc1 -analyze -analyzer-checker=debug.DumpCFG -triple x86_64-apple-darwin12 -analyzer-config cfg-temporary-dtors=true -std=c++11 %s > %t 2>&1
 // RUN: FileCheck --input-file=%t %s
 
+#include "Inputs/system-header-simulator-cxx.h"
+
 // CHECK-LABEL: void checkWrap(int i)
 // CHECK: ENTRY
 // CHECK-NEXT: Succs (1): B1
@@ -376,10 +378,9 @@ void test_placement_new_array() {
   MyClass* obj = new (buffer) MyClass[5];
 }
 
-
 // CHECK-LABEL: void test_lifetime_extended_temporaries()
 // CHECK: [B1]
-struct LifetimeExtend { LifetimeExtend(int); ~LifetimeExtend(); };
+struct LifetimeExtend { LifetimeExtend(int); ~LifetimeExtend(); int i; };
 struct Aggregate { const LifetimeExtend a; const LifetimeExtend b; };
 struct AggregateRef { const LifetimeExtend &a; const LifetimeExtend &b; };
 void test_lifetime_extended_temporaries() {
@@ -420,15 +421,36 @@ void test_lifetime_extended_temporaries() {
   }
   // CHECK: LifetimeExtend(5)
   // CHECK-NEXT: : 5
-  // FIXME: We want to emit the destructors of the lifetime
-  // extended variables here.
+  // CHECK-NEXT: ~LifetimeExtend()
+  // CHECK-NEXT: ~LifetimeExtend()
   // CHECK-NOT: ~LifetimeExtend()
   {
     AggregateRef a{LifetimeExtend(5), LifetimeExtend(5)};
     5;
   }
-  // FIXME: Add tests for lifetime extension via subobject
-  // references (LifetimeExtend().some_member).
+  // CHECK: LifetimeExtend(6)
+  // CHECK-NEXT: : 6
+  // CHECK-NEXT: ~LifetimeExtend()
+  // CHECK-NOT: ~LifetimeExtend()
+  {
+    const int &i = LifetimeExtend(6).i;
+    6;
+  }
+}
+
+
+// CHECK-LABEL: void test_lifetime_extended_temporaries_for_range()
+void test_lifetime_extended_temporaries_for_range() {
+  // CHECK: [B1]
+  // CHECK-NEXT: ~const LifetimeExtend [1]()
+  // CHECK-NEXT: Preds (1): B2
+  // CHECK: auto &&__range = { LifetimeExtend(7) };
+  // CHECK-NEXT: ~LifetimeExtend() (Temporary object destructor)
+  {
+    for (LifetimeExtend e : {LifetimeExtend(7)}) {
+      1;
+    }
+  }
 }
 
 

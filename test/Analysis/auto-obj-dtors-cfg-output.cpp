@@ -42,7 +42,7 @@ extern const bool UV;
 // CHECK-NEXT:   8: [B1.7] (ImplicitCastExpr, NoOp, const class A)
 // CHECK-NEXT:   9: [B1.8]
 // CHECK:       10: const A &c = A();
-// CHECK:       11: [B1.10].~A() (Implicit destructor)
+// CHECK:       11: ~A()
 // CHECK:       12: [B1.2].~A() (Implicit destructor)
 // CHECK-NEXT:   Preds (1): B2
 // CHECK-NEXT:   Succs (1): B0

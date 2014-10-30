@@ -205,7 +205,17 @@ static bool isTemporaryPRValue(const CXXConstructExpr *E, SVal V) {
   if (!MR)
     return false;
 
-  return isa<CXXTempObjectRegion>(MR);
+  return false;
+  /*(
+  if (isa<CXXTempObjectRegion>(MR) && !isa<CXXTemporaryObjectExpr>(E)) {
+    if (const CXXConstructExpr* CE = llvm::dyn_cast<CXXConstructExpr>(E)) {
+        return true;
+      E->dump();
+      llvm::errs() << "\n";
+    }
+  }
+  return false;
+*/
 }
 
 /// The call exit is simulated with a sequence of nodes, which occur between 
@@ -637,12 +647,6 @@ static CallInlinePolicy mayInlineCallKind(const CallEvent &Call,
     if (!Opts.mayInlineCXXMemberFunction(CIMK_Destructors))
       return CIP_DisallowedAlways;
 
-    // FIXME: This is a hack. We don't handle temporary destructors
-    // right now, so we shouldn't inline their constructors.
-    if (CtorExpr->getConstructionKind() == CXXConstructExpr::CK_Complete)
-      if (!Target || !isa<DeclRegion>(Target))
-        return CIP_DisallowedOnce;
-
     break;
   }
   case CE_CXXDestructor: {
@@ -807,12 +811,15 @@ bool ExprEngine::shouldInlineCall(const CallEvent &Call, const Decl *D,
   AnalysisDeclContextManager &ADCMgr = AMgr.getAnalysisDeclContextManager();
   AnalysisDeclContext *CalleeADC = ADCMgr.getContext(D);
 
-  // Temporary object destructor processing is currently broken, so we never
-  // inline them.
-  // FIXME: Remove this once temp destructors are working.
   if (isa<CXXDestructorCall>(Call)) {
-    if ((*currBldrCtx->getBlock())[currStmtIdx].getAs<CFGTemporaryDtor>())
-      return false;
+    if (Optional<CFGTemporaryDtor> Dtor =
+            (*currBldrCtx->getBlock())[currStmtIdx].getAs<CFGTemporaryDtor>()) {
+      // We must not inline temporary destructors for temporaries that are
+      // bound to parameters, as we currently don't support correctly
+      // invalidating our knowledge about them when they escape.
+      //if (Dtor->bindsParameter())
+      //  return false;
+    }
   }
 
   // The auto-synthesized bodies are essential to inline as they are

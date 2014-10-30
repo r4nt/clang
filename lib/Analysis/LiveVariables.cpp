@@ -462,6 +462,16 @@ LiveVariablesImpl::runOnBlock(const CFGBlock *block,
       val.liveDecls = DSetFact.add(val.liveDecls, Dtor->getVarDecl());
       continue;
     }
+    if (Optional<CFGTemporaryDtor> Dtor =
+            elem.getAs<CFGTemporaryDtor>()) {
+      //llvm::errs() << "keep it live...\n";
+      //Dtor->getBindTemporaryExpr()->dump();
+//      llvm::errs() << "\n";
+      // Temporary objects need to survive until the destructor is called.
+      val.liveStmts = SSetFact.add(val.liveStmts,
+                                   Dtor->getBindTemporaryExpr()->getSubExpr());
+      continue;
+    }
 
     if (!elem.getAs<CFGStmt>())
       continue;
