@@ -1956,23 +1956,23 @@ RegionBindingsRef
 RegionStoreManager::bindArray(RegionBindingsConstRef B,
                               const TypedValueRegion* R,
                               SVal Init) {
-
   const ArrayType *AT =cast<ArrayType>(Ctx.getCanonicalType(R->getValueType()));
   QualType ElementTy = AT->getElementType();
   Optional<uint64_t> Size;
 
   if (const ConstantArrayType* CAT = dyn_cast<ConstantArrayType>(AT))
     Size = CAT->getSize().getZExtValue();
-
   // Check if the init expr is a string literal.
   if (Optional<loc::MemRegionVal> MRV = Init.getAs<loc::MemRegionVal>()) {
-    const StringRegion *S = cast<StringRegion>(MRV->getRegion());
+    if (MRV->getRegion()->getAs<StringRegion>()) {
+      const StringRegion *S = cast<StringRegion>(MRV->getRegion());
 
-    // Treat the string as a lazy compound value.
-    StoreRef store(B.asStore(), *this);
-    nonloc::LazyCompoundVal LCV = svalBuilder.makeLazyCompoundVal(store, S)
-        .castAs<nonloc::LazyCompoundVal>();
-    return bindAggregate(B, R, LCV);
+      // Treat the string as a lazy compound value.
+      StoreRef store(B.asStore(), *this);
+      nonloc::LazyCompoundVal LCV = svalBuilder.makeLazyCompoundVal(store, S)
+                                        .castAs<nonloc::LazyCompoundVal>();
+      return bindAggregate(B, R, LCV);
+    }
   }
 
   // Handle lazy compound values.
@@ -1983,6 +1983,9 @@ RegionStoreManager::bindArray(RegionBindingsConstRef B,
 
   if (Init.isUnknown())
     return setImplicitDefaultValue(B, R, ElementTy);
+
+  if (!Init.getAs<nonloc::CompoundVal>())
+    return bindAggregate(B, R, Init);
 
   const nonloc::CompoundVal& CV = Init.castAs<nonloc::CompoundVal>();
   nonloc::CompoundVal::iterator VI = CV.begin(), VE = CV.end();
