@@ -193,7 +193,7 @@ public:
            I != E; ++I, ++Field) {
         if (I->capturesThis())
           CXXThisFieldDecl = *Field;
-        else
+        else if (I->capturesVariable())
           CaptureFields[I->getCapturedVar()] = *Field;
       }
     }
@@ -249,7 +249,7 @@ public:
   unsigned char BoundsChecking;
 
   /// \brief Sanitizer options to use for this function.
-  const SanitizerOptions *SanOpts;
+  SanitizerOptions SanOpts;
 
   /// \brief True if CodeGen currently emits code implementing sanitizer checks.
   bool IsSanitizerScope;
@@ -2002,6 +2002,7 @@ public:
   void EmitCXXForRangeStmt(const CXXForRangeStmt &S,
                            ArrayRef<const Attr *> Attrs = None);
 
+  LValue InitCapturedStruct(const CapturedStmt &S);
   llvm::Function *EmitCapturedStmt(const CapturedStmt &S, CapturedRegionKind K);
   void GenerateCapturedStmtFunctionProlog(const CapturedStmt &S);
   llvm::Function *GenerateCapturedStmtFunctionEpilog(const CapturedStmt &S);
